@@ -1,7 +1,7 @@
 # cv-fit-report
 
 How well does this CV fit this job, and **why**? An AI-assisted report that scores a CV against a
-job description on ten weighted criteria, adjusted for how strict the employer is, plus bonus points. Every judgement is backed by a
+job description on ten weighted criteria, adjusted for how strict the employer is, plus bonus and screening points. Every judgement is backed by a
 verbatim quote or a cited web source, and every number can be recomputed by hand.
 
 Works with **Claude Code**, **Codex**, **Cursor**, or any agent that reads `AGENTS.md`. The same
@@ -25,8 +25,9 @@ which you can copy into any agent's skills folder.
 | 11 | The candidate's own access: previously worked there, referrals by route and seniority | bonus points |
 | 12 | Tenure: median length of completed roles against the employer's expected longevity | 5.56% |
 | 13 | Consulting experience: roles at top-10 firms for the industry, more if the work relates to the JD (capped at +10) | bonus points |
+| 14 | Screening signals: time at the target seniority, employment gaps, short recent roles, contract history, phrases copied from the JD, sector recency, conventional certifications and conflicts of interest (clamped between -15 and +10). The report also flags date ranges an applicant tracking system may not read, a blank education field and application form questions | plus and minus points |
 
-`total = clamp(adjusted + c11 + c13, 0, 100)`, where `adjusted = 100 * (core/100)^gamma` and gamma comes from c2.
+`total = clamp(adjusted + c11 + c13 + c14, 0, 100)`, where `adjusted = 100 * (core/100)^gamma` and gamma comes from c2.
 The full logic, with every formula, is in [docs/rubric.md](docs/rubric.md). Change any weight in
 `config/weights.local.json`, or live with the sliders in the HTML report.
 

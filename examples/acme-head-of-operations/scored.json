@@ -91,12 +91,38 @@
     },
     "c2_buzz_max": 0.25,
     "c2_gamma_base": 0.5,
-    "c12_default_expected_years": 3
+    "c12_default_expected_years": 3,
+    "c12_others_share": 0.4,
+    "c14": {
+      "lookback_years": 10,
+      "seniority_full_years": 3,
+      "seniority_full_points": 5,
+      "seniority_none_points": -5,
+      "gap_months": 6,
+      "gap_points": -3,
+      "gap_cap": -9,
+      "short_role_months": 12,
+      "short_role_points": -3,
+      "contract_mismatch_points": -3,
+      "contract_match_points": 2,
+      "echo_words": 6,
+      "echo_free": 3,
+      "echo_points": -1,
+      "echo_cap": -5,
+      "sector_current_points": 2,
+      "sector_1_3y_points": -2,
+      "sector_over_3y_points": -4,
+      "certs_held_points": 2,
+      "certs_missing_points": -2,
+      "conflict_points": -3,
+      "cap_min": -15,
+      "cap_max": 10
+    }
   },
   "weights_file": "config/weights.json",
   "weights_override_file": null,
   "verification": {
-    "quotes_total": 73,
+    "quotes_total": 75,
     "quotes_unverified": 0,
     "unverified": [],
     "sources_rejected": []
@@ -219,6 +245,15 @@
       "not_applicable": false,
       "confidence": "medium",
       "working": "Globex Consulting (top_in_industry true, related_to_jd true) +6 = 6, capped at 10 = +6"
+    },
+    "c14": {
+      "score": null,
+      "weight": 0,
+      "bonus": true,
+      "points": 7,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "seniority +5, gaps 0, short_recent 0, contract 0, echo 0, sector +2, certs 0, conflict 0 = +7"
     }
   },
   "core": 67.48,
@@ -246,13 +281,115 @@
         "label": "Consulting work related to the JD: Globex Consulting, Senior Consultant",
         "points": 3,
         "group": "c13"
+      },
+      {
+        "label": "Time at the target seniority",
+        "points": 5,
+        "group": "c14"
+      },
+      {
+        "label": "Sector recency",
+        "points": 2,
+        "group": "c14"
       }
     ],
     "c11": 6.25,
     "c13": 6,
     "c13_uncapped": 6,
-    "total": 12.25
+    "total": 19.25,
+    "c14": 7
   },
-  "total": 73.41,
-  "band": "Competitive"
+  "c14": {
+    "items": [
+      {
+        "key": "seniority",
+        "label": "Time at the target seniority",
+        "points": 5,
+        "working": "Example Payments Ltd 2021-03 to present 68 months = 68 months (at least 3 years, threshold 36) = +5",
+        "evidence_paths": [
+          "c12.roles[0].quote"
+        ]
+      },
+      {
+        "key": "gaps",
+        "label": "Employment gaps",
+        "points": 0,
+        "working": "no gap over 6 months between dated roles in the last 10 years = 0",
+        "evidence_paths": []
+      },
+      {
+        "key": "short_recent",
+        "label": "Short recent roles",
+        "points": 0,
+        "working": "two most recent roles: Example Payments Ltd 2021-03 to present 68 months; Northwind Bank 2017-01 to 2021-02 50 months; 0 under 12 months x -3 = 0",
+        "evidence_paths": [
+          "c12.roles[0].quote",
+          "c12.roles[1].quote"
+        ]
+      },
+      {
+        "key": "contract",
+        "label": "Contract history",
+        "points": 0,
+        "working": "JD basis unknown, 0 contract signal(s): no effect = 0",
+        "evidence_paths": [
+          "c14.jd_basis_evidence"
+        ]
+      },
+      {
+        "key": "echo",
+        "label": "Phrases copied from the JD",
+        "points": 0,
+        "working": "0 distinct run(s) of 6 or more words shared with the JD; first 3 free; max(-5, -1 x max(0, 0 - 3)) = 0",
+        "evidence_paths": []
+      },
+      {
+        "key": "sector",
+        "label": "Sector recency",
+        "points": 2,
+        "working": "current role (Example Payments Ltd 2021-03 to present) is in the JD sector = +2",
+        "evidence_paths": [
+          "c12.roles[0].quote"
+        ]
+      },
+      {
+        "key": "certs",
+        "label": "Conventional certifications",
+        "points": 0,
+        "working": "conventional certifications do not apply to this role family = 0",
+        "evidence_paths": [
+          "c14.conventional_certs.evidence"
+        ]
+      },
+      {
+        "key": "conflict",
+        "label": "Conflict of interest",
+        "points": 0,
+        "working": "no conflict of interest found = 0",
+        "evidence_paths": [
+          "c14.conflict_of_interest.evidence"
+        ]
+      }
+    ],
+    "total": 7,
+    "raw_total": 7,
+    "cap_min": -15,
+    "cap_max": 10,
+    "working": "seniority +5, gaps 0, short_recent 0, contract 0, echo 0, sector +2, certs 0, conflict 0 = +7",
+    "flags": {
+      "ats_dates": [],
+      "education_blank": false,
+      "form_checklist": [
+        "Salary expectation: state a figure inside the advertised band",
+        "Notice period: state it exactly as your contract says",
+        "Right to work: answer the question for the country of the role",
+        "Current job title: enter the title on your CV, not an informal one",
+        "Yes or no experience questions: answer from the JD requirements, since the CV cannot"
+      ]
+    },
+    "echo_phrases": [],
+    "notes": []
+  },
+  "total": 80.41,
+  "band": "Strong"
 }

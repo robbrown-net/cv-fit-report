@@ -45,7 +45,7 @@ Write the answers to `candidate.json`. Never infer referrals or prior employment
 
 ### 3. Research (web search required)
 
-Run these searches before judging c1, c2, c12 and c13. Record every page you rely on in
+Run these searches before judging c1, c2, c12, c13 and c14. Record every page you rely on in
 `assessment.sources` (id, url, title, accessed date, and the exact supporting sentence):
 
 | For | Search for |
@@ -59,6 +59,8 @@ Run these searches before judging c1, c2, c12 and c13. Record every page you rel
 | c2 hiring buzz | current news on how the employer is hiring: freezes, lay-offs, post-merger integration, a preference for industry insiders (raise strictness) or rapid hiring, new-market launches, appetite for outside talent (lower it). Adjustment -0.25 to +0.25, 0 with no evidence |
 | c12 expected tenure | the JD's stated expected tenure; otherwise typical tenure for the level at this employer or sector; otherwise default 3 years. Record which applied in `expected_years.from` |
 | c13 consulting | for each consulting-firm role on the CV: rankings of the top 10 consultancies serving the hiring company's industry (Consultancy.uk, Vault, Gartner, analyst reports), and whether the evidenced projects relate to this JD |
+| c14 conventional certifications | the certifications that screeners conventionally expect for this role family and country, even when the JD does not list them (for example PRINCE2, MSP or MoP for UK programme director roles). Related methods are not equivalents: DSDM is not PRINCE2 |
+| c14 conflict of interest | whether the candidate's current employer has a relationship with the hiring company that may need an independence or conflict check, for example being its external auditor |
 | c9 | the institution's status, if it is not obviously Oxbridge, Ivy League or Russell Group |
 
 Prefer primary and dated sources. If you cannot find evidence, write that down, mark the item
@@ -80,6 +82,8 @@ Specific care points:
   correction.
 - **c8:** classify **every** bullet, not a sample, and tag each with its `section`: `achievement`, `experience` or `other`. Bullets that list competencies, skills, education or certifications are `other`: they are shown but not scored.
 - **c12:** list every dated role, one entry per employer engagement, with `current: true` on the present role (it is excluded from the median unless it is the only one). Skip aggregated lines such as "Earlier Career: A, B, C, 2007 to 2018".
+- **c12 tags for c14:** on every `c12.roles` entry set `at_target_seniority` (the title is at the JD's level, for example "Director" or "Head of" for a director role) and `in_jd_sector` (the role sits in the JD's sector).
+- **c14:** fill `jd_basis` (`permanent`, `contract` or `unknown`) with a JD quote, list `contract_signals` with CV quotes, record `conventional_certs` (`applies`, `expected`, `held`, `not_equivalent`, with a cited source) and `conflict_of_interest` (`present`, `description`, with a cited source). Do not compute points: the script derives gaps, short roles, JD echo, seniority and sector from the dates, tags and text.
 - **c13:** set `top_in_industry` and `related_to_jd` per consulting role, each with evidence. `related_to_jd` only counts for a top-10 firm.
 - **c2:** place the employer in a quadrant, cite growth and share, and record the hiring-buzz adjustment with its sources. Do not assess the candidate's risk appetite: that is no longer scored.
 - **c5:** describe signals, not verdicts. Never call a CV "AI-written".
@@ -100,7 +104,7 @@ remove the claim. Do not hand over a report with unverified quotes unless you ex
 node bin/report.js reports/<folder>
 ```
 
-Give the candidate the paths to `report.html` and `report.pdf`, the total and band (from
+Tell the candidate about the flags first: the banner near the top of the report lists date ranges an applicant tracking system may not read (with the suggested fix), a blank education field, and the application form questions that often reject within a day. Then give the candidate the paths to `report.html` and `report.pdf`, the total and band (from
 `scored.json`), the two biggest levers they could pull, and a reminder that the weights can be
 changed with the sliders in the HTML report or in `config/weights.local.json`.
 

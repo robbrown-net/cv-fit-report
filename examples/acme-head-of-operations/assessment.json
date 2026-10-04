@@ -827,6 +827,8 @@
         "start": "2021-03",
         "end": null,
         "current": true,
+        "at_target_seniority": true,
+        "in_jd_sector": true,
         "quote": {
           "text": "Example Payments Ltd | Head of Operations | March 2021 - Present"
         }
@@ -837,6 +839,8 @@
         "start": "2017-01",
         "end": "2021-02",
         "current": false,
+        "at_target_seniority": false,
+        "in_jd_sector": true,
         "quote": {
           "text": "Northwind Bank | Senior Operations Manager | January 2017 - February 2021"
         }
@@ -847,6 +851,8 @@
         "start": "2015-05",
         "end": "2016-12",
         "current": false,
+        "at_target_seniority": false,
+        "in_jd_sector": false,
         "quote": {
           "text": "Globex Consulting | Senior Consultant | May 2015 - December 2016"
         }
@@ -857,6 +863,8 @@
         "start": "2013-03",
         "end": "2015-04",
         "current": false,
+        "at_target_seniority": false,
+        "in_jd_sector": false,
         "quote": {
           "text": "Contoso Retail | Operations Manager | March 2013 - April 2015"
         }
@@ -867,6 +875,8 @@
         "start": "2010-09",
         "end": "2013-02",
         "current": false,
+        "at_target_seniority": false,
+        "in_jd_sector": false,
         "quote": {
           "text": "Fabrikam Logistics | Operations Analyst, then Shift Supervisor | September 2010 - February 2013"
         }
@@ -912,5 +922,48 @@
         }
       }
     ]
+  },
+  "c14": {
+    "jd_basis": "unknown",
+    "jd_basis_evidence": {
+      "cv_quotes": [],
+      "jd_quotes": [],
+      "source_ids": [],
+      "reasoning": "The job description does not say whether the role is permanent or a fixed-term contract, and the CV shows no contract engagements, so this item scores 0.",
+      "confidence": "medium"
+    },
+    "contract_signals": [],
+    "conventional_certs": {
+      "applies": false,
+      "expected": [],
+      "held": [],
+      "not_equivalent": [],
+      "evidence": {
+        "cv_quotes": [],
+        "jd_quotes": [
+          {
+            "text": "PMP certification (required)"
+          }
+        ],
+        "source_ids": [],
+        "reasoning": "The only certification a payments operations head is conventionally expected to hold is the PMP that the job description already requires. It is assessed in c10, so no further conventional certification applies.",
+        "confidence": "medium"
+      }
+    },
+    "conflict_of_interest": {
+      "present": false,
+      "description": "",
+      "evidence": {
+        "cv_quotes": [
+          {
+            "text": "Example Payments Ltd | Head of Operations | March 2021 - Present"
+          }
+        ],
+        "jd_quotes": [],
+        "source_ids": [],
+        "reasoning": "The current employer is a payments company and no relationship with the hiring company that would need an independence check was found.",
+        "confidence": "medium"
+      }
+    }
   }
 }

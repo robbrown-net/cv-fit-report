@@ -105,6 +105,8 @@ report.pdf        written by bin/report.js
     "expected_years": { "value": 3, "from": "jd|research|default", "evidence": Evidence },
     "roles": [ { "employer": "...", "title": "...", "start": "2019-06", "end": "2020-05",
                  "current": false, "employer_count": 1,   // number of NAMED employers in the entry
+                 "at_target_seniority": false,            // c14: title at the JD's level
+                 "in_jd_sector": false,                   // c14: role sits in the JD's sector
                  "has_others": false,                     // true when the entry ends "& others"
                  "quote": Quote } ],
     "evidence": Evidence
@@ -113,6 +115,13 @@ report.pdf        written by bin/report.js
     "firms_considered": ["..."],
     "roles": [ { "employer": "PwC", "title": "...", "top_in_industry": true, "related_to_jd": false,
                  "quote": Quote, "evidence": Evidence } ]
+  },
+  "c14": {
+    "jd_basis": "permanent|contract|unknown", "jd_basis_evidence": Evidence,
+    "contract_signals": [ { "quote": Quote, "note": "..." } ],
+    "conventional_certs": { "applies": true, "expected": ["PRINCE2", "MSP"], "held": [],
+                            "not_equivalent": ["DSDM Atern"], "evidence": Evidence },
+    "conflict_of_interest": { "present": false, "description": "", "evidence": Evidence }
   },
   "summary": {
     "strengths": ["..."],               // each strength names the criterion it comes from, e.g. "(c1)"
@@ -141,7 +150,10 @@ The agent never writes a score field. `bin/score.js` computes all of them.
   "core": 58.2,
   "strictness": { "quadrant": "star", "base": 0.75, "buzz": 0.1, "strictness": 0.85, "gamma": 1.35 },
   "adjusted": 48.1,
-  "bonus": { "items": [ { "label": "...", "points": 5, "group": "c11|c13" } ], "total": 8 },
+  "bonus": { "items": [ { "label": "...", "points": 5, "group": "c11|c13|c14" } ], "c11": 5, "c13": 3, "c14": 0, "total": 8 },
+  "c14": { "items": [ { "key": "gaps", "label": "...", "points": -3, "working": "...", "evidence_paths": [] } ],
+           "total": -3, "flags": { "ats_dates": [ { "line": 12, "text": "...", "matches": [ { "found": "Apr 2022 to Apr 2023", "fix": "Apr 2022 - Apr 2023" } ] } ],
+                                  "education_blank": false, "form_checklist": ["..."] }, "echo_phrases": ["..."] },
   "total": 56.1, "band": "Strong | Competitive | Stretch | Long shot"
 }
 ```

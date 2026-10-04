@@ -5,7 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { scoreAll, combine, computeBonus, band } = require('../lib/scoring');
+const { scoreAll, combine, computeBonus, band, computeC14, echoPhrases, atsDates } = require('../lib/scoring');
 const { verify, normalise } = require('../lib/verify');
 const { loadWeights, deepMerge } = require('../lib/weights');
 
@@ -358,6 +358,196 @@ test('weights deep merge', () => {
   assert.equal(m.core.c12_tenure, 5.5555556);
   assert.equal(m._comment, WD._comment); // override _comment keys ignored
   assert.ok(W.core);
+});
+
+
+// ---- c14 screening signals ----
+// assessed_on 2026-10-04, so the cap month is 2026-10 and the 10-year window starts 2016-10.
+const q = { text: 'x' };
+function a14(roles, c14) {
+  const a = base();
+  a.meta.assessed_on = '2026-10-04';
+  a.c9.institution = 'University of Example';
+  a.c12.roles = roles;
+  if (c14 !== null) a.c14 = Object.assign({ jd_basis: 'unknown', contract_signals: [], conventional_certs: { applies: false }, conflict_of_interest: { present: false } }, c14 || {});
+  return a;
+}
+const item = (r, key) => r.items.find((i) => i.key === key);
+const R = (employer, start, end, extra) => Object.assign({ employer, start, end, quote: q }, end === null ? { current: true } : {}, extra || {});
+
+test('c14 worked example: every item computed by hand', () => {
+  const a = a14([
+    R('Now', '2024-02', null, { at_target_seniority: true, in_jd_sector: true }), // 2024-02..2026-10 = 33 months
+    R('B', '2021-01', '2023-06', { at_target_seniority: true }),                   // 30 months
+    R('C', '2015-01', '2020-12')],                                                  // clipped to 2016-10..2020-12 = 51
+  { jd_basis: 'permanent', contract_signals: [{ quote: q }], conventional_certs: { applies: true, expected: ['PRINCE2'], held: [] },
+    conflict_of_interest: { present: true, description: 'auditor' } });
+  const r = computeC14(a, null, null, WD);
+  assert.equal(item(r, 'seniority').points, 5);      // 33 + 30 = 63 months >= 36
+  assert.match(item(r, 'seniority').working, /63 months/);
+  assert.equal(item(r, 'gaps').points, -3);          // Jul 2023 to Jan 2024 = 7 months, one gap
+  assert.equal(item(r, 'short_recent').points, 0);   // 33 and 30 months
+  assert.equal(item(r, 'contract').points, -3);
+  assert.equal(item(r, 'echo').points, 0);           // skipped without text
+  assert.ok(r.notes.some((n) => /echo skipped/.test(n)));
+  assert.equal(item(r, 'sector').points, 2);
+  assert.equal(item(r, 'certs').points, -2);
+  assert.equal(item(r, 'conflict').points, -3);
+  assert.equal(r.total, -4);                         // 5 - 3 + 0 - 3 + 0 + 2 - 2 - 3
+  r.items.forEach((i) => assert.ok(i.label && i.working));
+});
+
+test('c14 seniority tiers and window clipping', () => {
+  const sen = (roles) => item(computeC14(a14(roles, {}), null, null, WD), 'seniority');
+  assert.equal(sen([R('A', '2010-01', '2012-12', { at_target_seniority: true })]).points, -5); // outside the window
+  assert.equal(sen([R('A', '2020-01', '2020-12')]).points, -5);                                // nothing tagged
+  const part = sen([R('A', '2016-01', '2017-09', { at_target_seniority: true })]);              // clipped to 2016-10..2017-09 = 12
+  assert.equal(part.points, 0); assert.match(part.working, /12 months/);
+  assert.equal(sen([R('A', '2020-01', '2022-12', { at_target_seniority: true })]).points, 5);   // exactly 36 months
+  assert.equal(sen([R('A', '2020-01', '2022-11', { at_target_seniority: true })]).points, 0);   // 35 months
+});
+
+test('c14 employment gaps: exclusive months, merged overlaps, cap at -9', () => {
+  const gaps = (roles) => item(computeC14(a14(roles, {}), null, null, WD), 'gaps').points;
+  assert.equal(gaps([R('A', '2020-01', '2020-05'), R('B', '2020-12', '2021-06')]), 0);  // Jun to Nov = 6 months, not over 6
+  assert.equal(gaps([R('A', '2020-01', '2020-05'), R('B', '2021-01', '2021-06')]), -3); // Jun to Dec = 7 months
+  assert.equal(gaps([R('A', '2020-01', '2021-06'), R('B', '2020-06', '2020-09'), R('C', '2021-07', '2021-12')]), 0); // overlap merged
+  assert.equal(gaps([R('A', '2017-01', '2017-03'), R('B', '2018-01', '2018-03'), R('C', '2019-01', '2019-03')]), -6); // two gaps of 9
+  assert.equal(gaps([R('A', '2017-01', '2017-03'), R('B', '2018-01', '2018-03'), R('C', '2019-01', '2019-03'), R('D', '2020-01', '2020-03'), R('E', '2021-01', '2021-03')]), -9); // four gaps, capped
+  assert.equal(gaps([R('A', '2010-01', '2010-03'), R('B', '2012-01', '2012-03')]), 0);  // gap entirely before the window
+});
+
+test('c14 short recent roles: two most recent by start, current counts to assessed_on', () => {
+  const sh = (roles) => item(computeC14(a14(roles, {}), null, null, WD), 'short_recent').points;
+  assert.equal(sh([R('Now', '2026-02', null), R('P', '2025-01', '2025-08'), R('Old', '2019-01', '2019-03')]), -6); // 9 and 8 months
+  assert.equal(sh([R('Now', '2025-12', null), R('P', '2025-01', '2025-12'), R('Old', '2019-01', '2019-03')]), -3); // current 11 months is short, 12 months is not
+  assert.equal(sh([R('Now', '2025-11', null), R('P', '2025-01', '2025-12')]), 0);
+  assert.equal(sh([R('Now', '2023-01', null), R('P', '2020-01', '2020-04')]), -3);                              // current 46 months, previous 4
+});
+
+test('c14 contract history: mismatch, match, none', () => {
+  const k = (basis, n) => item(computeC14(a14([], { jd_basis: basis, contract_signals: Array(n).fill({ quote: q }) }), null, null, WD), 'contract').points;
+  assert.equal(k('permanent', 1), -3);
+  assert.equal(k('permanent', 0), 0);
+  assert.equal(k('contract', 2), 2);
+  assert.equal(k('contract', 0), 0);
+  assert.equal(k('unknown', 3), 0);
+});
+
+test('c14 sector recency boundaries', () => {
+  const sec = (roles) => item(computeC14(a14(roles, {}), null, null, WD), 'sector').points;
+  assert.equal(sec([R('Now', '2024-01', null, { in_jd_sector: true })]), 2);
+  assert.equal(sec([R('Now', '2024-01', null), R('P', '2020-01', '2026-05', { in_jd_sector: true })]), 0);   // 5 months ago
+  assert.equal(sec([R('P', '2020-01', '2025-11', { in_jd_sector: true })]), 0);                              // 11 months
+  assert.equal(sec([R('P', '2020-01', '2025-10', { in_jd_sector: true })]), -2);                             // 12 months
+  assert.equal(sec([R('P', '2020-01', '2023-10', { in_jd_sector: true })]), -2);                             // 36 months
+  assert.equal(sec([R('P', '2020-01', '2023-09', { in_jd_sector: true })]), -4);                             // 37 months
+  assert.equal(sec([R('P', '2020-01', '2023-09')]), -4);                                                     // never
+});
+
+test('c14 conventional certifications and conflict of interest', () => {
+  const run = (c14) => computeC14(a14([], c14), null, null, WD);
+  assert.equal(item(run({ conventional_certs: { applies: true, expected: ['PRINCE2'], held: ['PRINCE2'] } }), 'certs').points, 2);
+  assert.equal(item(run({ conventional_certs: { applies: true, expected: ['PRINCE2'], held: [], not_equivalent: ['DSDM'] } }), 'certs').points, -2);
+  assert.equal(item(run({ conventional_certs: { applies: false, held: [] } }), 'certs').points, 0);
+  assert.equal(item(run({ conflict_of_interest: { present: true } }), 'conflict').points, -3);
+  assert.equal(item(run({ conflict_of_interest: { present: false } }), 'conflict').points, 0);
+});
+
+test('c14 JD echo: maximal runs, each reported once, hyphenated line breaks joined', () => {
+  const jd = 'We need a leader who can deliver measurable improvements in cost speed and quality across the payments division. ' +
+    'You will own end to end operations for merchant onboarding settlement disputes and customer support.';
+  const cv = 'Delivered measurable improvements in cost, speed and quality across the payments division. ' +
+    'Own end-to-end operations for merchant onboarding, settlement, disputes and customer support daily.';
+  const ph = echoPhrases(cv, jd, 6);
+  assert.deepEqual(ph, [
+    'own end to end operations for merchant onboarding settlement disputes and customer support', // 13 words
+    'measurable improvements in cost speed and quality across the payments division']);           // 11 words
+  // an 8-word run that also appears as a 6-word run elsewhere is reported once, as the longer phrase
+  const e8 = 'alpha beta gamma delta epsilon zeta eta theta';
+  assert.deepEqual(echoPhrases(e8, e8 + '. unrelated filler words. gamma delta epsilon zeta eta theta', 6), [e8]);
+  // five matching words are below the minimum
+  assert.deepEqual(echoPhrases('one two three four five', 'one two three four five', 6), []);
+  // hyphenated line break: cross-\nfunctional -> crossfunctional
+  assert.deepEqual(echoPhrases('led crossfunctional teams across many regions daily', 'led cross-\nfunctional teams across many regions daily', 6), ['led crossfunctional teams across many regions daily']);
+  // points: first 3 free, then -1 each, capped at -5
+  const mk = (n) => { const c = [], j = []; for (let i = 0; i < n; i++) { const p = ['w' + i + 'a', 'w' + i + 'b', 'w' + i + 'c', 'w' + i + 'd', 'w' + i + 'e', 'w' + i + 'f'].join(' '); c.push(p, 'cvfill' + i); j.push(p, 'jdfill' + i); } return [c.join(' '), j.join(' ')]; };
+  const pts = (n) => { const [c, j] = mk(n); return item(computeC14(a14([], {}), c, j, WD), 'echo').points; };
+  assert.equal(pts(3), 0);
+  assert.equal(pts(4), -1);
+  assert.equal(pts(7), -4);
+  assert.equal(pts(9), -5);   // -6 capped at -5
+  assert.equal(pts(12), -5);
+  const [c, j] = mk(5);
+  assert.equal(computeC14(a14([], {}), c, j, WD).echo_phrases.length, 5);
+});
+
+test('c14 ats_dates flag: positives and negatives', () => {
+  const hit = (line) => atsDates(line).length === 1;
+  ['Apr 2022 to Apr 2023', 'Jul 2026 to present', '1994 to 2017', 'Mar 2026 – Present', 'Jan 2010 — Dec 2012',
+    'Acme | Director | September 2010 – February 2013', 'Earlier career, 1994 TO 2015'].forEach((l) => assert.ok(hit(l), l));
+  ['Apr 2022 - Apr 2023', 'March 2021 - Present', '2019-2021', 'up to 2000 people', 'From 1500 to 2000 merchants', 'Open 9 to 5 daily', 'Call 0207 946 0000'].forEach((l) => assert.ok(!hit(l), l));
+  const r = atsDates('Intro\nExample Ltd | Head | Apr 2022 to Apr 2023\nOther | Lead | Mar 2026 – Present');
+  assert.equal(r.length, 2);
+  assert.equal(r[0].line, 2);
+  assert.equal(r[0].matches[0].fix, 'Apr 2022 - Apr 2023');
+  assert.equal(r[1].matches[0].fix, 'Mar 2026 - Present');
+  const flags = computeC14(a14([], {}), 'Head | Apr 2022 to Apr 2023', 'jd', WD).flags;
+  assert.equal(flags.ats_dates.length, 1);
+  assert.equal(flags.form_checklist.length, 5);
+});
+
+test('c14 education_blank flag follows c9.institution', () => {
+  const a = a14([], {});
+  assert.equal(computeC14(a, '', '', WD).flags.education_blank, false);
+  a.c9.institution = null;
+  assert.equal(computeC14(a, '', '', WD).flags.education_blank, true);
+  a.c9.institution = '  ';
+  assert.equal(computeC14(a, '', '', WD).flags.education_blank, true);
+});
+
+test('c14 caps: total clamped to cap_min and cap_max, uncapped sum kept', () => {
+  const hi = a14([R('Now', '2023-07', null, { at_target_seniority: true, in_jd_sector: true }), R('B', '2021-01', '2023-06', { at_target_seniority: true })],
+    { jd_basis: 'contract', contract_signals: [{ quote: q }], conventional_certs: { applies: true, held: ['PMP'] } });
+  const rh = computeC14(hi, null, null, WD); // 5 + 0 + 0 + 2 + 0 + 2 + 2 + 0 = 11
+  assert.equal(rh.raw_total, 11); assert.equal(rh.total, 10);
+  const lo = a14([R('Now', '2026-05', null), R('B', '2025-01', '2025-03'), R('C', '2023-01', '2023-03'), R('D', '2021-01', '2021-03'), R('E', '2019-01', '2019-03')],
+    { jd_basis: 'permanent', contract_signals: [{ quote: q }], conventional_certs: { applies: true, held: [] }, conflict_of_interest: { present: true } });
+  const rl = computeC14(lo, null, null, WD); // -5 -9 -6 -3 +0 -4 -2 -3 = -32
+  assert.equal(rl.raw_total, -32); assert.equal(rl.total, -15);
+  const custom = JSON.parse(JSON.stringify(WD)); custom.c14.cap_min = -20; custom.c14.gap_cap = -3;
+  assert.equal(computeC14(lo, null, null, custom).total, -20); // gaps now -3: -5 -3 -6 -3 +0 -4 -2 -3 = -26, clamped to -20
+});
+
+test('c14 legacy file without c14: script items computed, no AI items, total includes c14', () => {
+  const a = a14([R('Now', '2026-02', null), R('P', '2025-01', '2025-08')], null);
+  assert.equal(a.c14, undefined);
+  const r = scoreAll(a, {}, WD, 'cv text', 'jd text');
+  assert.deepEqual(r.c14.items.map((i) => i.key), ['gaps', 'short_recent', 'echo']);
+  assert.equal(r.c14.total, -6);
+  assert.equal(r.bonus.c14, -6);
+  assert.equal(r.bonus.total, -6);
+  assert.ok(r.bonus.items.some((i) => i.group === 'c14' && i.points === -6));
+  approx(r.total, Math.min(100, Math.max(0, r.adjusted - 6)));
+  assert.ok(r.c14.notes.some((n) => /absent/.test(n)));
+  assert.equal(r.criteria.c14.points, -6);
+});
+
+test('c14 scoreAll: total = clamp(adjusted + c11 + c13 + c14, 0, 100)', () => {
+  const a = a14([R('Now', '2023-07', null, { at_target_seniority: true, in_jd_sector: true }), R('B', '2021-01', '2023-06', { at_target_seniority: true })], {});
+  a.c13.roles = [{ top_in_industry: true, related_to_jd: false }];
+  const cand = { referrals: [{ type: 'hiring_manager_trusted_influencer' }] };
+  const r = scoreAll(a, cand, WD, 'a', 'b');
+  assert.equal(r.bonus.c11, 10); assert.equal(r.bonus.c13, 3);
+  assert.equal(r.bonus.c14, 7); // seniority +5, sector +2, nothing else
+  assert.equal(r.bonus.total, 20);
+  approx(r.total, Math.min(100, r.adjusted + 20));
+});
+
+test('c14 scoreAll without texts skips echo and ats_dates with a note', () => {
+  const r = scoreAll(a14([], {}), {}, WD);
+  assert.deepEqual(r.c14.flags.ats_dates, []);
+  assert.ok(r.c14.notes.some((n) => /echo skipped/.test(n)));
 });
 
 // ---- CLI ----

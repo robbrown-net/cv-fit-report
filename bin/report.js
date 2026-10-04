@@ -24,6 +24,7 @@ const NAMES = {
   c10: "Qualifications against the JD",
   c12: "Tenure against expected longevity",
   c13: "Consulting experience (bonus)",
+  c14: "Screening signals (plus and minus points)",
 };
 const DEFAULT_KEYS = {
   c1: "c1_current_role", c3: "c3_tools_years", c4: "c4_ai_experience",
@@ -341,6 +342,54 @@ function c13Body(ctx, a) {
   return h;
 }
 
+function getPath(o, p) {
+  return String(p).replace(/\[(\d+)\]/g, ".$1").split(".").reduce((x, k) => (x == null ? undefined : x[k]), o);
+}
+function c14Body(ctx, a) {
+  const c14 = ctx.scored.c14;
+  if (!c14) return "<p>This report was scored before screening signals existed. Run <code>node bin/score.js</code> again to add them.</p>";
+  const sg = (n) => (n >= 0 ? "+" : "") + trim(n);
+  let h = `<p class="small">Automated screeners reject many CVs before a person reads them. Each item below is computed by the script from the dates and text, or from the tags the AI recorded. The total is clamped between ${esc(sg(c14.cap_min))} and ${esc(sg(c14.cap_max))}.</p>`;
+  const seen = new Set();
+  const ev = (it) => arr(it.evidence_paths).filter((p) => !seen.has(it.key + p) && seen.add(it.key + p)).map((p) => {
+    const v = getPath(a, p);
+    if (!v) return "";
+    if (typeof v === "object" && v.text !== undefined) return quoteBlock(ctx, v, "CV", p);
+    if (typeof v === "object" && v.text === undefined) return evidence(ctx, v, p);
+    return "";
+  }).join("");
+  const rows = arr(c14.items).map((it) => [
+    `<b>${esc(it.label)}</b>`,
+    `<span class="${it.points > 0 ? "pos" : it.points < 0 ? "neg" : ""}">${esc(sg(it.points))}</span>`,
+    `<span class="small">${esc(it.working)}</span>`,
+  ]);
+  h += table(["Item", "Points", "Working"], rows, [1]);
+  if (c14.total !== c14.raw_total) h += `<p class="small">Items sum to ${esc(sg(c14.raw_total))}, clamped to <b>${esc(sg(c14.total))}</b>.</p>`;
+  arr(c14.notes).forEach((n) => (h += `<p class="small muted">Note: ${esc(n)}.</p>`));
+  h += h4("Phrases copied from the JD");
+  const ph = arr(c14.echo_phrases);
+  h += ph.length
+    ? `<p class="small">Runs of ${esc(trim(Number(((ctx.scored.weights_used || {}).c14 || {}).echo_words) || 6))} or more consecutive words found in both the CV and the JD (case and punctuation ignored). Screeners may read copied wording as keyword stuffing.</p><ul class="echo">${ph.map((x) => `<li><mark>${esc(x)}</mark> <span class="small muted">(${x.split(" ").length} words)</span></li>`).join("")}</ul>`
+    : "<p>No copied phrases found, or the texts were not supplied.</p>";
+  h += arr(c14.items).map((it) => { const inner = ev(it); return inner ? `<details class="inline"><summary>Evidence: ${esc(it.label)}</summary>${inner}</details>` : ""; }).join("");
+  return h;
+}
+
+// ---------- flags banner
+function flagsHtml(ctx) {
+  const c14 = ctx.scored.c14;
+  if (!c14 || !c14.flags) return "";
+  const f = c14.flags;
+  let h = "";
+  if (arr(f.ats_dates).length) {
+    h += `<div class="flag"><h3>Date ranges a screening system may not read</h3><p class="small">Many applicant tracking systems split a date range only on a hyphen. These lines use &ldquo;to&rdquo; or a typographic dash, so the role may be read as lasting zero months. Suggested fix on each line.</p><ul>` +
+      arr(f.ats_dates).map((x) => `<li><span class="ln">line ${esc(x.line)}</span> ${esc(x.text)}<br>` + arr(x.matches).map((m) => `<span class="fix">${esc(m.found)} &rarr; ${esc(m.fix)}</span>`).join(" ") + `</li>`).join("") + `</ul></div>`;
+  }
+  if (f.education_blank) h += `<div class="flag"><h3>Education shows no institution</h3><p class="small">No institution was found for the top university check (c9). Some systems reject a CV with a blank education field, so add the institution, degree and year if you have them.</p></div>`;
+  h += `<div class="flag"><h3>Application form questions that often reject within a day</h3><p class="small">The CV cannot show these. Check each answer before you submit.</p><ul>${arr(f.form_checklist).map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+  return `<section id="flags" class="flags" aria-label="Flags to check before applying"><h2>Check before you apply</h2>${h}</section>`;
+}
+
 // ---------- card
 function card(ctx, id, detail, w) {
   const sc = ctx.scored.criteria[id] || {};
@@ -384,19 +433,19 @@ function buildHtml(d) {
   const sumWS = live.reduce((s, x) => s + (Number(x.sc.weight) || 0) * x.sc.score, 0);
   const na = IDS.filter((id) => (scored.criteria[id] || {}).not_applicable);
   const bt = scored.bonus || {};
-  const bc11 = Number(bt.c11) || 0, bc13 = Number(bt.c13) || 0;
+  const bc11 = Number(bt.c11) || 0, bc13 = Number(bt.c13) || 0, bc14 = Number(bt.c14) || 0;
   const sg = (n) => (n >= 0 ? "+" : "") + trim(n);
   const formula = `<div class="formula">
     <p>core = &Sigma;(weight &times; score) / &Sigma;(weight) = ${esc(num(sumWS, 1))} / ${esc(num(sumW, 2))} = <span class="eq">${esc(num(core))}</span></p>
     <p>adjusted = 100 &times; (core / 100) ^ gamma = 100 &times; (${esc(num(core))} / 100) ^ ${esc(trim(Number(st.gamma)))} = <span class="eq">${esc(num(adjusted))}</span> <span class="muted">(${esc(String(st.quadrant || "").replace("_", " "))}, strictness ${esc(trim(Number(st.strictness)))}, c2)</span></p>
-    <p>bonus = c11 ${esc(sg(bc11))} + c13 ${esc(sg(bc13))} = ${esc(sg(bonusTotal))}</p>
+    <p>bonus = c11 ${esc(sg(bc11))} + c13 ${esc(sg(bc13))} + c14 ${esc(sg(bc14))} = ${esc(sg(bonusTotal))}</p>
     <p>total = clamp(adjusted + bonus, 0, 100) = clamp(${esc(num(adjusted))} ${bonusTotal < 0 ? "&minus;" : "+"} ${esc(trim(Math.abs(bonusTotal)))}, 0, 100) = <span class="eq">${esc(num(total))}</span></p>
     ${na.length ? `<p class="muted">Not applicable, weight dropped: ${na.join(", ")}</p>` : ""}</div>
     <details class="inline"><summary>Show the arithmetic for each criterion</summary>${table(["Criterion", "Weight", "Score", "Weight x score"],
       IDS.map((id) => { const s = scored.criteria[id] || {}; const n = s.not_applicable; return [`${id} ${esc(NAMES[id])}`, n ? "dropped" : esc(trim(Number(s.weight) || 0)), n ? "n/a" : esc(num(s.score)), n ? "" : esc(num((Number(s.weight) || 0) * s.score, 1))]; }), [1, 2, 3])}
     <p class="small muted">c1 itself is the weighted mean of its six sub-scores, see its card. c2 sets gamma and carries no weight of its own.</p></details>`;
 
-  const bonusItems = arr((scored.bonus || {}).items).filter((i) => i.group !== "c13");
+  const bonusItems = arr((scored.bonus || {}).items).filter((i) => i.group === "c11" || !i.group);
   const bonusCard = `<details class="card" id="card-c11"><summary><span class="cid">c11</span><span class="ctitle">Candidate's own access (bonus)</span><span class="cscore">${bc11 >= 0 ? "+" : ""}${esc(trim(bc11))}</span>
     <span class="cmeta"><span class="chev">&#9656;</span><span>self-reported, never inferred by the AI. Added after the strictness adjustment.</span></span></summary><div class="cbody">` +
     (bonusItems.length ? table(["Item", "Points"], bonusItems.map((i) => [esc(i.label), esc((i.points >= 0 ? "+" : "") + trim(i.points))]), [1]) : "<p>No bonus items were reported.</p>") +
@@ -408,7 +457,11 @@ function buildHtml(d) {
     <span class="cmeta"><span class="chev">&#9656;</span><span>bonus, capped at +${esc(trim(Number(((scored.weights_used || {}).bonus || {}).c13_cap) || 10))}</span>${confBadge(c13sc.confidence)}</span>
     <span class="working">${esc(c13sc.working || "")}</span></summary><div class="cbody">${c13Body(ctx, a)}</div></details>`;
 
-  const cards = ORDER.map((id) => card(ctx, id, { c1: c1Detail, c2: c2Detail, c3: c3Detail, c4: c4Detail, c5: c5Detail, c6: c6Detail, c7: c7Detail, c8: c8Detail, c9: c9Detail, c10: c10Detail, c12: c12Detail }[id], weights)).join("") + bonusCard + c13Card;
+  const c14sc = scored.criteria.c14 || {};
+  const c14Card = scored.c14 ? `<details class="card" id="card-c14"><summary><span class="cid">c14</span><span class="ctitle">${esc(NAMES.c14)}</span><span class="cscore">${bc14 >= 0 ? "+" : ""}${esc(trim(bc14))}</span>
+    <span class="cmeta"><span class="chev">&#9656;</span><span>clamped between ${esc(sg(Number(scored.c14.cap_min)))} and ${esc(sg(Number(scored.c14.cap_max)))}, not weighted</span>${confBadge(c14sc.confidence)}</span>
+    <span class="working">${esc(c14sc.working || "")}</span></summary><div class="cbody">${c14Body(ctx, a)}</div></details>` : "";
+  const cards = ORDER.map((id) => card(ctx, id, { c1: c1Detail, c2: c2Detail, c3: c3Detail, c4: c4Detail, c5: c5Detail, c6: c6Detail, c7: c7Detail, c8: c8Detail, c9: c9Detail, c10: c10Detail, c12: c12Detail }[id], weights)).join("") + bonusCard + c13Card + c14Card;
 
   const sm = a.summary || {};
   const list = (t, items) => `<div><h3>${esc(t)}</h3><ul>${arr(items).map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
@@ -425,7 +478,7 @@ function buildHtml(d) {
 
   // client data
   const D = {
-    names: NAMES, keys, weights, total, core, adjusted, bonusTotal, bonusC11: bc11, bonusC13: bc13,
+    names: NAMES, keys, weights, total, core, adjusted, bonusTotal, bonusC11: bc11, bonusC13: bc13, bonusC14: bc14,
     strictness: { quadrant: st.quadrant, base: st.base, buzz: st.buzz, value: st.strictness, gamma: st.gamma,
       gammaBase: Number((scored.weights_used || {}).c2_gamma_base) || 0.5, bases: (scored.weights_used || {}).c2_strictness || (d.defaults || {}).c2_strictness || {} },
     criteria: Object.fromEntries(IDS.map((id) => { const s = scored.criteria[id] || {}; return [id, { score: s.score == null ? null : s.score, weight: s.weight, na: !!s.not_applicable, sub: s.sub || null }]; })),
@@ -465,11 +518,16 @@ function buildHtml(d) {
   <div class="split">
     <div><div class="k">Core</div><div class="v" id="v-core">${esc(num(core))}</div></div>
     <div><div class="k">Adjusted (gamma <span data-live="gamma">${esc(trim(Number(st.gamma)))}</span>)</div><div class="v" id="v-adjusted">${esc(num(adjusted))}</div></div>
-    <div><div class="k">Bonus (c11 ${esc(sg(bc11))}, c13 ${esc(sg(bc13))})</div><div class="v">${bonusTotal >= 0 ? "+" : ""}${esc(trim(bonusTotal))}</div></div>
+    <div><div class="k">c11 access</div><div class="v">${esc(sg(bc11))}</div></div>
+    <div><div class="k">c13 consulting</div><div class="v">${esc(sg(bc13))}</div></div>
+    <div><div class="k">c14 screening</div><div class="v">${esc(sg(bc14))}</div></div>
     <div><div class="k">Total</div><div class="v" data-live-total>${esc(num(total))}</div></div>
   </div>
+  <p class="small muted breakdown">core ${esc(num(core))} &rarr; adjusted ${esc(num(adjusted))} &rarr; c11 ${esc(sg(bc11))}, c13 ${esc(sg(bc13))}, c14 ${esc(sg(bc14))} &rarr; total ${esc(num(total))}</p>
   <div class="banner" id="custom-banner" role="status"></div>
 </header>
+
+${flagsHtml(ctx)}
 
 <section id="how"><h2>How this score was calculated</h2>
 <p class="lede">Scores are computed by a script from the evidence below. The AI gathers evidence and makes the judgements, it never states a score.</p>${formula}</section>
@@ -496,6 +554,24 @@ ${scoringSrc ? `<script>var __m={exports:{}};(function(module,exports,require){t
 }
 
 // ---------- PDF
+function pdfFlags(scored) {
+  const c14 = scored.c14;
+  if (!c14 || !c14.flags) return [];
+  const f = c14.flags, GREY = "#666666", out = [];
+  const sgn = (n) => (n >= 0 ? "+" : "") + trim(n);
+  out.push({ text: "Check before you apply", fontSize: 13, bold: true, margin: [0, 14, 0, 4] });
+  if (arr(f.ats_dates).length) {
+    out.push({ text: "Date ranges a screening system may not read (use a hyphen)", bold: true, fontSize: 9.5, margin: [0, 2, 0, 2] });
+    out.push({ ul: arr(f.ats_dates).map((x) => `Line ${x.line}: ${x.text}. Suggested: ${arr(x.matches).map((m) => m.fix).join("; ")}`), fontSize: 9 });
+  }
+  if (f.education_blank) out.push({ text: "Education shows no institution: add the institution, degree and year.", fontSize: 9.5, margin: [0, 4, 0, 2] });
+  out.push({ text: "Application form questions that often reject within a day", bold: true, fontSize: 9.5, margin: [0, 4, 0, 2] });
+  out.push({ ul: arr(f.form_checklist), fontSize: 9 });
+  out.push({ text: "Screening signals (c14) " + sgn(c14.total), bold: true, fontSize: 9.5, margin: [0, 6, 0, 2] });
+  out.push({ ul: arr(c14.items).map((it) => `${it.label} ${sgn(it.points)}: ${it.working}`), fontSize: 8, color: GREY });
+  if (arr(c14.echo_phrases).length) out.push({ text: "Copied from the JD: " + arr(c14.echo_phrases).map((x) => `"${x}"`).join("; "), fontSize: 8, color: GREY, margin: [0, 2, 0, 0] });
+  return out;
+}
 async function buildPdf(d, outPath) {
   const pdfmake = require("pdfmake");
   const FONT_DIR = path.join(ROOT, "fonts");
@@ -512,12 +588,13 @@ async function buildPdf(d, outPath) {
   const ul = (items) => ({ ul: arr(items).map((x) => String(x)), margin: [0, 0, 0, 4], fontSize: 9.5 });
   const stp = scored.strictness || {};
   const adjusted = typeof scored.adjusted === "number" ? scored.adjusted : core;
-  const rows = ORDER.concat(["c13"]).map((id) => {
+  const bonusOf = (id) => (id === "c13" ? Number((scored.bonus || {}).c13) || 0 : Number((scored.bonus || {}).c14) || 0);
+  const rows = ORDER.concat(["c13"], scored.c14 ? ["c14"] : []).map((id) => {
     const s = scored.criteria[id] || {};
-    const mod = id === "c2", bon = id === "c13";
+    const mod = id === "c2", bon = id === "c13" || id === "c14";
     return [
       { text: id, bold: true, color: ACC }, { text: NAMES[id], bold: true },
-      { text: s.not_applicable ? "n/a" : mod ? "gamma " + trim(Number(stp.gamma)) : bon ? "+" + trim(Number((scored.bonus || {}).c13) || 0) : num(s.score), alignment: "right" },
+      { text: s.not_applicable ? "n/a" : mod ? "gamma " + trim(Number(stp.gamma)) : bon ? (bonusOf(id) >= 0 ? "+" : "") + trim(bonusOf(id)) : num(s.score), alignment: "right" },
       { text: s.not_applicable ? "dropped" : mod ? "modifier" : bon ? "bonus" : trim(Number(s.weight) || 0), alignment: "right" },
       { text: (s.not_applicable ? "Not applicable: weight dropped. " : "") + (s.working || ""), fontSize: 8, color: GREY },
     ];
@@ -537,8 +614,9 @@ async function buildPdf(d, outPath) {
         { width: 120, stack: [
           { text: num(total), fontSize: 38, bold: true, color: ACC, alignment: "right" },
           { text: String(scored.band || bandOf(total)), fontSize: 11, bold: true, alignment: "right" },
-          { text: `core ${num(core)}  adjusted ${num(adjusted)}  bonus ${bonus >= 0 ? "+" : ""}${trim(bonus)}`, fontSize: 8.5, color: GREY, alignment: "right" } ] } ] },
+          { text: `core ${num(core)}  adjusted ${num(adjusted)}  bonus ${bonus >= 0 ? "+" : ""}${trim(bonus)} (c11 ${trim(Number((scored.bonus || {}).c11) || 0)}, c13 ${trim(Number((scored.bonus || {}).c13) || 0)}, c14 ${trim(Number((scored.bonus || {}).c14) || 0)})`, fontSize: 8.5, color: GREY, alignment: "right" } ] } ] },
       { text: `Core ${num(core)} -> adjusted ${num(adjusted)} (${String(stp.quadrant || "").replace("_", " ")}, gamma ${trim(Number(stp.gamma))}); total = clamp(adjusted + bonus, 0, 100) = clamp(${num(adjusted)} ${bonus < 0 ? "-" : "+"} ${trim(Math.abs(bonus))}, 0, 100) = ${num(total)}`, fontSize: 8.5, color: GREY, margin: [0, 10, 0, 0] },
+      ...pdfFlags(scored),
       hdr("Criteria"),
       { table: { headerRows: 1, widths: [22, 130, 34, 38, "*"], body: [
         ["", "Criterion", "Score", "Weight", "Working"].map((t, i) => ({ text: t, bold: true, fontSize: 8, color: GREY, alignment: i === 2 || i === 3 ? "right" : "left" })), ...rows ] },

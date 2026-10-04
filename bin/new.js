@@ -40,6 +40,11 @@ function skeleton(company, title, today) {
     c10: { not_applicable: false, items: [] },
     c12: { expected_years: { value: 3, from: 'default', evidence: ev() }, roles: [], evidence: ev() },
     c13: { firms_considered: [], roles: [] },
+    c14: {
+      jd_basis: 'unknown', jd_basis_evidence: ev(), contract_signals: [],
+      conventional_certs: { applies: false, expected: [], held: [], not_equivalent: [], evidence: ev() },
+      conflict_of_interest: { present: false, description: '', evidence: ev() }
+    },
     summary: { strengths: [], risks: [], actions: [] }
   };
 }

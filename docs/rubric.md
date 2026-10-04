@@ -14,7 +14,7 @@ override them in `config/weights.local.json` or with the sliders in the HTML rep
 core      = sum(weight_i * score_i) / sum(weight_i)     over c1, c3..c10, c12; each score_i in 0-100
 gamma     = 0.5 + strictness                           (c2: from the employer's BCG position)
 adjusted  = 100 * (core / 100) ^ gamma
-bonus     = c11 points + c13 points (c11 may be negative)
+bonus     = c11 points + c13 points + c14 points (c11 and c14 may be negative)
 total     = clamp(adjusted + bonus, 0, 100)
 ```
 
@@ -186,6 +186,34 @@ of short engagements counts against the candidate on a sliding scale.
   (quote the CV and the JD). Worth +3 more, and only for a top-10 firm.
 
 c13 is capped at +10 by default.
+
+## c14. Screening signals (plus and minus points)
+
+Automated screeners reject many CVs within hours, before a person reads them. These items
+model what such systems commonly check. The script computes every item it can from dates and
+text, so the candidate can check the arithmetic exactly. c14 is clamped between -15 and +10.
+
+| Item | Points (default) | How it is decided |
+|---|---|---|
+| Target seniority | +5 if 3 or more years, 0 if under 3, -5 if none | **AI judgement:** tag each `c12.roles` entry `at_target_seniority` (its title is at the JD's level, for example "Director" or "Head of" for a director role). The script sums dated months of tagged roles within the last 10 years. |
+| Employment gaps | -3 per gap over 6 months, capped at -9 | Script: gaps between consecutive dated roles in `c12.roles` within the last 10 years. |
+| Short recent roles | -3 for each of the two most recent roles (including the current one) that lasted, or has lasted, under 12 months | Script, from `c12.roles`. |
+| Contract history | -3 if the JD is permanent and the CV shows contract signals; +2 if the JD is a contract role and the CV shows contract experience | **AI judgement:** `jd_basis` with a JD quote, and `contract_signals` with CV quotes. |
+| JD echo | -1 for each copied phrase beyond the first 3, capped at -5 | Script: distinct runs of 6 or more consecutive words that appear in both the CV and the JD (case and punctuation ignored). Each phrase is listed in the report. |
+| Sector recency | +2 if the current role is in the JD's sector; -2 if the last in-sector role ended 1 to 3 years ago; -4 if more than 3 years ago or never | **AI judgement:** tag each `c12.roles` entry `in_jd_sector`. The script measures from the end of the latest tagged role. |
+| Conventional certifications | +2 if held, -2 if missing | **AI judgement + web search:** the certifications screeners conventionally expect for this role family, even when the JD does not list them (for example PRINCE2, MSP or MoP for UK programme director roles). Cite a source. Related methods do not count as equivalents: DSDM is not PRINCE2. |
+| Conflict of interest | -3 | **AI judgement + web search:** the candidate's current employer has a relationship that may require an independence or conflict check, such as being the hiring company's external auditor. Cite the source. |
+
+### Report flags (no points)
+
+- **Date ranges a parser may not read:** the script lists every CV line with a date range
+  written with "to" or a typographic dash instead of an ASCII hyphen, for example
+  "Apr 2022 to Apr 2023". Many applicant tracking systems split ranges only on "-", so these
+  roles may parse as zero months.
+- **Education with no institution:** shown when c9 has no institution.
+- **Application form knockouts:** a fixed checklist, always shown: salary expectation, notice
+  period, right to work, current job title, and yes/no experience questions. These often
+  cause rejections within a day, and the CV cannot show them.
 
 ## Evidence verification (done by `bin/score.js`)
 

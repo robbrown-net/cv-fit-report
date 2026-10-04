@@ -84,5 +84,30 @@
   "c2_buzz_max": 0.25,
   "c2_gamma_base": 0.5,
   "c12_default_expected_years": 3,
-  "c12_others_share": 0.4
+  "c12_others_share": 0.4,
+  "c14": {
+    "lookback_years": 10,
+    "seniority_full_years": 3,
+    "seniority_full_points": 5,
+    "seniority_none_points": -5,
+    "gap_months": 6,
+    "gap_points": -3,
+    "gap_cap": -9,
+    "short_role_months": 12,
+    "short_role_points": -3,
+    "contract_mismatch_points": -3,
+    "contract_match_points": 2,
+    "echo_words": 6,
+    "echo_free": 3,
+    "echo_points": -1,
+    "echo_cap": -5,
+    "sector_current_points": 2,
+    "sector_1_3y_points": -2,
+    "sector_over_3y_points": -4,
+    "certs_held_points": 2,
+    "certs_missing_points": -2,
+    "conflict_points": -3,
+    "cap_min": -15,
+    "cap_max": 10
+  }
 }

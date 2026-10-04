@@ -59,7 +59,7 @@ function main() {
   });
 
   let result;
-  try { result = scoreAll(scoredInput, candidate || {}, weights); } catch (e) { fail([e.message]); }
+  try { result = scoreAll(scoredInput, candidate || {}, weights, cv, jd); } catch (e) { fail([e.message]); }
 
   // Unverified quotes force the owning criterion's confidence to low.
   const forced = {};
@@ -86,6 +86,7 @@ function main() {
     strictness: result.strictness,
     adjusted: result.adjusted,
     bonus: result.bonus,
+    c14: result.c14,
     total: result.total,
     band: result.band
   };
@@ -102,7 +103,17 @@ function main() {
   const sgn = (n) => (n >= 0 ? '+' : '') + n;
   const st = result.strictness;
   console.log('c2   Strictness: Core ' + f1(result.core) + ' -> adjusted ' + f1(result.adjusted) + ' (' + st.quadrant + ', gamma ' + st.gamma + ')');
-  console.log('Bonus ' + sgn(result.bonus.total) + ' (c11 ' + sgn(result.bonus.c11) + ', c13 ' + sgn(result.bonus.c13) + ')  Total ' + f1(result.total) + '  Band: ' + result.band);
+  const c14 = result.c14;
+  console.log('Bonus ' + sgn(result.bonus.total) + ' (c11 ' + sgn(result.bonus.c11) + ', c13 ' + sgn(result.bonus.c13) + ', c14 ' + sgn(result.bonus.c14) + ')  Total ' + f1(result.total) + '  Band: ' + result.band);
+  console.log('Screening c14 ' + sgn(c14.total) + ' (' + c14.items.map((i) => i.key + ' ' + sgn(i.points)).join(', ') + ')');
+  c14.notes.forEach((n) => console.log('  note: ' + n));
+  const fl = c14.flags;
+  if (fl.ats_dates.length) {
+    console.log('FLAG date ranges a parser may not read (use "Apr 2022 - Apr 2023"):');
+    fl.ats_dates.forEach((x) => console.log('  line ' + x.line + ': ' + x.text));
+  }
+  if (fl.education_blank) console.log('FLAG education has no institution (c9)');
+  console.log('FLAG application form checklist: ' + fl.form_checklist.map((x) => x.split(':')[0].toLowerCase()).join('; '));
   console.log('Quotes: ' + ver.quotes_total + ' checked, ' + ver.quotes_unverified + ' unverified; sources rejected: ' + ver.sources_rejected.length);
   ver.unverified.forEach((u) => console.log('  UNVERIFIED ' + u.path + ' (' + u.context + '): ' + JSON.stringify(u.text)));
   ver.sources_rejected.forEach((s) => console.log('  REJECTED SOURCE ' + (s.id || s.path) + ': ' + s.reason));

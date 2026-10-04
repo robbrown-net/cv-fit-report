@@ -65,7 +65,7 @@ code, .mono { font-family: var(--mono); font-size: .88em; }
 .gauge-num { font: 600 44px var(--serif); fill: var(--ink); }
 .gauge-sub { font: 12px var(--sans); fill: var(--ink-3); letter-spacing: .08em; }
 .band { display: inline-block; margin-top: 4px; padding: 3px 14px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 14px; }
-.split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 36px; }
+.split { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 36px; }
 .split div { background: var(--surface); padding: 14px 18px; }
 .split .k { font-size: 12px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em; }
 .split .v { font: 600 26px var(--serif); }
@@ -210,40 +210,62 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
 .cbody, .wrap, section { min-width: 0; }
 @media (max-width: 640px) { details.card > summary { grid-template-columns: 28px minmax(0, 1fr) auto; } }
 .cmeta .badge { white-space: normal; }
+
+/* flags banner and c14 */
+.split .v { font-size: 22px; }
+.breakdown { margin: 8px 0 0; }
+.flags { margin-top: 28px; padding: 16px 20px; border: 2px solid var(--bad); border-radius: 12px; background: var(--bad-soft); }
+.flags h2 { margin-top: 0; color: var(--bad); }
+.flag { margin-top: 14px; }
+.flag h3 { margin: 0 0 4px; font-size: 16px; }
+.flag ul { margin: 6px 0 0; padding-left: 20px; }
+.flag li { margin: 6px 0; }
+.flag .ln { font-weight: 600; margin-right: 6px; }
+.flag .fix { display: inline-block; margin: 2px 6px 0 0; padding: 1px 8px; border-radius: 6px; background: var(--surface); border: 1px solid var(--line); font-size: 13px; }
+mark { background: var(--accent-soft); color: var(--ink); padding: 1px 4px; border-radius: 4px; box-shadow: inset 0 -2px 0 var(--accent); }
+.echo { padding-left: 20px; }
+.pos { color: var(--accent); font-weight: 600; }
+.neg { color: var(--bad); font-weight: 600; }
+@media (max-width: 640px) { .split { grid-template-columns: repeat(2, 1fr); } }
 </style></head><body><div class="wrap">
 <header>
   <p class="eyebrow">CV fit report</p>
   <div class="hero">
     <div class="hero-text">
       <h1>Head of Operations<br><span class="muted">at Acme Corp, Payments division</span></h1>
-      <ul class="hero-meta"><li>Candidate: <b>Alex Morgan</b></li><li>Assessed: <b>2026-10-04</b></li><li>Model: <b>Claude (illustrative fictional example)</b></li><li>73 of 73 quotes verified verbatim against the CV and JD text.</li></ul>
+      <ul class="hero-meta"><li>Candidate: <b>Alex Morgan</b></li><li>Assessed: <b>2026-10-04</b></li><li>Model: <b>Claude (illustrative fictional example)</b></li><li>75 of 75 quotes verified verbatim against the CV and JD text.</li></ul>
       
     </div>
     <div class="gauge">
-      <svg viewBox="0 0 200 200" role="img" aria-label="Total score 73.4 out of 100, Competitive">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Total score 80.4 out of 100, Strong">
         <circle class="ring-bg" cx="100" cy="100" r="80"/>
-        <circle id="ring-fg" class="ring-fg" cx="100" cy="100" r="80" transform="rotate(-90 100 100)" stroke-dasharray="369.0 502.7"/>
-        <text id="gauge-num" class="gauge-num" x="100" y="108" text-anchor="middle">73.4</text>
+        <circle id="ring-fg" class="ring-fg" cx="100" cy="100" r="80" transform="rotate(-90 100 100)" stroke-dasharray="404.2 502.7"/>
+        <text id="gauge-num" class="gauge-num" x="100" y="108" text-anchor="middle">80.4</text>
         <text class="gauge-sub" x="100" y="132" text-anchor="middle">OUT OF 100</text>
       </svg>
-      <span class="band" id="band">Competitive</span>
+      <span class="band" id="band">Strong</span>
     </div>
   </div>
   <div class="split">
     <div><div class="k">Core</div><div class="v" id="v-core">67.5</div></div>
     <div><div class="k">Adjusted (gamma <span data-live="gamma">1.25</span>)</div><div class="v" id="v-adjusted">61.2</div></div>
-    <div><div class="k">Bonus (c11 +6.25, c13 +6)</div><div class="v">+12.25</div></div>
-    <div><div class="k">Total</div><div class="v" data-live-total>73.4</div></div>
+    <div><div class="k">c11 access</div><div class="v">+6.25</div></div>
+    <div><div class="k">c13 consulting</div><div class="v">+6</div></div>
+    <div><div class="k">c14 screening</div><div class="v">+7</div></div>
+    <div><div class="k">Total</div><div class="v" data-live-total>80.4</div></div>
   </div>
+  <p class="small muted breakdown">core 67.5 &rarr; adjusted 61.2 &rarr; c11 +6.25, c13 +6, c14 +7 &rarr; total 80.4</p>
   <div class="banner" id="custom-banner" role="status"></div>
 </header>
+
+<section id="flags" class="flags" aria-label="Flags to check before applying"><h2>Check before you apply</h2><div class="flag"><h3>Application form questions that often reject within a day</h3><p class="small">The CV cannot show these. Check each answer before you submit.</p><ul><li>Salary expectation: state a figure inside the advertised band</li><li>Notice period: state it exactly as your contract says</li><li>Right to work: answer the question for the country of the role</li><li>Current job title: enter the title on your CV, not an informal one</li><li>Yes or no experience questions: answer from the JD requirements, since the CV cannot</li></ul></div></section>
 
 <section id="how"><h2>How this score was calculated</h2>
 <p class="lede">Scores are computed by a script from the evidence below. The AI gathers evidence and makes the judgements, it never states a score.</p><div class="formula">
     <p>core = &Sigma;(weight &times; score) / &Sigma;(weight) = 6747.8 / 100.00 = <span class="eq">67.5</span></p>
     <p>adjusted = 100 &times; (core / 100) ^ gamma = 100 &times; (67.5 / 100) ^ 1.25 = <span class="eq">61.2</span> <span class="muted">(star, strictness 0.75, c2)</span></p>
-    <p>bonus = c11 +6.25 + c13 +6 = +12.25</p>
-    <p>total = clamp(adjusted + bonus, 0, 100) = clamp(61.2 + 12.25, 0, 100) = <span class="eq">73.4</span></p>
+    <p>bonus = c11 +6.25 + c13 +6 + c14 +7 = +19.25</p>
+    <p>total = clamp(adjusted + bonus, 0, 100) = clamp(61.2 + 19.25, 0, 100) = <span class="eq">80.4</span></p>
     </div>
     <details class="inline"><summary>Show the arithmetic for each criterion</summary><div class="tablewrap"><table><thead><tr><th>Criterion</th><th class="num">Weight</th><th class="num">Score</th><th class="num">Weight x score</th></tr></thead><tbody><tr><td>c1 Current or most recent role</td><td class="num">50</td><td class="num">60.5</td><td class="num">3024.0</td></tr><tr><td>c3 Years with the JD&#39;s tools and suppliers</td><td class="num">5.56</td><td class="num">66.7</td><td class="num">370.4</td></tr><tr><td>c4 AI experience and outcomes</td><td class="num">5.56</td><td class="num">60.8</td><td class="num">337.9</td></tr><tr><td>c5 Likelihood the CV was AI-generated</td><td class="num">5.56</td><td class="num">55.0</td><td class="num">305.6</td></tr><tr><td>c6 Spelling</td><td class="num">5.56</td><td class="num">90.0</td><td class="num">500.0</td></tr><tr><td>c7 Grammar</td><td class="num">5.56</td><td class="num">90.0</td><td class="num">500.0</td></tr><tr><td>c8 STAR / Problem-Action-Result bullets</td><td class="num">5.56</td><td class="num">50.0</td><td class="num">277.8</td></tr><tr><td>c9 Top university</td><td class="num">5.56</td><td class="num">80.0</td><td class="num">444.4</td></tr><tr><td>c10 Qualifications against the JD</td><td class="num">5.56</td><td class="num">100.0</td><td class="num">555.6</td></tr><tr><td>c12 Tenure against expected longevity</td><td class="num">5.56</td><td class="num">77.8</td><td class="num">432.1</td></tr></tbody></table></div>
     <p class="small muted">c1 itself is the weighted mean of its six sub-scores, see its card. c2 sets gamma and carries no weight of its own.</p></details></section>
@@ -315,7 +337,9 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     <div class="cbody"><p class="small">Expected tenure: <b>3 years</b> (default). Median tenure of the counted roles: <b>28 months</b>. c12 = min(median / (3 &times; 12), 1) &times; 100 = <b>77.8</b>.</p><h4>Role timeline against expected tenure</h4><div class="tl" role="img" aria-label="Tenure of each role in months against the expected 36 months"><div class="tl-row ex"><span class="tl-name">Example Payments Ltd</span><span class="tl-track"><i style="width:100.0%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">68 m</span></div><div class="tl-row"><span class="tl-name">Northwind Bank</span><span class="tl-track"><i style="width:73.5%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">50 m</span></div><div class="tl-row"><span class="tl-name">Globex Consulting</span><span class="tl-track"><i style="width:29.4%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">20 m</span></div><div class="tl-row"><span class="tl-name">Contoso Retail</span><span class="tl-track"><i style="width:38.2%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">26 m</span></div><div class="tl-row"><span class="tl-name">Fabrikam Logistics</span><span class="tl-track"><i style="width:44.1%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">30 m</span></div><p class="small muted">The vertical mark is the expected 36 months.</p></div><div class="tablewrap"><table><thead><tr><th>Employer</th><th>Title</th><th>Dates</th><th class="num">Months</th><th>Counted</th></tr></thead><tbody><tr><td><b>Example Payments Ltd</b></td><td>Head of Operations</td><td>2021-03 to present</td><td class="num">68</td><td><span class="badge">current role: excluded</span></td></tr><tr><td><b>Northwind Bank</b></td><td>Senior Operations Manager</td><td>2017-01 to 2021-02</td><td class="num">50</td><td><span class="badge ok">counted</span></td></tr><tr><td><b>Globex Consulting</b></td><td>Senior Consultant</td><td>2015-05 to 2016-12</td><td class="num">20</td><td><span class="badge ok">counted</span></td></tr><tr><td><b>Contoso Retail</b></td><td>Operations Manager</td><td>2013-03 to 2015-04</td><td class="num">26</td><td><span class="badge ok">counted</span></td></tr><tr><td><b>Fabrikam Logistics</b></td><td>Operations Analyst, then Shift Supervisor</td><td>2010-09 to 2013-02</td><td class="num">30</td><td><span class="badge ok">counted</span></td></tr></tbody></table></div><h4>Expected years</h4><p class="reasoning">The JD does not state an expected tenure and no research was cited, so the default of 3 years applies. </p><p><span class="badge ">medium confidence</span></p><details class="inline"><summary>Example Payments Ltd</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Northwind Bank</summary><blockquote class="cv"><span class="tag">CV</span>Northwind Bank | Senior Operations Manager | January 2017 - February 2021<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Globex Consulting</summary><blockquote class="cv"><span class="tag">CV</span>Globex Consulting | Senior Consultant | May 2015 - December 2016<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Contoso Retail</summary><blockquote class="cv"><span class="tag">CV</span>Contoso Retail | Operations Manager | March 2013 - April 2015<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Fabrikam Logistics</summary><blockquote class="cv"><span class="tag">CV</span>Fabrikam Logistics | Operations Analyst, then Shift Supervisor | September 2010 - February 2013<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><p class="reasoning">Five dated roles; the current role is excluded as unfinished. The four completed tenures are 50, 20, 26 and 30 months. </p><p><span class="badge conf-high">high confidence</span></p></div></details><details class="card" id="card-c11"><summary><span class="cid">c11</span><span class="ctitle">Candidate's own access (bonus)</span><span class="cscore">+6.25</span>
     <span class="cmeta"><span class="chev">&#9656;</span><span>self-reported, never inferred by the AI. Added after the strictness adjustment.</span></span></summary><div class="cbody"><div class="tablewrap"><table><thead><tr><th>Item</th><th class="num">Points</th></tr></thead><tbody><tr><td>Referral by a colleague (senior, high visibility, 5 x 1.25)</td><td class="num">+6.25</td></tr></tbody></table></div><p class="small">Referral (colleague, senior, high visibility): Fictional: former colleague, now a senior leader in Acme Corp talent acquisition</p></div></details><details class="card" id="card-c13"><summary><span class="cid">c13</span><span class="ctitle">Consulting experience (bonus)</span><span class="cscore">+6</span>
     <span class="cmeta"><span class="chev">&#9656;</span><span>bonus, capped at +10</span><span class="badge ">medium confidence</span></span>
-    <span class="working">Globex Consulting (top_in_industry true, related_to_jd true) +6 = 6, capped at 10 = +6</span></summary><div class="cbody"><p class="small">Per consulting role: +3 if the firm is in the top 10 for the hiring company's industry, and +3 more if its work relates to this JD (only for a top-10 firm). Capped at +10.</p><div class="tablewrap"><table><thead><tr><th>Role</th><th>Top 10 for the industry</th><th>Related to the JD</th></tr></thead><tbody><tr><td><b>Globex Consulting</b>, Senior Consultant</td><td><span class="badge ok">yes +3</span></td><td><span class="badge ok">yes +3</span></td></tr></tbody></table></div><div class="tablewrap"><table><thead><tr><th>Item</th><th class="num">Points</th></tr></thead><tbody><tr><td>Consulting at a top-10 firm for the industry: Globex Consulting, Senior Consultant</td><td class="num">+3</td></tr><tr><td>Consulting work related to the JD: Globex Consulting, Senior Consultant</td><td class="num">+3</td></tr></tbody></table></div><details class="inline"><summary>Globex Consulting</summary><blockquote class="cv"><span class="tag">CV</span>Globex Consulting | Senior Consultant | May 2015 - December 2016<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>A top-5 UK bank was losing 6% of card applications to slow manual checks; led a 6-person team to redesign the workflow, which recovered 4.5m GBP of annual revenue.<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>own end-to-end operations for merchant onboarding, settlement, disputes and customer support<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Globex Consulting is ranked eighth in the cited illustrative ranking for payments and banking, and its workflow-redesign project in banking relates to the operations this role owns. <a class="fn" href="#src-S4">[S4]</a></p><p><span class="badge ">medium confidence</span></p></details></div></details></div></section>
+    <span class="working">Globex Consulting (top_in_industry true, related_to_jd true) +6 = 6, capped at 10 = +6</span></summary><div class="cbody"><p class="small">Per consulting role: +3 if the firm is in the top 10 for the hiring company's industry, and +3 more if its work relates to this JD (only for a top-10 firm). Capped at +10.</p><div class="tablewrap"><table><thead><tr><th>Role</th><th>Top 10 for the industry</th><th>Related to the JD</th></tr></thead><tbody><tr><td><b>Globex Consulting</b>, Senior Consultant</td><td><span class="badge ok">yes +3</span></td><td><span class="badge ok">yes +3</span></td></tr></tbody></table></div><div class="tablewrap"><table><thead><tr><th>Item</th><th class="num">Points</th></tr></thead><tbody><tr><td>Consulting at a top-10 firm for the industry: Globex Consulting, Senior Consultant</td><td class="num">+3</td></tr><tr><td>Consulting work related to the JD: Globex Consulting, Senior Consultant</td><td class="num">+3</td></tr></tbody></table></div><details class="inline"><summary>Globex Consulting</summary><blockquote class="cv"><span class="tag">CV</span>Globex Consulting | Senior Consultant | May 2015 - December 2016<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>A top-5 UK bank was losing 6% of card applications to slow manual checks; led a 6-person team to redesign the workflow, which recovered 4.5m GBP of annual revenue.<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>own end-to-end operations for merchant onboarding, settlement, disputes and customer support<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Globex Consulting is ranked eighth in the cited illustrative ranking for payments and banking, and its workflow-redesign project in banking relates to the operations this role owns. <a class="fn" href="#src-S4">[S4]</a></p><p><span class="badge ">medium confidence</span></p></details></div></details><details class="card" id="card-c14"><summary><span class="cid">c14</span><span class="ctitle">Screening signals (plus and minus points)</span><span class="cscore">+7</span>
+    <span class="cmeta"><span class="chev">&#9656;</span><span>clamped between -15 and +10, not weighted</span><span class="badge ">medium confidence</span></span>
+    <span class="working">seniority +5, gaps 0, short_recent 0, contract 0, echo 0, sector +2, certs 0, conflict 0 = +7</span></summary><div class="cbody"><p class="small">Automated screeners reject many CVs before a person reads them. Each item below is computed by the script from the dates and text, or from the tags the AI recorded. The total is clamped between -15 and +10.</p><div class="tablewrap"><table><thead><tr><th>Item</th><th class="num">Points</th><th>Working</th></tr></thead><tbody><tr><td><b>Time at the target seniority</b></td><td class="num"><span class="pos">+5</span></td><td><span class="small">Example Payments Ltd 2021-03 to present 68 months = 68 months (at least 3 years, threshold 36) = +5</span></td></tr><tr><td><b>Employment gaps</b></td><td class="num"><span class="">+0</span></td><td><span class="small">no gap over 6 months between dated roles in the last 10 years = 0</span></td></tr><tr><td><b>Short recent roles</b></td><td class="num"><span class="">+0</span></td><td><span class="small">two most recent roles: Example Payments Ltd 2021-03 to present 68 months; Northwind Bank 2017-01 to 2021-02 50 months; 0 under 12 months x -3 = 0</span></td></tr><tr><td><b>Contract history</b></td><td class="num"><span class="">+0</span></td><td><span class="small">JD basis unknown, 0 contract signal(s): no effect = 0</span></td></tr><tr><td><b>Phrases copied from the JD</b></td><td class="num"><span class="">+0</span></td><td><span class="small">0 distinct run(s) of 6 or more words shared with the JD; first 3 free; max(-5, -1 x max(0, 0 - 3)) = 0</span></td></tr><tr><td><b>Sector recency</b></td><td class="num"><span class="pos">+2</span></td><td><span class="small">current role (Example Payments Ltd 2021-03 to present) is in the JD sector = +2</span></td></tr><tr><td><b>Conventional certifications</b></td><td class="num"><span class="">+0</span></td><td><span class="small">conventional certifications do not apply to this role family = 0</span></td></tr><tr><td><b>Conflict of interest</b></td><td class="num"><span class="">+0</span></td><td><span class="small">no conflict of interest found = 0</span></td></tr></tbody></table></div><h4>Phrases copied from the JD</h4><p>No copied phrases found, or the texts were not supplied.</p><details class="inline"><summary>Evidence: Time at the target seniority</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Evidence: Short recent roles</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>Northwind Bank | Senior Operations Manager | January 2017 - February 2021<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Evidence: Contract history</summary><p class="reasoning">The job description does not say whether the role is permanent or a fixed-term contract, and the CV shows no contract engagements, so this item scores 0. </p><p><span class="badge ">medium confidence</span></p></details><details class="inline"><summary>Evidence: Sector recency</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Evidence: Conventional certifications</summary><blockquote class="jd"><span class="tag">JD</span>PMP certification (required)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The only certification a payments operations head is conventionally expected to hold is the PMP that the job description already requires. It is assessed in c10, so no further conventional certification applies. </p><p><span class="badge ">medium confidence</span></p></details><details class="inline"><summary>Evidence: Conflict of interest</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><p class="reasoning">The current employer is a payments company and no relationship with the hiring company that would need an independence check was found. </p><p><span class="badge ">medium confidence</span></p></details></div></details></div></section>
 
 <section id="summary"><h2>Summary</h2><div class="cols"><div><h3>Strengths</h3><ul><li>Same title, same industry and a direct competitor employer, so the current role is a very close match (c1).</li><li>Holds the required PMP and the desirable Green Belt (c10).</li><li>Salesforce and ServiceNow experience well beyond the years asked (c3).</li><li>Several full situation-action-result bullets with numbers (c8).</li></ul></div><div><h3>Risks</h3><ul><li>No Snowflake experience shown on the CV (c3).</li><li>Only one AI use is quantified, so AI evidence is moderate (c4).</li><li>Four spelling and grammar slips in a CV for a senior role (c6, c7).</li><li>Several bullets describe duties with no result (c8) and some phrasing reads as stock AI wording (c5).</li></ul></div><div><h3>Actions</h3><ul><li>Fix the two spelling errors and two grammar errors before applying (c6, c7).</li><li>Add a result to the duty bullets, or cut them (c8).</li><li>Add Snowflake or similar warehouse experience if true, for example via the Power BI reporting (c3).</li><li>Quantify the fraud-alert and Copilot outcomes (c4).</li><li>Replace &quot;spearheaded&quot; and &quot;leveraged&quot; phrasing with specifics (c5).</li></ul></div></div></section>
 
@@ -323,7 +347,7 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
 
 <footer>Every number above can be recomputed from docs/rubric.md and the evidence shown.</footer>
 </div>
-<script type="application/json" id="report-data">{"names":{"c1":"Current or most recent role","c2":"Employer strictness (BCG growth-share)","c3":"Years with the JD's tools and suppliers","c4":"AI experience and outcomes","c5":"Likelihood the CV was AI-generated","c6":"Spelling","c7":"Grammar","c8":"STAR / Problem-Action-Result bullets","c9":"Top university","c10":"Qualifications against the JD","c12":"Tenure against expected longevity","c13":"Consulting experience (bonus)"},"keys":{"c1":"c1_current_role","c3":"c3_tools_years","c4":"c4_ai_experience","c5":"c5_ai_generated","c6":"c6_spelling","c7":"c7_grammar","c8":"c8_star_par","c9":"c9_top_university","c10":"c10_qualifications","c12":"c12_tenure"},"weights":{"core":{"c1_current_role":50,"c3_tools_years":5.5555556,"c4_ai_experience":5.5555556,"c5_ai_generated":5.5555556,"c6_spelling":5.5555556,"c7_grammar":5.5555556,"c8_star_par":5.5555556,"c9_top_university":5.5555556,"c10_qualifications":5.5555556,"c12_tenure":5.5555556},"c1_subweights":{"title":1,"headline":0.25,"same_industry":1,"competitor":1,"supplier":1,"top_firm":1}},"total":73.41,"core":67.48,"adjusted":61.16,"bonusTotal":12.25,"bonusC11":6.25,"bonusC13":6,"strictness":{"quadrant":"star","base":0.75,"buzz":0,"value":0.75,"gamma":1.25,"gammaBase":0.5,"bases":{"cash_cow":1,"star":0.75,"question_mark":0.5,"dog":0.25}},"criteria":{"c1":{"score":60.48,"weight":50,"na":false,"sub":{"title":100,"headline":70,"same_industry":100,"competitor":100,"supplier":0,"top_firm":0}},"c3":{"score":66.67,"weight":5.5555556,"na":false,"sub":null},"c4":{"score":60.83,"weight":5.5555556,"na":false,"sub":null},"c5":{"score":55,"weight":5.5555556,"na":false,"sub":null},"c6":{"score":90,"weight":5.5555556,"na":false,"sub":null},"c7":{"score":90,"weight":5.5555556,"na":false,"sub":null},"c8":{"score":50,"weight":5.5555556,"na":false,"sub":null},"c9":{"score":80,"weight":5.5555556,"na":false,"sub":null},"c10":{"score":100,"weight":5.5555556,"na":false,"sub":null},"c12":{"score":77.78,"weight":5.5555556,"na":false,"sub":null}}}</script>
+<script type="application/json" id="report-data">{"names":{"c1":"Current or most recent role","c2":"Employer strictness (BCG growth-share)","c3":"Years with the JD's tools and suppliers","c4":"AI experience and outcomes","c5":"Likelihood the CV was AI-generated","c6":"Spelling","c7":"Grammar","c8":"STAR / Problem-Action-Result bullets","c9":"Top university","c10":"Qualifications against the JD","c12":"Tenure against expected longevity","c13":"Consulting experience (bonus)","c14":"Screening signals (plus and minus points)"},"keys":{"c1":"c1_current_role","c3":"c3_tools_years","c4":"c4_ai_experience","c5":"c5_ai_generated","c6":"c6_spelling","c7":"c7_grammar","c8":"c8_star_par","c9":"c9_top_university","c10":"c10_qualifications","c12":"c12_tenure"},"weights":{"core":{"c1_current_role":50,"c3_tools_years":5.5555556,"c4_ai_experience":5.5555556,"c5_ai_generated":5.5555556,"c6_spelling":5.5555556,"c7_grammar":5.5555556,"c8_star_par":5.5555556,"c9_top_university":5.5555556,"c10_qualifications":5.5555556,"c12_tenure":5.5555556},"c1_subweights":{"title":1,"headline":0.25,"same_industry":1,"competitor":1,"supplier":1,"top_firm":1}},"total":80.41,"core":67.48,"adjusted":61.16,"bonusTotal":19.25,"bonusC11":6.25,"bonusC13":6,"bonusC14":7,"strictness":{"quadrant":"star","base":0.75,"buzz":0,"value":0.75,"gamma":1.25,"gammaBase":0.5,"bases":{"cash_cow":1,"star":0.75,"question_mark":0.5,"dog":0.25}},"criteria":{"c1":{"score":60.48,"weight":50,"na":false,"sub":{"title":100,"headline":70,"same_industry":100,"competitor":100,"supplier":0,"top_firm":0}},"c3":{"score":66.67,"weight":5.5555556,"na":false,"sub":null},"c4":{"score":60.83,"weight":5.5555556,"na":false,"sub":null},"c5":{"score":55,"weight":5.5555556,"na":false,"sub":null},"c6":{"score":90,"weight":5.5555556,"na":false,"sub":null},"c7":{"score":90,"weight":5.5555556,"na":false,"sub":null},"c8":{"score":50,"weight":5.5555556,"na":false,"sub":null},"c9":{"score":80,"weight":5.5555556,"na":false,"sub":null},"c10":{"score":100,"weight":5.5555556,"na":false,"sub":null},"c12":{"score":77.78,"weight":5.5555556,"na":false,"sub":null}}}</script>
 <script>var __m={exports:{}};(function(module,exports,require){try{
 'use strict';
 // Deterministic scoring engine. Pure functions, no fs. Implements docs/rubric.md exactly.
@@ -584,7 +608,22 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     var isCur = function (r) { return r.current === true || r.end === null || r.end === undefined; };
     var done = roles.map(function (r, i) { return { r: r, i: i }; }).filter(function (x) { return !isCur(x.r); });
     var used = done.length ? done : roles.map(function (r, i) { return { r: r, i: i }; });
-    var months = used.map(function (x) { return roleMonths(x.r, cap, 'c12.roles[' + x.i + ']'); });
+    // An entry naming n employers under one date range counts as n roles of months / n each.
+    var months = [], parts = [];
+    used.forEach(function (x) {
+      var m = roleMonths(x.r, cap, 'c12.roles[' + x.i + ']');
+      var n = (typeof x.r.employer_count === 'number' && x.r.employer_count >= 1) ? Math.floor(x.r.employer_count) : 1;
+      if (x.r.has_others === true) {
+        // "A, B & others": the named employers share (1 - others_share) equally; "others" counts as one role of others_share.
+        var os = (typeof w.c12_others_share === 'number') ? w.c12_others_share : 0.4;
+        for (var k2 = 0; k2 < n; k2++) months.push(m * (1 - os) / n);
+        months.push(m * os);
+        parts.push(fmt(m) + '*' + fmt(1 - os) + '/' + n + ' x' + n + ' + ' + fmt(m) + '*' + fmt(os) + ' (others)');
+        return;
+      }
+      for (var k = 0; k < n; k++) months.push(m / n);
+      parts.push(n > 1 ? fmt(m) + '/' + n + ' x' + n : fmt(m));
+    });
     var med = median(months);
     var ev = c12.expected_years || {};
     var yrs = (typeof ev.value === 'number' && isFinite(ev.value)) ? ev.value : w.c12_default_expected_years;
@@ -592,7 +631,7 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     var score = exp > 0 ? Math.min(med / exp, 1) * 100 : 100;
     return { score: score, not_applicable: false, confidence: minConfidence(c12),
       detail: { months: months, role_indexes: used.map(function (x) { return x.i; }), median_months: med, expected_years: yrs, expected_months: exp, current_excluded: done.length > 0 && done.length < roles.length },
-      working: 'median of ' + months.length + ' ' + (done.length ? 'completed' : 'current (only role)') + ' tenure' + (months.length === 1 ? '' : 's') + ' (' + months.join(', ') + ' months) = ' + fmt(med) +
+      working: 'median of ' + months.length + ' ' + (done.length ? 'completed' : 'current (only role)') + ' tenure' + (months.length === 1 ? '' : 's') + ' (' + parts.join(', ') + ' months) = ' + fmt(med) +
         ' months / (' + yrs + ' y * 12 = ' + exp + ') capped at 1 * 100 = ' + fmt(score) +
         (done.length > 0 && done.length < roles.length ? '; current role excluded' : '') };
   }
@@ -674,7 +713,213 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     return { c1: scores.c1 === undefined ? null : r2(scores.c1), core: core, gamma: g, adjusted: adjusted, bonus: bonus, total: total, band: band(total) };
   }
 
-  function scoreAll(assessment, candidate, weights) {
+  // ---- c14 screening signals ----
+  var FORM_CHECKLIST = [
+    'Salary expectation: state a figure inside the advertised band',
+    'Notice period: state it exactly as your contract says',
+    'Right to work: answer the question for the country of the role',
+    'Current job title: enter the title on your CV, not an informal one',
+    'Yes or no experience questions: answer from the JD requirements, since the CV cannot'
+  ];
+  var MON = '(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\\.?\\s+)?(?:19|20)\\d{2}';
+  var ATS_RE = new RegExp('\\b(' + MON + ')(\\s+to\\s+|\\s*[\\u2013\\u2014]\\s*)(' + MON + '|present|current|now|ongoing)\\b', 'ig');
+
+  function atsDates(cvText) {
+    var out = [];
+    String(cvText || '').split(/\r?\n/).forEach(function (line, i) {
+      var matches = [], m;
+      ATS_RE.lastIndex = 0;
+      while ((m = ATS_RE.exec(line)) !== null) {
+        matches.push({ found: m[0], fix: m[1] + ' - ' + m[3] });
+        if (m[0].length === 0) ATS_RE.lastIndex++;
+      }
+      if (matches.length) out.push({ line: i + 1, text: line.trim(), matches: matches });
+    });
+    return out;
+  }
+
+  function normWords(s) {
+    return String(s || '').toLowerCase()
+      .replace(/(\w)-[ \t]*\r?\n[ \t]*(\w)/g, '$1$2')
+      .replace(/['‘’‛]/g, '')
+      .replace(/[^\p{L}\p{N}]+/gu, ' ')
+      .trim().split(' ').filter(Boolean);
+  }
+  // Maximal runs of at least minLen words that appear in both texts. Each phrase is reported once,
+  // and a phrase that sits inside a longer reported phrase is dropped.
+  function echoPhrases(cvText, jdText, minLen) {
+    var A = normWords(cvText), B = normWords(jdText), n = A.length, m = B.length;
+    var seen = {}, list = [];
+    var prev = new Array(m + 1).fill(0), cur;
+    var rows = [];
+    for (var i = 1; i <= n; i++) {
+      cur = new Array(m + 1).fill(0);
+      for (var j = 1; j <= m; j++) if (A[i - 1] === B[j - 1]) cur[j] = prev[j - 1] + 1;
+      rows.push(cur); prev = cur;
+    }
+    // rows[i-1][j] is the common suffix length ending at A[i-1], B[j-1]. A run is maximal when it cannot extend right.
+    for (var a = 1; a <= n; a++) for (var b = 1; b <= m; b++) {
+      var L = rows[a - 1][b];
+      if (L < minLen) continue;
+      var extends_ = a < n && b < m && rows[a][b + 1] === L + 1;
+      if (extends_) continue;
+      var ph = A.slice(a - L, a).join(' ');
+      if (!seen[ph]) { seen[ph] = true; list.push(ph); }
+    }
+    return list.filter(function (p) {
+      return !list.some(function (q) { return q !== p && q.length > p.length && (' ' + q + ' ').indexOf(' ' + p + ' ') >= 0; });
+    }).sort(function (x, y) { return y.split(' ').length - x.split(' ').length || (x < y ? -1 : 1); });
+  }
+
+  function ymLabel(idx) { var y = Math.floor(idx / 12), mo = idx % 12 + 1; return y + '-' + (mo < 10 ? '0' : '') + mo; }
+  function sgn(n) { return (n > 0 ? '+' : '') + fmt(n); }
+
+  function computeC14(assessment, cvText, jdText, weights) {
+    var a = assessment || {}, w = weights || {}, k = w.c14 || {};
+    var d = function (key, def) { return typeof k[key] === 'number' ? k[key] : def; };
+    var c14 = a.c14, hasAi = !!(c14 && typeof c14 === 'object');
+    c14 = c14 || {};
+    var cap = monthIndex(String((a.meta && a.meta.assessed_on) || '').slice(0, 7), 'meta.assessed_on');
+    var lookback = d('lookback_years', 10);
+    var winStart = cap - lookback * 12;
+    var roles = ((a.c12 || {}).roles || []).map(function (r, i) {
+      var cur = r.current === true || r.end === null || r.end === undefined;
+      var s = monthIndex(r.start, 'c12.roles[' + i + '].start');
+      var e = cur ? cap : monthIndex(r.end, 'c12.roles[' + i + '].end');
+      return { i: i, r: r, s: s, e: e, cur: cur };
+    });
+    var items = [], notes = [];
+    var qpath = function (x) { return 'c12.roles[' + x.i + '].quote'; };
+    var who = function (x) { return (x.r.employer || 'role') + ' ' + ymLabel(x.s) + ' to ' + (x.cur ? 'present' : ymLabel(x.e)); };
+
+    if (hasAi) {
+      // target seniority
+      var tagged = roles.filter(function (x) { return x.r.at_target_seniority === true; });
+      var months = 0, parts = [];
+      tagged.forEach(function (x) {
+        var s = Math.max(x.s, winStart), e = Math.min(x.e, cap);
+        var m = e >= s ? e - s + 1 : 0;
+        months += m; parts.push(who(x) + ' ' + m + ' months');
+      });
+      var fullM = d('seniority_full_years', 3) * 12, pts, desc;
+      if (months >= fullM) { pts = d('seniority_full_points', 5); desc = 'at least ' + d('seniority_full_years', 3) + ' years'; }
+      else if (months > 0) { pts = 0; desc = 'under ' + d('seniority_full_years', 3) + ' years'; }
+      else { pts = d('seniority_none_points', -5); desc = 'none'; }
+      items.push({ key: 'seniority', label: 'Time at the target seniority', points: pts,
+        working: (tagged.length ? parts.join(' + ') + ' = ' : 'no role tagged at target seniority within the last ' + lookback + ' years = ') + months + ' months (' + desc + ', threshold ' + fullM + ') = ' + sgn(pts),
+        evidence_paths: tagged.map(qpath) });
+    }
+
+    // gaps
+    var dated = roles.slice().sort(function (x, y) { return x.s - y.s || x.e - y.e; });
+    var merged = [];
+    dated.forEach(function (x) {
+      var last = merged[merged.length - 1];
+      if (last && x.s <= last.e + 0) { if (x.e > last.e) last.e = x.e; last.idx.push(x.i); }
+      else merged.push({ s: x.s, e: x.e, idx: [x.i] });
+    });
+    var gaps = [];
+    for (var g = 1; g < merged.length; g++) {
+      var gs = Math.max(merged[g - 1].e + 1, winStart), ge = merged[g].s - 1;
+      var gm = ge - gs + 1;
+      if (gm > d('gap_months', 6)) gaps.push({ from: ymLabel(gs), to: ymLabel(ge), months: gm, idx: merged[g - 1].idx.slice(-1).concat(merged[g].idx.slice(0, 1)) });
+    }
+    var gp = Math.max(d('gap_cap', -9), d('gap_points', -3) * gaps.length);
+    items.push({ key: 'gaps', label: 'Employment gaps', points: gp,
+      working: gaps.length ? gaps.map(function (x) { return x.from + ' to ' + x.to + ' = ' + x.months + ' months'; }).join('; ') + '; ' + gaps.length + ' gap(s) over ' + d('gap_months', 6) + ' months x ' + d('gap_points', -3) + ' = ' + sgn(gp) + (gp !== d('gap_points', -3) * gaps.length ? ' (capped at ' + d('gap_cap', -9) + ')' : '')
+        : 'no gap over ' + d('gap_months', 6) + ' months between dated roles in the last ' + lookback + ' years = 0',
+      evidence_paths: [].concat.apply([], gaps.map(function (x) { return x.idx.map(function (i) { return 'c12.roles[' + i + '].quote'; }); })) });
+
+    // short recent roles
+    var recent = roles.slice().sort(function (x, y) { return y.s - x.s || y.e - x.e; }).slice(0, 2);
+    var shortN = 0, sp = [];
+    recent.forEach(function (x) {
+      var m = x.e - x.s + 1, isShort = m < d('short_role_months', 12);
+      if (isShort) shortN++;
+      sp.push(who(x) + ' ' + m + ' months' + (isShort ? ' (short)' : ''));
+    });
+    var shp = shortN * d('short_role_points', -3);
+    items.push({ key: 'short_recent', label: 'Short recent roles', points: shp,
+      working: recent.length ? 'two most recent roles: ' + sp.join('; ') + '; ' + shortN + ' under ' + d('short_role_months', 12) + ' months x ' + d('short_role_points', -3) + ' = ' + sgn(shp) : 'no dated roles = 0',
+      evidence_paths: recent.map(qpath) });
+
+    if (hasAi) {
+      // contract history
+      var basis = c14.jd_basis || 'unknown', sigs = c14.contract_signals || [], cp = 0, cw;
+      if (basis === 'permanent' && sigs.length) { cp = d('contract_mismatch_points', -3); cw = 'JD is permanent and the CV shows ' + sigs.length + ' contract signal(s) = ' + sgn(cp); }
+      else if (basis === 'contract' && sigs.length) { cp = d('contract_match_points', 2); cw = 'JD is a contract role and the CV shows ' + sigs.length + ' contract signal(s) = ' + sgn(cp); }
+      else cw = 'JD basis ' + basis + ', ' + sigs.length + ' contract signal(s): no effect = 0';
+      items.push({ key: 'contract', label: 'Contract history', points: cp, working: cw,
+        evidence_paths: ['c14.jd_basis_evidence'].concat(sigs.map(function (s, i) { return 'c14.contract_signals[' + i + '].quote'; })) });
+    }
+
+    // JD echo
+    if (typeof cvText === 'string' && typeof jdText === 'string') {
+      var ph = echoPhrases(cvText, jdText, d('echo_words', 6));
+      var free = d('echo_free', 3), ep = Math.max(d('echo_cap', -5), d('echo_points', -1) * Math.max(0, ph.length - free));
+      items.push({ key: 'echo', label: 'Phrases copied from the JD', points: ep,
+        working: ph.length + ' distinct run(s) of ' + d('echo_words', 6) + ' or more words shared with the JD; first ' + free + ' free; max(' + d('echo_cap', -5) + ', ' + d('echo_points', -1) + ' x max(0, ' + ph.length + ' - ' + free + ')) = ' + sgn(ep),
+        evidence_paths: [] });
+      var echo = ph;
+    } else {
+      notes.push('JD echo skipped: CV and JD text were not supplied');
+      items.push({ key: 'echo', label: 'Phrases copied from the JD', points: 0, working: 'skipped: CV and JD text were not supplied = 0', evidence_paths: [] });
+      echo = [];
+    }
+
+    if (hasAi) {
+      // sector recency
+      var inSec = roles.filter(function (x) { return x.r.in_jd_sector === true; });
+      var sp2, sw2, sev;
+      var curSec = inSec.filter(function (x) { return x.cur; })[0];
+      if (curSec) { sp2 = d('sector_current_points', 2); sw2 = 'current role (' + who(curSec) + ') is in the JD sector = ' + sgn(sp2); sev = [qpath(curSec)]; }
+      else if (!inSec.length) { sp2 = d('sector_over_3y_points', -4); sw2 = 'no role tagged as in the JD sector = ' + sgn(sp2); sev = []; }
+      else {
+        var latest = inSec.slice().sort(function (x, y) { return y.e - x.e; })[0];
+        var since = cap - latest.e;
+        if (since < 12) { sp2 = 0; sw2 = 'last in-sector role ended ' + ymLabel(latest.e) + ', ' + since + ' months ago (under 12) = 0'; }
+        else if (since <= 36) { sp2 = d('sector_1_3y_points', -2); sw2 = 'last in-sector role ended ' + ymLabel(latest.e) + ', ' + since + ' months ago (12 to 36) = ' + sgn(sp2); }
+        else { sp2 = d('sector_over_3y_points', -4); sw2 = 'last in-sector role ended ' + ymLabel(latest.e) + ', ' + since + ' months ago (over 36) = ' + sgn(sp2); }
+        sev = [qpath(latest)];
+      }
+      items.push({ key: 'sector', label: 'Sector recency', points: sp2, working: sw2, evidence_paths: sev });
+
+      // conventional certifications
+      var cc = c14.conventional_certs || {}, cpts = 0, cwk;
+      if (cc.applies === true) {
+        var held = cc.held || [];
+        cpts = held.length ? d('certs_held_points', 2) : d('certs_missing_points', -2);
+        cwk = 'expected: ' + ((cc.expected || []).join(', ') || 'none listed') + '; held: ' + (held.join(', ') || 'none') + (cc.not_equivalent && cc.not_equivalent.length ? '; not equivalent: ' + cc.not_equivalent.join(', ') : '') + ' = ' + sgn(cpts);
+      } else cwk = 'conventional certifications do not apply to this role family = 0';
+      items.push({ key: 'certs', label: 'Conventional certifications', points: cpts, working: cwk, evidence_paths: ['c14.conventional_certs.evidence'] });
+
+      // conflict of interest
+      var coi = c14.conflict_of_interest || {}, cop = coi.present === true ? d('conflict_points', -3) : 0;
+      items.push({ key: 'conflict', label: 'Conflict of interest', points: cop,
+        working: coi.present === true ? 'possible conflict check: ' + (coi.description || 'see evidence') + ' = ' + sgn(cop) : 'no conflict of interest found = 0',
+        evidence_paths: ['c14.conflict_of_interest.evidence'] });
+    } else {
+      notes.push('c14 judgements absent: seniority, contract, sector, certification and conflict items skipped');
+    }
+
+    items.forEach(function (it) { it.points = it.points || 0; }); // no negative zero
+    var raw = r2(items.reduce(function (s, it) { return s + it.points; }, 0));
+    var lo = d('cap_min', -15), hi = d('cap_max', 10);
+    var total = r2(clamp(raw, lo, hi));
+    var education = ((a.c9 || {}).institution);
+    return {
+      items: items, total: total, raw_total: raw, cap_min: lo, cap_max: hi,
+      working: items.map(function (it) { return it.key + ' ' + sgn(it.points); }).join(', ') + ' = ' + sgn(raw) + (total !== raw ? ', clamped to ' + sgn(total) : ''),
+      flags: {
+        ats_dates: typeof cvText === 'string' ? atsDates(cvText) : [],
+        education_blank: !(typeof education === 'string' && education.trim()),
+        form_checklist: FORM_CHECKLIST.slice()
+      },
+      echo_phrases: echo, notes: notes
+    };
+  }
+
+  function scoreAll(assessment, candidate, weights, cvText, jdText) {
     var a = assessment || {}, w = weights;
     var raw = {
       c1: scoreC1(a, w), c3: scoreC3(a, w), c4: scoreC4(a),
@@ -701,6 +946,11 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     });
     var st = computeStrictness(a, w);
     var bonus = computeBonus(candidate, w, a);
+    var c14 = computeC14(a, cvText, jdText, w);
+    bonus.items = bonus.items.concat(c14.items.filter(function (it) { return it.points !== 0; }).map(function (it) { return { label: it.label, points: it.points, group: 'c14' }; }));
+    if (c14.total !== c14.raw_total) bonus.items.push({ label: 'c14 clamped to ' + sgn(c14.total), points: r2(c14.total - c14.raw_total), group: 'c14' });
+    bonus.c14 = c14.total;
+    bonus.total = r2(bonus.c11 + bonus.c13 + bonus.c14);
     var comb = combine(forCombine, w.core, null, null, bonus.total, st.gamma);
     var strictness = { quadrant: st.quadrant, base: st.base, buzz: st.buzz, strictness: r2(st.strictness), gamma: r2(st.gamma) };
     // c2 is a modifier and c13 a bonus: they appear in criteria for their working string and confidence, with no score or weight.
@@ -708,7 +958,8 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     criteria.c2 = { score: null, weight: 0, modifier: true, not_applicable: false, confidence: c2conf, working: strictnessWorking(st, comb.core, comb.adjusted) };
     criteria.c13 = { score: null, weight: 0, bonus: true, points: bonus.c13, not_applicable: false, confidence: minConfidence(a.c13 || {}),
       working: c13Working(a, bonus, w) };
-    return { criteria: criteria, core: comb.core, strictness: strictness, adjusted: comb.adjusted, bonus: bonus, total: comb.total, band: comb.band };
+    criteria.c14 = { score: null, weight: 0, bonus: true, points: c14.total, not_applicable: false, confidence: minConfidence(a.c14 || {}), working: c14.working };
+    return { criteria: criteria, c14: c14, core: comb.core, strictness: strictness, adjusted: comb.adjusted, bonus: bonus, total: comb.total, band: comb.band };
   }
 
   function c13Working(a, bonus, w) {
@@ -722,7 +973,7 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
   }
 
   return {
-    scoreAll: scoreAll, combine: combine, computeBonus: computeBonus, computeStrictness: computeStrictness, band: band,
+    scoreAll: scoreAll, computeC14: computeC14, echoPhrases: echoPhrases, atsDates: atsDates, combine: combine, computeBonus: computeBonus, computeStrictness: computeStrictness, band: band,
     unionMonths: unionMonths, monthIndex: monthIndex, CRITERIA: CRITERIA, C1_SUBS: C1_SUBS
   };
 });
@@ -821,7 +1072,7 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     var changed = JSON.stringify(W) !== JSON.stringify(D.weights.core) || JSON.stringify(SW) !== JSON.stringify(D.weights.c1_subweights) || Math.abs(STRICT - ST.value) > 1e-9;
     var b = $("custom-banner");
     b.classList.toggle("on", changed);
-    b.textContent = changed ? "Custom weights: total " + total.toFixed(1) + " (as scored: " + round1(D.total).toFixed(1) + "). The evidence and criterion scores below are unchanged." : "";
+    b.textContent = changed ? "Custom weights: total " + total.toFixed(1) + " (as scored: " + round1(D.total).toFixed(1) + "). The evidence and criterion scores below are unchanged, and the c11, c13 and c14 points (" + (D.bonusTotal >= 0 ? "+" : "") + trim(D.bonusTotal) + " in total) are fixed." : "";
     var tw = 0; IDS.forEach(function (id) { var c = D.criteria[id]; if (!c.na) tw += Number(W[D.keys[id]]) || 0; });
     IDS.forEach(function (id) {
       var el = document.querySelector('[data-weight-for="' + id + '"]');
