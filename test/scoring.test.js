@@ -208,6 +208,17 @@ test('c12 splits a combined-employer entry equally', () => {
   assert.match(r.criteria.c12.working, /36\/2 x2/);
 });
 
+test('c12 splits an "& others" entry 60/40', () => {
+  const a = base();
+  a.c12.roles = [
+    { employer: 'A', start: '2020-01', end: '2020-12' }, // 12
+    { employer: 'X, Y & others', start: '2010-01', end: '2019-12', employer_count: 2, has_others: true }]; // 120 -> 36, 36, others 48
+  const r = scoreAll(a, {}, WD); // 12, 36, 36, 48 -> median 36
+  assert.equal(r.criteria.c12.detail.median_months, 36);
+  assert.equal(r.criteria.c12.score, 100);
+  assert.match(r.criteria.c12.working, /\(others\)/);
+});
+
 test('c12 uses the current role when it is the only one; n/a with no roles', () => {
   const a = base();
   a.c12.roles = [{ employer: 'Now', start: '2022-01', end: null, current: true }]; // assessed 2022-12: 12 months

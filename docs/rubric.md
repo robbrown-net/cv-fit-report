@@ -165,8 +165,13 @@ of short engagements counts against the candidate on a sliding scale.
 2. List every role the CV dates, one entry per employer engagement, with its quote. Where one
    entry names several employers under a single date range (for example "Ford & Worldpay,
    Jun 2019 - May 2022"), set `employer_count` to the number of employers: it counts as that
-   many roles, each lasting the entry's tenure divided equally between them. Skip open-ended
-   lines that cannot be counted, such as "Earlier Career: A, B, C & others, 1994 to 2015".
+   many roles, each lasting the entry's tenure divided equally between them. Where the entry
+   ends "& others" (for example "Earlier Career: A, B, C & others, 1994 to 2015"), also set
+   `has_others`: the named employers share 60 per cent of the tenure equally, and "others" counts
+   as one more role lasting the remaining 40 per cent (`c12_others_share`, default 0.4).
+   Dates given as years only start in January and end in the month before the next role
+   starts (or in December if no later role starts that year). Record the assumption in the
+   reasoning.
 3. Tenure in months is counted inclusively, the same way as c3. The current role is excluded,
    because it is unfinished, unless it is the only role.
 4. `c12 = min(median tenure / (expected years * 12), 1) * 100`.

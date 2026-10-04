@@ -83,5 +83,6 @@
   },
   "c2_buzz_max": 0.25,
   "c2_gamma_base": 0.5,
-  "c12_default_expected_years": 3
+  "c12_default_expected_years": 3,
+  "c12_others_share": 0.4
 }
