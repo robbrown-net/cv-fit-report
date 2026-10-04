@@ -4,9 +4,7 @@ How well does this CV fit this job, and **why**? An AI-assisted report that scor
 job description on ten weighted criteria, adjusted for how strict the employer is, plus bonus and screening points. Every judgement is backed by a
 verbatim quote or a cited web source, and every number can be recomputed by hand.
 
-Works with **Claude Code**, **Codex**, **Cursor**, or any agent that reads `AGENTS.md`. The same
-workflow is packaged as a portable skill in [skills/cv-fit-report/SKILL.md](skills/cv-fit-report/SKILL.md),
-which you can copy into any agent's skills folder.
+Works with **Claude Code**, **Codex**, **Cursor**, or any agent that reads `AGENTS.md`.
 
 ## What it scores
 
