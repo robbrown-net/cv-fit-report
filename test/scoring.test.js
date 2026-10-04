@@ -196,6 +196,18 @@ test('c12 median of completed tenures excludes the current role', () => {
   assert.equal(scoreAll(a, {}, WD).criteria.c12.score, 100);
 });
 
+test('c12 splits a combined-employer entry equally', () => {
+  const a = base();
+  a.c12.roles = [
+    { employer: 'A', start: '2023-01', end: '2024-12' }, // 24
+    { employer: 'B & C', start: '2019-01', end: '2021-12', employer_count: 2 }, // 36 -> 18, 18
+    { employer: 'D', start: '2017-01', end: '2017-12' }]; // 12
+  const r = scoreAll(a, {}, WD); // tenures 24, 18, 18, 12 -> median 18
+  assert.equal(r.criteria.c12.detail.median_months, 18);
+  approx(r.criteria.c12.score, 18 / 36 * 100);
+  assert.match(r.criteria.c12.working, /36\/2 x2/);
+});
+
 test('c12 uses the current role when it is the only one; n/a with no roles', () => {
   const a = base();
   a.c12.roles = [{ employer: 'Now', start: '2022-01', end: null, current: true }]; // assessed 2022-12: 12 months

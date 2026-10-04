@@ -162,8 +162,11 @@ of short engagements counts against the candidate on a sliding scale.
 1. **AI judgement:** expected years, taken from the JD if it is stated, otherwise from cited
    research on the employer or role (for example typical tenure for the level), otherwise the
    default of 3. Record which applied.
-2. List every role the CV dates, one entry per employer engagement, with its quote. Skip
-   aggregated lines such as "Earlier Career: A, B, C, 2007 to 2018", which cannot be split.
+2. List every role the CV dates, one entry per employer engagement, with its quote. Where one
+   entry names several employers under a single date range (for example "Ford & Worldpay,
+   Jun 2019 - May 2022"), set `employer_count` to the number of employers: it counts as that
+   many roles, each lasting the entry's tenure divided equally between them. Skip open-ended
+   lines that cannot be counted, such as "Earlier Career: A, B, C & others, 1994 to 2015".
 3. Tenure in months is counted inclusively, the same way as c3. The current role is excluded,
    because it is unfinished, unless it is the only role.
 4. `c12 = min(median tenure / (expected years * 12), 1) * 100`.

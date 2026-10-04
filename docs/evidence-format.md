@@ -104,7 +104,8 @@ report.pdf        written by bin/report.js
   "c12": {
     "expected_years": { "value": 3, "from": "jd|research|default", "evidence": Evidence },
     "roles": [ { "employer": "...", "title": "...", "start": "2019-06", "end": "2020-05",
-                 "current": false, "quote": Quote } ],
+                 "current": false, "employer_count": 1,   // >1 when one entry names several employers
+                 "quote": Quote } ],
     "evidence": Evidence
   },
   "c13": {

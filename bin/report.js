@@ -304,7 +304,10 @@ function c12Detail(ctx, a, sc) {
   const d = sc.detail || {};
   const asOf = a.meta && a.meta.assessed_on;
   const now = parseYM(asOf, new Date().getFullYear() * 12 + new Date().getMonth());
-  const months = roles.map((r) => { const s0 = parseYM(r.start, null), e0 = parseYM(r.end, now); return s0 == null ? 0 : Math.max(0, e0 - s0 + 1); });
+  const total = roles.map((r) => { const s0 = parseYM(r.start, null), e0 = parseYM(r.end, now); return s0 == null ? 0 : Math.max(0, e0 - s0 + 1); });
+  const nEmp = roles.map((r) => (Number.isInteger(r.employer_count) && r.employer_count > 1 ? r.employer_count : 1));
+  const months = total.map((m, i) => m / nEmp[i]);
+  const mLabel = (i) => (nEmp[i] > 1 ? `${total[i]} &divide; ${nEmp[i]} = ${trim(months[i])}` : String(total[i]));
   const counted = new Set(arr(d.role_indexes));
   const ev = c.expected_years || {};
   const expM = Number(d.expected_months) || (Number(ev.value) || 3) * 12;
@@ -312,9 +315,9 @@ function c12Detail(ctx, a, sc) {
   let h = `<p class="small">Expected tenure: <b>${esc(trim(expM / 12))} years</b> (${esc(ev.from || "default")}). Median tenure of the counted roles: <b>${esc(trim(Number(d.median_months) || 0))} months</b>. c12 = min(median / (${esc(trim(expM / 12))} &times; 12), 1) &times; 100 = <b>${esc(num(sc.score))}</b>.</p>`;
   h += h4("Role timeline against expected tenure");
   h += `<div class="tl" role="img" aria-label="Tenure of each role in months against the expected ${esc(trim(expM))} months">` +
-    roles.map((r, i) => `<div class="tl-row${counted.has(i) ? "" : " ex"}"><span class="tl-name">${esc(r.employer)}</span><span class="tl-track"><i style="width:${(months[i] / scale * 100).toFixed(1)}%"></i><u style="left:${(expM / scale * 100).toFixed(1)}%" title="expected ${esc(trim(expM))} months"></u></span><span class="tl-m">${months[i]} m</span></div>`).join("") +
+    roles.map((r, i) => `<div class="tl-row${counted.has(i) ? "" : " ex"}"><span class="tl-name">${esc(r.employer)}</span><span class="tl-track"><i style="width:${(months[i] / scale * 100).toFixed(1)}%"></i><u style="left:${(expM / scale * 100).toFixed(1)}%" title="expected ${esc(trim(expM))} months"></u></span><span class="tl-m">${trim(months[i])} m</span></div>`).join("") +
     `<p class="small muted">The vertical mark is the expected ${esc(trim(expM))} months.</p></div>`;
-  h += table(["Employer", "Title", "Dates", "Months", "Counted"], roles.map((r, i) => [`<b>${esc(r.employer)}</b>`, esc(r.title), `${esc(r.start)} to ${esc(r.end || "present")}`, String(months[i]), counted.has(i) ? '<span class="badge ok">counted</span>' : '<span class="badge">current role: excluded</span>']), [3]);
+  h += table(["Employer", "Title", "Dates", "Months", "Counted"], roles.map((r, i) => [`<b>${esc(r.employer)}</b>`, esc(r.title), `${esc(r.start)} to ${esc(r.end || "present")}`, mLabel(i) + (nEmp[i] > 1 ? ` <span class="small muted">(${nEmp[i]} employers, split equally)</span>` : ""), counted.has(i) ? '<span class="badge ok">counted</span>' : '<span class="badge">current role: excluded</span>']), [3]);
   h += h4("Expected years") + evidence(ctx, ev.evidence, "c12.expected_years.evidence");
   h += roles.map((r, i) => r.quote ? `<details class="inline"><summary>${esc(r.employer)}</summary>${quoteBlock(ctx, r.quote, "CV", `c12.roles[${i}].quote`)}</details>` : "").join("");
   h += evidence(ctx, c.evidence, "c12.evidence");
