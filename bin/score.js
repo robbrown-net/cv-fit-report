@@ -90,6 +90,7 @@ function main() {
     total: result.total,
     band: result.band
   };
+  if (result.package) scored.package = result.package;
   fs.writeFileSync(path.join(dir, 'scored.json'), JSON.stringify(scored, null, 2) + '\n');
 
   // summary
@@ -104,6 +105,7 @@ function main() {
   const st = result.strictness;
   console.log('c2   Strictness: Core ' + f1(result.core) + ' -> adjusted ' + f1(result.adjusted) + ' (' + st.quadrant + ', gamma ' + st.gamma + ')');
   const c14 = result.c14;
+  if (result.package) console.log(result.package.line);
   console.log('Bonus ' + sgn(result.bonus.total) + ' (c11 ' + sgn(result.bonus.c11) + ', c13 ' + sgn(result.bonus.c13) + ', c14 ' + sgn(result.bonus.c14) + ')  Total ' + f1(result.total) + '  Band: ' + result.band);
   console.log('Screening c14 ' + sgn(c14.total) + ' (' + c14.items.map((i) => i.key + ' ' + sgn(i.points)).join(', ') + ')');
   c14.notes.forEach((n) => console.log('  note: ' + n));

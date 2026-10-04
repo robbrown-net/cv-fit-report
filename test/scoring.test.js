@@ -5,7 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawnSync } = require('child_process');
-const { scoreAll, combine, computeBonus, band, computeC14, echoPhrases, atsDates } = require('../lib/scoring');
+const { scoreAll, combine, computeBonus, band, computeC14, echoPhrases, atsDates, computePackage } = require('../lib/scoring');
 const { verify, normalise } = require('../lib/verify');
 const { loadWeights, deepMerge } = require('../lib/weights');
 
@@ -595,4 +595,70 @@ test('CLI: invalid input exits 2 with path-based message', () => {
   });
   assert.equal(r.status, 2);
   assert.match(r.stderr, /c3\.items\[0\]\.cv_roles\[0\]\.start must be YYYY-MM/);
+});
+
+// ---- package and location (not scored)
+const pkg = (comparables) => ({
+  posted: { salary: 'not stated', benefits: [], evidence: ev() },
+  estimate: { currency: 'GBP', period: 'year', low: 70000, high: 90000, basis: 'b', confidence: 'medium' },
+  comparables,
+  location: { office: 'London', work_pattern: 'hybrid', office_days_per_week: 4, evidence: ev() }
+});
+const cmp = (scope, figure, extra) => Object.assign({ source_id: 'S1', label: scope, scope, figure, period: 'year', as_of: '2026-09' }, extra);
+
+test('package: midpoint, London premium and summary line', () => {
+  const p = computePackage({ package: pkg([cmp('london', 90000), cmp('london', 100000), cmp('uk_ex_london', 80000)]) });
+  assert.equal(p.midpoint, 80000);
+  approx(p.london_premium_pct, 18.75);
+  assert.equal(p.line, 'Package: £70,000 - £90,000 per year (mid £80,000); London premium 19%; hybrid, 4 office days');
+});
+
+test('package: premium is null when a group or the same period is missing', () => {
+  assert.equal(computePackage({ package: pkg([cmp('london', 90000)]) }).london_premium_pct, null);
+  assert.equal(computePackage({ package: pkg([cmp('uk_ex_london', 80000)]) }).london_premium_pct, null);
+  assert.equal(computePackage({ package: pkg([cmp('london', 90000), cmp('uk_ex_london', 400, { period: 'day' })]) }).london_premium_pct, null);
+});
+
+test('package: absent for a legacy file and never changes the score', () => {
+  const a = base();
+  const without = scoreAll(a, {}, W, 'cv', 'jd');
+  assert.equal(without.package, null);
+  a.package = pkg([cmp('london', 90000), cmp('uk_ex_london', 80000)]);
+  const withPkg = scoreAll(a, {}, W, 'cv', 'jd');
+  assert.equal(withPkg.total, without.total);
+  assert.equal(withPkg.package.midpoint, 80000);
+});
+
+test('CLI: legacy file without package is valid and scored.json has no package', () => {
+  const { r, dir } = runCli(() => {});
+  assert.equal(r.status, 0);
+  assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'scored.json'), 'utf8')).package, undefined);
+  assert.ok(!r.stdout.includes('Package:'));
+});
+
+test('CLI: valid package prints one line and is written to scored.json', () => {
+  const { r, dir } = runCli((a) => { a.package = pkg([cmp('london', 90000), cmp('uk_ex_london', 80000)]); });
+  assert.equal(r.status, 0);
+  assert.match(r.stdout, /Package: £70,000 - £90,000 per year \(mid £80,000\); London premium 13%; hybrid, 4 office days/);
+  assert.equal(JSON.parse(fs.readFileSync(path.join(dir, 'scored.json'), 'utf8')).package.midpoint, 80000);
+});
+
+test('CLI: package validation rejects bad enums, unknown source and low above high', () => {
+  const bad = (mutate) => runCli((a) => { a.package = pkg([cmp('london', 90000)]); mutate(a.package); }).r;
+  let r = bad((p) => { p.comparables[0].scope = 'mars'; });
+  assert.equal(r.status, 2); assert.match(r.stderr, /package\.comparables\[0\]\.scope must be one of/);
+  r = bad((p) => { p.comparables[0].period = 'week'; });
+  assert.match(r.stderr, /package\.comparables\[0\]\.period must be one of/);
+  r = bad((p) => { p.comparables[0].source_id = 'S99'; });
+  assert.match(r.stderr, /package\.comparables\[0\]\.source_id must reference an id in sources/);
+  r = bad((p) => { p.estimate.low = 100000; });
+  assert.match(r.stderr, /package\.estimate\.low must not be greater than high/);
+  r = bad((p) => { p.location.work_pattern = 'sometimes'; });
+  assert.match(r.stderr, /package\.location\.work_pattern must be one of/);
+});
+
+test('CLI: package quotes are verified like all others', () => {
+  const { r } = runCli((a) => { a.package = pkg([]); a.package.posted.evidence = ev({ jd_quotes: [{ text: 'not in the job text' }] }); });
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /UNVERIFIED package\.posted\.evidence\.jd_quotes\[0\]/);
 });

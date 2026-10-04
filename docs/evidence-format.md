@@ -123,6 +123,18 @@ report.pdf        written by bin/report.js
                             "not_equivalent": ["DSDM Atern"], "evidence": Evidence },
     "conflict_of_interest": { "present": false, "description": "", "evidence": Evidence }
   },
+  "package": {
+    "posted": { "salary": "not stated", "benefits": ["..."], "evidence": Evidence },
+    "estimate": { "currency": "GBP", "period": "year|day", "low": 70000, "high": 90000,
+                  "basis": "how the band was derived", "confidence": "high|medium|low" },
+    "comparables": [ { "source_id": "S9", "label": "Technical Delivery Manager, London median",
+                       "scope": "london|uk_ex_london|uk|remote|employer|parent", "figure": 80000,
+                       "period": "year|day", "as_of": "2026-09" } ],
+    "location": { "office": "...", "work_pattern": "office|hybrid|remote", "office_days_per_week": 5,
+                  "remote_days_note": "...", "evidence": Evidence },
+    "location_strategy": { "summary": "...", "evidence": Evidence },
+    "contract_effects": { "summary": "...", "evidence": Evidence }
+  },
   "summary": {
     "strengths": ["..."],               // each strength names the criterion it comes from, e.g. "(c1)"
     "risks": ["..."],

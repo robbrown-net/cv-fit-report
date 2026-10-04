@@ -27,6 +27,8 @@ which you can copy into any agent's skills folder.
 | 13 | Consulting experience: roles at top-10 firms for the industry, more if the work relates to the JD (capped at +10) | bonus points |
 | 14 | Screening signals: time at the target seniority, employment gaps, short recent roles, contract history, phrases copied from the JD, sector recency, conventional certifications and conflicts of interest (clamped between -15 and +10). The report also flags date ranges an applicant tracking system may not read, a blank education field and application form questions | plus and minus points |
 
+The report also has an unscored "Package and location" section: the posted package, an estimated pay band with cited comparables, the London premium, the work pattern and the employer's location strategy. It never changes the score.
+
 `total = clamp(adjusted + c11 + c13 + c14, 0, 100)`, where `adjusted = 100 * (core/100)^gamma` and gamma comes from c2.
 The full logic, with every formula, is in [docs/rubric.md](docs/rubric.md). Change any weight in
 `config/weights.local.json`, or live with the sliders in the HTML report.

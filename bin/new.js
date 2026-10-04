@@ -45,6 +45,14 @@ function skeleton(company, title, today) {
       conventional_certs: { applies: false, expected: [], held: [], not_equivalent: [], evidence: ev() },
       conflict_of_interest: { present: false, description: '', evidence: ev() }
     },
+    package: {
+      posted: { salary: 'not stated', benefits: [], evidence: ev() },
+      estimate: { currency: 'GBP', period: 'year', low: null, high: null, basis: '', confidence: 'medium' },
+      comparables: [],
+      location: { office: null, work_pattern: null, office_days_per_week: null, remote_days_note: '', evidence: ev() },
+      location_strategy: { summary: '', evidence: ev() },
+      contract_effects: { summary: '', evidence: ev() }
+    },
     summary: { strengths: [], risks: [], actions: [] }
   };
 }

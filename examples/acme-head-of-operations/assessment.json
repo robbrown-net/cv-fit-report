@@ -56,6 +56,34 @@
       "title": "Example news (illustrative): Acme Corp hiring outlook",
       "accessed": "2026-10-04",
       "quote": "Acme Corp has no hiring freeze and is recruiting across its payments division, with no stated preference for industry insiders."
+    },
+    {
+      "id": "S8",
+      "url": "https://example.com/salary/head-of-operations-london",
+      "title": "Example salary data (illustrative): Head of Operations, London",
+      "accessed": "2026-10-04",
+      "quote": "Median advertised salary for Head of Operations in London is 115,000 pounds per year."
+    },
+    {
+      "id": "S9",
+      "url": "https://example.com/salary/head-of-operations-uk-excluding-london",
+      "title": "Example salary data (illustrative): Head of Operations, UK excluding London",
+      "accessed": "2026-10-04",
+      "quote": "Median advertised salary for Head of Operations outside London is 96,000 pounds per year."
+    },
+    {
+      "id": "S10",
+      "url": "https://example.com/careers/acme-operations-bands",
+      "title": "Example salary data (illustrative): Acme Corp operations bands",
+      "accessed": "2026-10-04",
+      "quote": "Acme Corp advertises senior operations leader roles at 100,000 to 120,000 pounds per year."
+    },
+    {
+      "id": "S11",
+      "url": "https://example.com/news/acme-regional-hubs",
+      "title": "Example salary data (illustrative): Acme Corp regional hubs",
+      "accessed": "2026-10-04",
+      "quote": "Acme Corp plans to open two regional hubs in the north of England and to hire new operations roles there."
     }
   ],
   "current_role": {
@@ -962,6 +990,94 @@
         "jd_quotes": [],
         "source_ids": [],
         "reasoning": "The current employer is a payments company and no relationship with the hiring company that would need an independence check was found.",
+        "confidence": "medium"
+      }
+    }
+  },
+  "package": {
+    "posted": {
+      "salary": "not stated",
+      "benefits": [],
+      "evidence": {
+        "cv_quotes": [],
+        "jd_quotes": [],
+        "source_ids": [],
+        "reasoning": "The job description gives no salary or benefits.",
+        "confidence": "high"
+      }
+    },
+    "estimate": {
+      "currency": "GBP",
+      "period": "year",
+      "low": 95000,
+      "high": 120000,
+      "basis": "Spans the UK-excluding-London median and the employer's own advertised band, with the London median close to the top.",
+      "confidence": "medium"
+    },
+    "comparables": [
+      {
+        "source_id": "S8",
+        "label": "Head of Operations, London median",
+        "scope": "london",
+        "figure": 115000,
+        "period": "year",
+        "as_of": "2026-09"
+      },
+      {
+        "source_id": "S9",
+        "label": "Head of Operations, UK excluding London median",
+        "scope": "uk_ex_london",
+        "figure": 96000,
+        "period": "year",
+        "as_of": "2026-09"
+      },
+      {
+        "source_id": "S10",
+        "label": "Acme Corp advertised band, midpoint",
+        "scope": "employer",
+        "figure": 110000,
+        "period": "year",
+        "as_of": "2026-08"
+      }
+    ],
+    "location": {
+      "office": "London",
+      "work_pattern": "hybrid",
+      "office_days_per_week": 3,
+      "remote_days_note": "The job description says hybrid but gives no number of days; three is assumed from the employer's advertised roles.",
+      "evidence": {
+        "cv_quotes": [],
+        "jd_quotes": [
+          {
+            "text": "London (hybrid)"
+          }
+        ],
+        "source_ids": [
+          "S10"
+        ],
+        "reasoning": "The header of the job description states London and hybrid.",
+        "confidence": "medium"
+      }
+    },
+    "location_strategy": {
+      "summary": "Acme Corp has announced regional hubs and plans to hire operations roles there, so pay for this role may drift towards the lower UK-excluding-London level over time.",
+      "evidence": {
+        "cv_quotes": [],
+        "jd_quotes": [],
+        "source_ids": [
+          "S11"
+        ],
+        "reasoning": "The announcement describes new hires outside London.",
+        "confidence": "low"
+      }
+    },
+    "contract_effects": {
+      "summary": "The role is permanent, so no contract-basis adjustment applies.",
+      "evidence": {
+        "cv_quotes": [],
+        "jd_quotes": [],
+        "source_ids": [],
+        "reasoning": "No contract signals were found in the job description.",
         "confidence": "medium"
       }
     }

@@ -227,13 +227,39 @@ mark { background: var(--accent-soft); color: var(--ink); padding: 1px 4px; bord
 .pos { color: var(--accent); font-weight: 600; }
 .neg { color: var(--bad); font-weight: 600; }
 @media (max-width: 640px) { .split { grid-template-columns: repeat(2, 1fr); } }
+
+/* package and location (not scored) */
+.pk-note { color: var(--ink-2); font-style: italic; }
+.pk-big { font: 600 24px var(--serif); margin: 4px 0 0; font-variant-numeric: tabular-nums; }
+.pk { --sc-london: #b3372b; --sc-uk_ex_london: #1f6f6b; --sc-uk: #8a6d1f; --sc-remote: #5b4bb0; --sc-employer: #1d5fa8; --sc-parent: #7a7a7a; }
+@media (prefers-color-scheme: dark) { .pk { --sc-london: #f0877b; --sc-uk_ex_london: #6fc2bb; --sc-uk: #d9b95c; --sc-remote: #a99cf0; --sc-employer: #7fb3ec; --sc-parent: #b0b0b0; } }
+.pk-bar { position: relative; height: 84px; margin: 12px 12px 0; }
+.pk-track { position: absolute; left: 0; right: 0; top: 40px; height: 4px; background: var(--line); border-radius: 2px; }
+.pk-band { position: absolute; top: 34px; height: 16px; background: var(--accent-soft); border: 1px solid var(--accent-mid); border-radius: 8px; }
+.pk-mid { position: absolute; top: 30px; width: 2px; height: 24px; background: var(--accent); transform: translateX(-1px); }
+.pk-mid b { position: absolute; top: 26px; left: 50%; transform: translateX(-50%); font: 600 11px var(--sans); color: var(--accent); white-space: nowrap; }
+.pk-dot { position: absolute; top: 36px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--sc, var(--ink-3)); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--sc, var(--ink-3)); }
+.pk-dot b { position: absolute; left: 50%; transform: translateX(-50%); font: 11px var(--sans); color: var(--ink-2); white-space: nowrap; }
+.pk-dot b.up { bottom: 18px; } .pk-dot b.dn { top: 18px; }
+.pk-ends { display: flex; justify-content: space-between; margin: 0 12px; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.pk-legend span.sc-london::before, .pk-dot.sc-london { --sc: var(--sc-london); }
+.pk-legend span.sc-uk_ex_london::before, .pk-dot.sc-uk_ex_london { --sc: var(--sc-uk_ex_london); }
+.pk-legend span.sc-uk::before, .pk-dot.sc-uk { --sc: var(--sc-uk); }
+.pk-legend span.sc-remote::before, .pk-dot.sc-remote { --sc: var(--sc-remote); }
+.pk-legend span.sc-employer::before, .pk-dot.sc-employer { --sc: var(--sc-employer); }
+.pk-legend span.sc-parent::before, .pk-dot.sc-parent { --sc: var(--sc-parent); }
+.pk-legend span::before { background: var(--sc); border-radius: 50%; border-color: var(--sc); }
+.pk-legend { margin-top: 10px; }
+.pk h4 { font: 600 12px var(--sans); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin: 22px 0 8px; }
+.pk h4:first-child { margin-top: 0; }
+@media print { #package .panel { break-inside: avoid; } }
 </style></head><body><div class="wrap">
 <header>
   <p class="eyebrow">CV fit report</p>
   <div class="hero">
     <div class="hero-text">
       <h1>Head of Operations<br><span class="muted">at Acme Corp, Payments division</span></h1>
-      <ul class="hero-meta"><li>Candidate: <b>Alex Morgan</b></li><li>Assessed: <b>2026-10-04</b></li><li>Model: <b>Claude (illustrative fictional example)</b></li><li>75 of 75 quotes verified verbatim against the CV and JD text.</li></ul>
+      <ul class="hero-meta"><li>Candidate: <b>Alex Morgan</b></li><li>Assessed: <b>2026-10-04</b></li><li>Model: <b>Claude (illustrative fictional example)</b></li><li>76 of 76 quotes verified verbatim against the CV and JD text.</li></ul>
       
     </div>
     <div class="gauge">
@@ -343,7 +369,9 @@ mark { background: var(--accent-soft); color: var(--ink); padding: 1px 4px; bord
 
 <section id="summary"><h2>Summary</h2><div class="cols"><div><h3>Strengths</h3><ul><li>Same title, same industry and a direct competitor employer, so the current role is a very close match (c1).</li><li>Holds the required PMP and the desirable Green Belt (c10).</li><li>Salesforce and ServiceNow experience well beyond the years asked (c3).</li><li>Several full situation-action-result bullets with numbers (c8).</li></ul></div><div><h3>Risks</h3><ul><li>No Snowflake experience shown on the CV (c3).</li><li>Only one AI use is quantified, so AI evidence is moderate (c4).</li><li>Four spelling and grammar slips in a CV for a senior role (c6, c7).</li><li>Several bullets describe duties with no result (c8) and some phrasing reads as stock AI wording (c5).</li></ul></div><div><h3>Actions</h3><ul><li>Fix the two spelling errors and two grammar errors before applying (c6, c7).</li><li>Add a result to the duty bullets, or cut them (c8).</li><li>Add Snowflake or similar warehouse experience if true, for example via the Power BI reporting (c3).</li><li>Quantify the fraud-alert and Copilot outcomes (c4).</li><li>Replace &quot;spearheaded&quot; and &quot;leveraged&quot; phrasing with specifics (c5).</li></ul></div></div></section>
 
-<section id="sources"><h2>Sources</h2><ol class="sources"><li id="src-S1"><span class="sid">[S1]</span><b>Example industry report (illustrative): UK payments industry classification</b><br><a class="url" href="https://example.com/reports/uk-payments-industry-classification" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/uk-payments-industry-classification</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp and Example Payments Ltd are both classified as payment processors (SIC 66190).</blockquote></li><li id="src-S2"><span class="sid">[S2]</span><b>Example industry report (illustrative): merchant acquiring competitor landscape</b><br><a class="url" href="https://example.com/reports/merchant-acquiring-competitor-landscape" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/merchant-acquiring-competitor-landscape</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Example Payments Ltd is named as a direct competitor of Acme Corp in UK merchant acquiring.</blockquote></li><li id="src-S3"><span class="sid">[S3]</span><b>Example market share table (illustrative): UK merchant acquiring</b><br><a class="url" href="https://example.com/rankings/uk-merchant-acquiring-market-share" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/uk-merchant-acquiring-market-share</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp is the largest UK merchant acquirer by revenue, 1.2 times the size of its nearest rival.</blockquote></li><li id="src-S4"><span class="sid">[S4]</span><b>Example consulting ranking (illustrative): top 10 firms serving payments</b><br><a class="url" href="https://example.com/rankings/top-consulting-firms-payments" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/top-consulting-firms-payments</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Globex Consulting is ranked eighth among consulting firms serving payments and banking clients.</blockquote></li><li id="src-S5"><span class="sid">[S5]</span><b>Example industry report (illustrative): payments market growth forecast</b><br><a class="url" href="https://example.com/reports/payments-market-growth-forecast" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/payments-market-growth-forecast</a><div class="small muted">Accessed 2026-10-04</div><blockquote>UK merchant payments processing is forecast to grow by 14.0 per cent a year to 2030.</blockquote></li><li id="src-S6"><span class="sid">[S6]</span><b>Example university groupings (illustrative)</b><br><a class="url" href="https://example.com/rankings/uk-universities-groups" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/uk-universities-groups</a><div class="small muted">Accessed 2026-10-04</div><blockquote>The University of Example is a member of the research-intensive Russell Group-style mission group.</blockquote></li><li id="src-S7"><span class="sid">[S7]</span><b>Example news (illustrative): Acme Corp hiring outlook</b><br><a class="url" href="https://example.com/news/acme-hiring-outlook" rel="noopener noreferrer nofollow" target="_blank">https://example.com/news/acme-hiring-outlook</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp has no hiring freeze and is recruiting across its payments division, with no stated preference for industry insiders.</blockquote></li></ol></section>
+<section id="package"><h2>Package and location</h2><p class="lede pk-note">Not scored: context for your decision.</p><div class="panel pk"><h4>Posted package</h4><p><b>Salary:</b> not stated</p><p class="reasoning">The job description gives no salary or benefits. </p><p><span class="badge conf-high">high confidence</span></p><h4>Estimated band</h4><p class="pk-big">£95,000 - £120,000 <span class="muted">per year</span></p><div class="pk-bar" role="img" aria-label="Estimated band £95,000 to £120,000 per year"><div class="pk-track"></div><div class="pk-band" style="left:6.90%;width:86.20%"></div><span class="pk-mid" style="left:50.00%"><b>mid £107,500</b></span><span class="pk-dot sc-uk_ex_london" style="left:10.34%" title="Head of Operations, UK excluding London median: £96,000 (UK excluding London)"><b class="up">£96,000</b></span><span class="pk-dot sc-employer" style="left:58.62%" title="Acme Corp advertised band, midpoint: £110,000 (Employer&#39;s own band)"><b class="dn">£110,000</b></span><span class="pk-dot sc-london" style="left:75.86%" title="Head of Operations, London median: £115,000 (London)"><b class="up">£115,000</b></span></div><div class="pk-ends"><span>£95,000</span><span>£120,000</span></div><div class="legend pk-legend"><span class="sc-london">London</span><span class="sc-uk_ex_london">UK excluding London</span><span class="sc-employer">Employer&#39;s own band</span></div><p class="small">Midpoint <b>£107,500</b>. London premium <b>20%</b>. <span class="badge ">medium confidence</span></p><p class="reasoning">Spans the UK-excluding-London median and the employer&#39;s own advertised band, with the London median close to the top.</p><div class="tablewrap"><table><thead><tr><th>Comparable</th><th>Scope</th><th class="num">Figure</th><th>As of</th><th>Source</th></tr></thead><tbody><tr><td>Head of Operations, London median</td><td>London</td><td class="num">£115,000 per year</td><td>2026-09</td><td><a class="fn" href="#src-S8">[S8]</a></td></tr><tr><td>Head of Operations, UK excluding London median</td><td>UK excluding London</td><td class="num">£96,000 per year</td><td>2026-09</td><td><a class="fn" href="#src-S9">[S9]</a></td></tr><tr><td>Acme Corp advertised band, midpoint</td><td>Employer&#39;s own band</td><td class="num">£110,000 per year</td><td>2026-08</td><td><a class="fn" href="#src-S10">[S10]</a></td></tr></tbody></table></div><h4>Location</h4><p><b>Office:</b> London<br><b>Work pattern:</b> Hybrid<br><b>Office days:</b> 3 per week<br><b>Note:</b> The job description says hybrid but gives no number of days; three is assumed from the employer&#39;s advertised roles.</p><blockquote class="jd"><span class="tag">JD</span>London (hybrid)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The header of the job description states London and hybrid. <a class="fn" href="#src-S10">[S10]</a></p><p><span class="badge ">medium confidence</span></p><h4>Employer location strategy</h4><p>Acme Corp has announced regional hubs and plans to hire operations roles there, so pay for this role may drift towards the lower UK-excluding-London level over time.</p><p class="reasoning">The announcement describes new hires outside London. <a class="fn" href="#src-S11">[S11]</a></p><p><span class="badge conf-low">low confidence</span></p><h4>Contract effects</h4><p>The role is permanent, so no contract-basis adjustment applies.</p><p class="reasoning">No contract signals were found in the job description. </p><p><span class="badge ">medium confidence</span></p><p class="pk-note small">Not scored: context for your decision.</p></div></section>
+
+<section id="sources"><h2>Sources</h2><ol class="sources"><li id="src-S1"><span class="sid">[S1]</span><b>Example industry report (illustrative): UK payments industry classification</b><br><a class="url" href="https://example.com/reports/uk-payments-industry-classification" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/uk-payments-industry-classification</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp and Example Payments Ltd are both classified as payment processors (SIC 66190).</blockquote></li><li id="src-S2"><span class="sid">[S2]</span><b>Example industry report (illustrative): merchant acquiring competitor landscape</b><br><a class="url" href="https://example.com/reports/merchant-acquiring-competitor-landscape" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/merchant-acquiring-competitor-landscape</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Example Payments Ltd is named as a direct competitor of Acme Corp in UK merchant acquiring.</blockquote></li><li id="src-S3"><span class="sid">[S3]</span><b>Example market share table (illustrative): UK merchant acquiring</b><br><a class="url" href="https://example.com/rankings/uk-merchant-acquiring-market-share" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/uk-merchant-acquiring-market-share</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp is the largest UK merchant acquirer by revenue, 1.2 times the size of its nearest rival.</blockquote></li><li id="src-S4"><span class="sid">[S4]</span><b>Example consulting ranking (illustrative): top 10 firms serving payments</b><br><a class="url" href="https://example.com/rankings/top-consulting-firms-payments" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/top-consulting-firms-payments</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Globex Consulting is ranked eighth among consulting firms serving payments and banking clients.</blockquote></li><li id="src-S5"><span class="sid">[S5]</span><b>Example industry report (illustrative): payments market growth forecast</b><br><a class="url" href="https://example.com/reports/payments-market-growth-forecast" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/payments-market-growth-forecast</a><div class="small muted">Accessed 2026-10-04</div><blockquote>UK merchant payments processing is forecast to grow by 14.0 per cent a year to 2030.</blockquote></li><li id="src-S6"><span class="sid">[S6]</span><b>Example university groupings (illustrative)</b><br><a class="url" href="https://example.com/rankings/uk-universities-groups" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/uk-universities-groups</a><div class="small muted">Accessed 2026-10-04</div><blockquote>The University of Example is a member of the research-intensive Russell Group-style mission group.</blockquote></li><li id="src-S7"><span class="sid">[S7]</span><b>Example news (illustrative): Acme Corp hiring outlook</b><br><a class="url" href="https://example.com/news/acme-hiring-outlook" rel="noopener noreferrer nofollow" target="_blank">https://example.com/news/acme-hiring-outlook</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp has no hiring freeze and is recruiting across its payments division, with no stated preference for industry insiders.</blockquote></li><li id="src-S8"><span class="sid">[S8]</span><b>Example salary data (illustrative): Head of Operations, London</b><br><a class="url" href="https://example.com/salary/head-of-operations-london" rel="noopener noreferrer nofollow" target="_blank">https://example.com/salary/head-of-operations-london</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Median advertised salary for Head of Operations in London is 115,000 pounds per year.</blockquote></li><li id="src-S9"><span class="sid">[S9]</span><b>Example salary data (illustrative): Head of Operations, UK excluding London</b><br><a class="url" href="https://example.com/salary/head-of-operations-uk-excluding-london" rel="noopener noreferrer nofollow" target="_blank">https://example.com/salary/head-of-operations-uk-excluding-london</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Median advertised salary for Head of Operations outside London is 96,000 pounds per year.</blockquote></li><li id="src-S10"><span class="sid">[S10]</span><b>Example salary data (illustrative): Acme Corp operations bands</b><br><a class="url" href="https://example.com/careers/acme-operations-bands" rel="noopener noreferrer nofollow" target="_blank">https://example.com/careers/acme-operations-bands</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp advertises senior operations leader roles at 100,000 to 120,000 pounds per year.</blockquote></li><li id="src-S11"><span class="sid">[S11]</span><b>Example salary data (illustrative): Acme Corp regional hubs</b><br><a class="url" href="https://example.com/news/acme-regional-hubs" rel="noopener noreferrer nofollow" target="_blank">https://example.com/news/acme-regional-hubs</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp plans to open two regional hubs in the north of England and to hire new operations roles there.</blockquote></li></ol></section>
 
 <footer>Every number above can be recomputed from docs/rubric.md and the evidence shown.</footer>
 </div>
@@ -919,6 +947,57 @@ mark { background: var(--accent-soft); color: var(--ink); padding: 1px 4px; bord
     };
   }
 
+  // Package and location: context only, never part of the score.
+  function moneyBare(n, currency) {
+    var sym = !currency || currency === 'GBP' ? '\u00a3' : currency + ' ';
+    return sym + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  function mean(xs) { return xs.reduce(function (s, x) { return s + x; }, 0) / xs.length; }
+  function computePackage(assessment) {
+    var p = (assessment || {}).package;
+    if (!p || typeof p !== 'object') return null;
+    var est = p.estimate && typeof p.estimate === 'object' ? p.estimate : null;
+    var comps = Array.isArray(p.comparables) ? p.comparables : [];
+    var cur = est && est.currency ? est.currency : 'GBP';
+    var midpoint = null, midWorking = 'no estimate band';
+    if (est && typeof est.low === 'number' && typeof est.high === 'number') {
+      midpoint = (est.low + est.high) / 2;
+      midWorking = '(' + moneyBare(est.low, cur) + ' + ' + moneyBare(est.high, cur) + ') / 2 = ' + moneyBare(midpoint, cur);
+    }
+    // London premium: mean London figure against mean UK-excluding-London figure, in one period.
+    var periods = [];
+    if (est && est.period) periods.push(est.period);
+    comps.forEach(function (c) { if (periods.indexOf(c.period) < 0) periods.push(c.period); });
+    var premium = null, premWorking = 'London premium needs both London and UK-excluding-London comparables in the same period';
+    for (var i = 0; i < periods.length; i++) {
+      var per = periods[i];
+      var lon = comps.filter(function (c) { return c.scope === 'london' && c.period === per && typeof c.figure === 'number'; }).map(function (c) { return c.figure; });
+      var oth = comps.filter(function (c) { return c.scope === 'uk_ex_london' && c.period === per && typeof c.figure === 'number'; }).map(function (c) { return c.figure; });
+      if (lon.length && oth.length) {
+        var lm = mean(lon), om = mean(oth);
+        if (om > 0) {
+          premium = r2((lm / om - 1) * 100);
+          premWorking = 'mean London ' + moneyBare(lm, cur) + ' (' + lon.length + ') against mean UK excluding London ' + moneyBare(om, cur) + ' (' + oth.length + ') = ' + fmt(premium) + '%';
+          break;
+        }
+      }
+    }
+    var loc = p.location && typeof p.location === 'object' ? p.location : {};
+    var locText = '';
+    if (loc.work_pattern) {
+      locText = loc.work_pattern;
+      if (typeof loc.office_days_per_week === 'number' && loc.work_pattern !== 'remote') locText += ', ' + loc.office_days_per_week + ' office day' + (loc.office_days_per_week === 1 ? '' : 's');
+    }
+    var parts = [];
+    if (est && midpoint !== null) {
+      parts.push(moneyBare(est.low, cur) + ' - ' + moneyBare(est.high, cur) + ' per ' + (est.period === 'day' ? 'day' : 'year') + ' (mid ' + moneyBare(midpoint, cur) + ')');
+    } else parts.push('no estimate band');
+    if (premium !== null) parts.push('London premium ' + Math.round(premium) + '%');
+    if (locText) parts.push(locText);
+    var line = 'Package: ' + parts[0] + (parts.length > 1 ? '; ' + parts.slice(1).join('; ') : '');
+    return { midpoint: midpoint, london_premium_pct: premium, working: { midpoint: midWorking, london_premium: premWorking, location: locText, line: line }, line: line };
+  }
+
   function scoreAll(assessment, candidate, weights, cvText, jdText) {
     var a = assessment || {}, w = weights;
     var raw = {
@@ -959,7 +1038,7 @@ mark { background: var(--accent-soft); color: var(--ink); padding: 1px 4px; bord
     criteria.c13 = { score: null, weight: 0, bonus: true, points: bonus.c13, not_applicable: false, confidence: minConfidence(a.c13 || {}),
       working: c13Working(a, bonus, w) };
     criteria.c14 = { score: null, weight: 0, bonus: true, points: c14.total, not_applicable: false, confidence: minConfidence(a.c14 || {}), working: c14.working };
-    return { criteria: criteria, c14: c14, core: comb.core, strictness: strictness, adjusted: comb.adjusted, bonus: bonus, total: comb.total, band: comb.band };
+    return { criteria: criteria, c14: c14, core: comb.core, strictness: strictness, adjusted: comb.adjusted, bonus: bonus, total: comb.total, band: comb.band, package: computePackage(a) };
   }
 
   function c13Working(a, bonus, w) {
@@ -973,7 +1052,7 @@ mark { background: var(--accent-soft); color: var(--ink); padding: 1px 4px; bord
   }
 
   return {
-    scoreAll: scoreAll, computeC14: computeC14, echoPhrases: echoPhrases, atsDates: atsDates, combine: combine, computeBonus: computeBonus, computeStrictness: computeStrictness, band: band,
+    scoreAll: scoreAll, computePackage: computePackage, moneyBare: moneyBare, computeC14: computeC14, echoPhrases: echoPhrases, atsDates: atsDates, combine: combine, computeBonus: computeBonus, computeStrictness: computeStrictness, band: band,
     unionMonths: unionMonths, monthIndex: monthIndex, CRITERIA: CRITERIA, C1_SUBS: C1_SUBS
   };
 });

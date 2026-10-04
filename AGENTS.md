@@ -62,6 +62,7 @@ Run these searches before judging c1, c2, c12, c13 and c14. Record every page yo
 | c14 conventional certifications | the certifications that screeners conventionally expect for this role family and country, even when the JD does not list them (for example PRINCE2, MSP or MoP for UK programme director roles). Related methods are not equivalents: DSDM is not PRINCE2 |
 | c14 conflict of interest | whether the candidate's current employer has a relationship with the hiring company that may need an independence or conflict check, for example being its external auditor |
 | c9 | the institution's status, if it is not obviously Oxbridge, Ivy League or Russell Group |
+| package and location (not scored) | salary benchmarks for the job title (for example IT Jobs Watch, Glassdoor, Levels.fyi, Hays or Robert Walters guides), the employer's and parent company's advertised bands for similar roles, the office address and real hybrid policy, and the employer's location strategy (regional hubs, a preference for hiring outside London). Record each comparable with its scope and date |
 
 Prefer primary and dated sources. If you cannot find evidence, write that down, mark the item
 false or not applicable with `confidence: "low"`, and say "no evidence found". **Never fill a gap
@@ -87,6 +88,7 @@ Specific care points:
 - **c13:** set `top_in_industry` and `related_to_jd` per consulting role, each with evidence. `related_to_jd` only counts for a top-10 firm.
 - **c2:** place the employer in a quadrant, cite growth and share, and record the hiring-buzz adjustment with its sources. Do not assess the candidate's risk appetite: that is no longer scored.
 - **c5:** describe signals, not verdicts. Never call a CV "AI-written".
+- **package:** fill the `package` object per `docs/evidence-format.md`. It is context only and never changes the score. Give at least two cited comparables before estimating a band, and say "not stated" for anything the JD does not publish.
 - **summary:** strengths, risks and concrete actions, each tagged with its criterion, for example "(c3)".
 
 ### 5. Score
@@ -105,7 +107,7 @@ node bin/report.js reports/<folder>
 ```
 
 Tell the candidate about the flags first: the banner near the top of the report lists date ranges an applicant tracking system may not read (with the suggested fix), a blank education field, and the application form questions that often reject within a day. Then give the candidate the paths to `report.html` and `report.pdf`, the total and band (from
-`scored.json`), the two biggest levers they could pull, and a reminder that the weights can be
+`scored.json`), the estimated pay band and London premium from the "Package and location" section (context only, not scored), the two biggest levers they could pull, and a reminder that the weights can be
 changed with the sliders in the HTML report or in `config/weights.local.json`.
 
 ## Rules

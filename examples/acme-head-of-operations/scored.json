@@ -122,7 +122,7 @@
   "weights_file": "config/weights.json",
   "weights_override_file": null,
   "verification": {
-    "quotes_total": 75,
+    "quotes_total": 76,
     "quotes_unverified": 0,
     "unverified": [],
     "sources_rejected": []
@@ -391,5 +391,16 @@
     "notes": []
   },
   "total": 80.41,
-  "band": "Strong"
+  "band": "Strong",
+  "package": {
+    "midpoint": 107500,
+    "london_premium_pct": 19.79,
+    "working": {
+      "midpoint": "(£95,000 + £120,000) / 2 = £107,500",
+      "london_premium": "mean London £115,000 (1) against mean UK excluding London £96,000 (1) = 19.79%",
+      "location": "hybrid, 3 office days",
+      "line": "Package: £95,000 - £120,000 per year (mid £107,500); London premium 20%; hybrid, 3 office days"
+    },
+    "line": "Package: £95,000 - £120,000 per year (mid £107,500); London premium 20%; hybrid, 3 office days"
+  }
 }

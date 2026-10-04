@@ -413,6 +413,81 @@ function card(ctx, id, detail, w) {
     <div class="cbody">${na ? `<p>This criterion could not be assessed, so it does not count towards the total.</p>` : ""}${body}</div></details>`;
 }
 
+// ---------- package and location (not scored)
+const gbp = (n, cur) => (n == null || !isFinite(n) ? "n/a" : (!cur || cur === "GBP" ? "£" : cur + " ") + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+const SCOPE_LABEL = { london: "London", uk_ex_london: "UK excluding London", uk: "UK", remote: "Remote", employer: "Employer's own band", parent: "Parent company band" };
+const PATTERN_LABEL = { office: "Office based", hybrid: "Hybrid", remote: "Fully remote" };
+function packageFacts(a, scored) {
+  const k = a.package, sp = (scored && scored.package) || {};
+  const est = k.estimate && typeof k.estimate.low === "number" && typeof k.estimate.high === "number" ? k.estimate : null;
+  const loc = k.location || {};
+  return { k, est, sp, loc, cur: est ? est.currency : "GBP",
+    per: est && est.period === "day" ? "per day" : "per year",
+    midpoint: typeof sp.midpoint === "number" ? sp.midpoint : (est ? (est.low + est.high) / 2 : null),
+    premium: typeof sp.london_premium_pct === "number" ? sp.london_premium_pct : null };
+}
+function rangeBar(ctx, f) {
+  const { k, est, cur } = f;
+  if (!est) return "";
+  const comps = arr(k.comparables).filter((c) => typeof c.figure === "number" && c.period === est.period);
+  const vals = [est.low, est.high].concat(comps.map((c) => c.figure));
+  const lo = Math.min(...vals), hi = Math.max(...vals), pad = (hi - lo) * 0.08 || hi * 0.1 || 1;
+  const min = Math.max(0, lo - pad), max = hi + pad;
+  const pos = (v) => ((v - min) / (max - min) * 100).toFixed(2);
+  const dots = comps.slice().sort((x, y) => x.figure - y.figure).map((c, i) =>
+    `<span class="pk-dot sc-${esc(c.scope)}" style="left:${pos(c.figure)}%" title="${esc(c.label || "")}: ${esc(gbp(c.figure, cur))} (${esc(SCOPE_LABEL[c.scope] || c.scope)})"><b class="${i % 2 ? "dn" : "up"}">${esc(gbp(c.figure, cur))}</b></span>`).join("");
+  const mid = f.midpoint != null ? `<span class="pk-mid" style="left:${pos(f.midpoint)}%"><b>mid ${esc(gbp(f.midpoint, cur))}</b></span>` : "";
+  const used = [...new Set(comps.map((c) => c.scope))];
+  const legend = used.length ? `<div class="legend pk-legend">${used.map((sc) => `<span class="sc-${esc(sc)}">${esc(SCOPE_LABEL[sc] || sc)}</span>`).join("")}</div>` : "";
+  return `<div class="pk-bar" role="img" aria-label="Estimated band ${esc(gbp(est.low, cur))} to ${esc(gbp(est.high, cur))} ${esc(f.per)}"><div class="pk-track"></div>` +
+    `<div class="pk-band" style="left:${pos(est.low)}%;width:${(pos(est.high) - pos(est.low)).toFixed(2)}%"></div>${mid}${dots}</div>` +
+    `<div class="pk-ends"><span>${esc(gbp(est.low, cur))}</span><span>${esc(gbp(est.high, cur))}</span></div>${legend}`;
+}
+function packageSection(ctx, a, scored) {
+  if (!a.package || typeof a.package !== "object") return "";
+  const f = packageFacts(a, scored), { k, est, loc, cur } = f;
+  const posted = k.posted || {};
+  let h = `<section id="package"><h2>Package and location</h2><p class="lede pk-note">Not scored: context for your decision.</p><div class="panel pk">`;
+  h += h4("Posted package") + `<p><b>Salary:</b> ${esc(posted.salary || "not stated")}`;
+  if (posted.day_rate) h += `<br><b>Day rate:</b> ${esc(posted.day_rate)}`;
+  if (posted.bonus) h += `<br><b>Bonus:</b> ${esc(posted.bonus)}`;
+  h += `</p>`;
+  if (arr(posted.benefits).length) h += `<p><b>Benefits:</b> ${arr(posted.benefits).map(esc).join("; ")}</p>`;
+  h += evidence(ctx, posted.evidence, "package.posted.evidence");
+  if (est) {
+    h += h4("Estimated band") + `<p class="pk-big">${esc(gbp(est.low, cur))} - ${esc(gbp(est.high, cur))} <span class="muted">${esc(f.per)}</span></p>`;
+    h += rangeBar(ctx, f);
+    h += `<p class="small">Midpoint <b>${esc(gbp(f.midpoint, cur))}</b>. London premium <b>${f.premium == null ? "not available" : esc(Math.round(f.premium)) + "%"}</b>` +
+      (f.premium == null ? ` <span class="muted">(needs London and UK-excluding-London comparables in the same period)</span>` : "") + `. ${confBadge(est.confidence)}</p>`;
+    if (est.basis) h += `<p class="reasoning">${esc(est.basis)}</p>`;
+    const comps = arr(k.comparables);
+    if (comps.length) h += table(["Comparable", "Scope", "Figure", "As of", "Source"], comps.map((c) => [esc(c.label || ""), esc(SCOPE_LABEL[c.scope] || c.scope), esc(gbp(c.figure, cur) + (c.period === "day" ? " per day" : " per year")), esc(c.as_of || ""), footnotes(ctx, [c.source_id])]), [2]);
+  } else h += h4("Estimated band") + `<p class="muted">No estimate band was made.</p>`;
+  h += h4("Location");
+  const bits = [];
+  if (loc.office) bits.push(`<b>Office:</b> ${esc(loc.office)}`);
+  if (loc.work_pattern) bits.push(`<b>Work pattern:</b> ${esc(PATTERN_LABEL[loc.work_pattern] || loc.work_pattern)}`);
+  if (typeof loc.office_days_per_week === "number") bits.push(`<b>Office days:</b> ${esc(loc.office_days_per_week)} per week`);
+  if (loc.remote_days_note) bits.push(`<b>Note:</b> ${esc(loc.remote_days_note)}`);
+  h += bits.length ? `<p>${bits.join("<br>")}</p>` : `<p class="muted">Not stated.</p>`;
+  h += evidence(ctx, loc.evidence, "package.location.evidence");
+  const para = (title, o, p) => (o && (o.summary || o.evidence) ? h4(title) + (o.summary ? `<p>${esc(o.summary)}</p>` : "") + evidence(ctx, o.evidence, p) : "");
+  h += para("Employer location strategy", k.location_strategy, "package.location_strategy.evidence");
+  h += para("Contract effects", k.contract_effects, "package.contract_effects.evidence");
+  return h + `<p class="pk-note small">Not scored: context for your decision.</p></div></section>`;
+}
+function pdfPackage(a, scored) {
+  if (!a.package || typeof a.package !== "object") return [];
+  const f = packageFacts(a, scored), { k, est, loc, cur } = f, GREY = "#666666", posted = k.posted || {};
+  const lines = [`Posted: ${posted.salary || "not stated"}${posted.day_rate ? "; day rate " + posted.day_rate : ""}${arr(posted.benefits).length ? "; benefits: " + arr(posted.benefits).join(", ") : ""}`];
+  if (est) lines.push(`Estimated band: ${gbp(est.low, cur)} - ${gbp(est.high, cur)} ${f.per} (midpoint ${gbp(f.midpoint, cur)}); London premium ${f.premium == null ? "not available" : Math.round(f.premium) + "%"}`);
+  const where = [loc.office, PATTERN_LABEL[loc.work_pattern] || loc.work_pattern, typeof loc.office_days_per_week === "number" ? loc.office_days_per_week + " office days per week" : "", loc.remote_days_note].filter(Boolean);
+  if (where.length) lines.push("Location: " + where.join("; "));
+  if (k.location_strategy && k.location_strategy.summary) lines.push("Employer location strategy: " + k.location_strategy.summary);
+  if (k.contract_effects && k.contract_effects.summary) lines.push("Contract effects: " + k.contract_effects.summary);
+  return [{ text: "Package and location", fontSize: 13, bold: true, margin: [0, 16, 0, 6] }, { ul: lines, fontSize: 9.5 }, { text: "Not scored: context for your decision.", fontSize: 8.5, italics: true, color: GREY, margin: [0, 4, 0, 0] }];
+}
+
 // ---------- page
 function buildHtml(d) {
   const { scored, a, cand, weights, keys } = d;
@@ -543,6 +618,8 @@ ${flagsHtml(ctx)}
 
 <section id="summary"><h2>Summary</h2><div class="cols">${list("Strengths", sm.strengths)}${list("Risks", sm.risks)}${list("Actions", sm.actions)}</div></section>
 
+${packageSection(ctx, a, scored)}
+
 <section id="sources"><h2>Sources</h2><ol class="sources">${sources || '<li class="muted">No web sources were used.</li>'}</ol></section>
 
 <footer>Every number above can be recomputed from docs/rubric.md and the evidence shown.</footer>
@@ -624,6 +701,7 @@ async function buildPdf(d, outPath) {
       hdr("Strengths"), ul((a.summary || {}).strengths),
       hdr("Risks"), ul((a.summary || {}).risks),
       hdr("Actions"), ul((a.summary || {}).actions),
+      ...pdfPackage(a, scored),
       hdr("Sources"),
       ...arr(a.sources).map((s) => ({ margin: [0, 0, 0, 5], stack: [
         { text: [{ text: `[${s.id}] `, bold: true, color: ACC }, { text: String(s.title || ""), bold: true }], fontSize: 9 },

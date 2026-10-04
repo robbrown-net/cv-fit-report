@@ -215,6 +215,28 @@ text, so the candidate can check the arithmetic exactly. c14 is clamped between 
   period, right to work, current job title, and yes/no experience questions. These often
   cause rejections within a day, and the CV cannot show them.
 
+## Package and location (not scored)
+
+Context for the candidate's decision, shown in its own section of the report. It never changes
+the score.
+
+1. **Posted package:** the salary, day rate, bonus and benefits as the JD states them, with JD
+   quotes. Anything not published is "not stated".
+2. **AI judgement + web search: expected band.** Where the salary is not published, estimate a
+   low and a high from at least two cited comparables: salary benchmarks for the same job title
+   (for example IT Jobs Watch, Glassdoor, Levels.fyi, Hays or Robert Walters salary guides),
+   the employer's own advertised bands for similar roles, and the parent company's bands. Each
+   comparable records its figure, its scope (London, UK excluding London, UK, remote) and its
+   date. The script computes the midpoint, and the London premium where both a London and a
+   UK-excluding-London figure exist.
+3. **AI judgement + web search: location.** The office address, the real work pattern (office,
+   hybrid with N days, fully remote), and the commuting reality for the candidate's location.
+4. **AI judgement + web search: employer location strategy.** Whether the employer, or its
+   parent, is moving roles or hiring away from high-cost cities such as London (regional hubs,
+   relocations, remote-first policies), and what that means for this role's pay and future.
+5. **Contract basis effects:** for a fixed-term contract, note what usually differs (bonus,
+   equity, notice, renewal) and the permanent-equivalent comparison.
+
 ## Evidence verification (done by `bin/score.js`)
 
 - Every `cv_quotes[].text` must appear in the CV text, and every `jd_quotes[].text` in the JD

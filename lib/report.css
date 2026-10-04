@@ -223,3 +223,29 @@ mark { background: var(--accent-soft); color: var(--ink); padding: 1px 4px; bord
 .pos { color: var(--accent); font-weight: 600; }
 .neg { color: var(--bad); font-weight: 600; }
 @media (max-width: 640px) { .split { grid-template-columns: repeat(2, 1fr); } }
+
+/* package and location (not scored) */
+.pk-note { color: var(--ink-2); font-style: italic; }
+.pk-big { font: 600 24px var(--serif); margin: 4px 0 0; font-variant-numeric: tabular-nums; }
+.pk { --sc-london: #b3372b; --sc-uk_ex_london: #1f6f6b; --sc-uk: #8a6d1f; --sc-remote: #5b4bb0; --sc-employer: #1d5fa8; --sc-parent: #7a7a7a; }
+@media (prefers-color-scheme: dark) { .pk { --sc-london: #f0877b; --sc-uk_ex_london: #6fc2bb; --sc-uk: #d9b95c; --sc-remote: #a99cf0; --sc-employer: #7fb3ec; --sc-parent: #b0b0b0; } }
+.pk-bar { position: relative; height: 84px; margin: 12px 12px 0; }
+.pk-track { position: absolute; left: 0; right: 0; top: 40px; height: 4px; background: var(--line); border-radius: 2px; }
+.pk-band { position: absolute; top: 34px; height: 16px; background: var(--accent-soft); border: 1px solid var(--accent-mid); border-radius: 8px; }
+.pk-mid { position: absolute; top: 30px; width: 2px; height: 24px; background: var(--accent); transform: translateX(-1px); }
+.pk-mid b { position: absolute; top: 26px; left: 50%; transform: translateX(-50%); font: 600 11px var(--sans); color: var(--accent); white-space: nowrap; }
+.pk-dot { position: absolute; top: 36px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--sc, var(--ink-3)); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--sc, var(--ink-3)); }
+.pk-dot b { position: absolute; left: 50%; transform: translateX(-50%); font: 11px var(--sans); color: var(--ink-2); white-space: nowrap; }
+.pk-dot b.up { bottom: 18px; } .pk-dot b.dn { top: 18px; }
+.pk-ends { display: flex; justify-content: space-between; margin: 0 12px; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.pk-legend span.sc-london::before, .pk-dot.sc-london { --sc: var(--sc-london); }
+.pk-legend span.sc-uk_ex_london::before, .pk-dot.sc-uk_ex_london { --sc: var(--sc-uk_ex_london); }
+.pk-legend span.sc-uk::before, .pk-dot.sc-uk { --sc: var(--sc-uk); }
+.pk-legend span.sc-remote::before, .pk-dot.sc-remote { --sc: var(--sc-remote); }
+.pk-legend span.sc-employer::before, .pk-dot.sc-employer { --sc: var(--sc-employer); }
+.pk-legend span.sc-parent::before, .pk-dot.sc-parent { --sc: var(--sc-parent); }
+.pk-legend span::before { background: var(--sc); border-radius: 50%; border-color: var(--sc); }
+.pk-legend { margin-top: 10px; }
+.pk h4 { font: 600 12px var(--sans); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); margin: 22px 0 8px; }
+.pk h4:first-child { margin-top: 0; }
+@media print { #package .panel { break-inside: avoid; } }

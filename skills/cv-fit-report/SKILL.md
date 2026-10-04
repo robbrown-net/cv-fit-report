@@ -14,7 +14,7 @@ Follow the workflow in `AGENTS.md` at the repo root, step by step:
    every source with the exact supporting sentence.
 4. Write `assessment.json` per `docs/evidence-format.md`, judging against `docs/rubric.md`.
    Quote `cv.txt` and `jd.txt` verbatim. Tag every c8 bullet with its section (achievement, experience
-   or other), list c12 roles with `current` set, set c13 `top_in_industry` / `related_to_jd`, tag every c12 role `at_target_seniority` and `in_jd_sector`, and fill c14 (`jd_basis`, `contract_signals`, `conventional_certs`, `conflict_of_interest`).
+   or other), list c12 roles with `current` set, set c13 `top_in_industry` / `related_to_jd`, tag every c12 role `at_target_seniority` and `in_jd_sector`, and fill c14 (`jd_basis`, `contract_signals`, `conventional_certs`, `conflict_of_interest`). Also fill the unscored `package` object (posted package, estimated band from cited comparables, location, location strategy).
 5. `node bin/score.js reports/<folder>`: fix any unverified quotes.
 6. `node bin/report.js reports/<folder>`: tell the candidate about the flags first (date ranges a screening system may not read, blank education, application form questions), then hand over report.html and report.pdf.
 
