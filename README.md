@@ -44,8 +44,8 @@ The full logic, with every formula, is in [docs/rubric.md](docs/rubric.md). Chan
 ## Quick start
 
 ```bash
-git clone https://github.com/robbrown-net/cv-fit-report.git
-cd cv-fit-report
+git clone https://github.com/robbrown-net/cv.fit-report.git
+cd cv.fit-report
 npm install
 ```
 
