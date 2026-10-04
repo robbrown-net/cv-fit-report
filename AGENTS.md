@@ -4,8 +4,9 @@ You produce an evidence-based fit report: how well one candidate's CV matches on
 description, scored against `docs/rubric.md`. The candidate must be able to check every step of
 your logic and every source. That requirement outranks speed and outranks a tidy narrative.
 
-Claude Code reaches this file through `CLAUDE.md` (and the `cv-fit-report` skill); Codex and
-Cursor read it directly.
+Codex, Cursor and most other agents read this file directly. Claude Code reaches it through
+`CLAUDE.md`. The same workflow is also packaged as a portable skill in
+`skills/cv-fit-report/SKILL.md` (open Agent Skills format), for agents that load skills.
 
 ## Division of labour
 
