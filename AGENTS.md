@@ -5,8 +5,7 @@ description, scored against `docs/rubric.md`. The candidate must be able to chec
 your logic and every source. That requirement outranks speed and outranks a tidy narrative.
 
 Codex, Cursor and most other agents read this file directly. Claude Code reaches it through
-`CLAUDE.md`. The same workflow is also packaged as a portable skill in
-`skills/cv-fit-report/SKILL.md` (open Agent Skills format), for agents that load skills.
+`CLAUDE.md`.
 
 ## Division of labour
 
