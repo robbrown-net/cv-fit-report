@@ -1,7 +1,7 @@
 # cv-fit-report
 
 How well does this CV fit this job, and **why**? An AI-assisted report that scores a CV against a
-job description on ten weighted criteria plus referral bonuses. Every judgement is backed by a
+job description on ten weighted criteria, adjusted for how strict the employer is, plus bonus points. Every judgement is backed by a
 verbatim quote or a cited web source, and every number can be recomputed by hand.
 
 Works with **Claude Code**, **Codex**, **Cursor**, or any agent that reads `AGENTS.md`.
@@ -10,18 +10,21 @@ Works with **Claude Code**, **Codex**, **Cursor**, or any agent that reads `AGEN
 
 | # | Criterion | Default weight |
 |---|---|---|
-| 1 | Current or most recent role: title match, same industry, competitor, supplier, ever at the market leader, ever at a top-10 consulting firm for the industry | 50% |
-| 2 | Hiring company's BCG growth-share quadrant against the candidate's risk appetite | 5.56% |
+| 1 | Current or most recent role: title match, CV headline match (small weight), same industry, competitor, supplier, ever at the market leader | 50% |
+| 2 | Employer strictness from the hiring company's BCG growth-share quadrant plus hiring buzz. A modifier, not weighted: it sets the exponent that turns the core score into the adjusted score | modifier |
 | 3 | Years with the tools, services and suppliers the JD names | 5.56% |
 | 4 | AI experience, and the outcomes it delivered | 5.56% |
 | 5 | Likelihood that the CV is AI-generated (penalty or bonus, your choice) | 5.56% |
 | 6 | Spelling (minus points per error) | 5.56% |
 | 7 | Grammar (minus points per error) | 5.56% |
-| 8 | STAR or Problem-Action-Result shape, checked on every bullet | 5.56% |
+| 8 | STAR or Problem-Action-Result shape, checked on every achievement and experience bullet | 5.56% |
 | 9 | Top-university graduate (Oxbridge, Ivy League, Russell Group or similar) | 5.56% |
 | 10 | Qualifications and certifications against the JD | 5.56% |
 | 11 | The candidate's own access: previously worked there, referrals by route and seniority | bonus points |
+| 12 | Tenure: median length of completed roles against the employer's expected longevity | 5.56% |
+| 13 | Consulting experience: roles at top-10 firms for the industry, more if the work relates to the JD (capped at +10) | bonus points |
 
+`total = clamp(adjusted + c11 + c13, 0, 100)`, where `adjusted = 100 * (core/100)^gamma` and gamma comes from c2.
 The full logic, with every formula, is in [docs/rubric.md](docs/rubric.md). Change any weight in
 `config/weights.local.json`, or live with the sliders in the HTML report.
 
@@ -71,7 +74,7 @@ to send a CV to a third-party service without permission.
 ## Caveats
 
 - AI-detection (criterion 5) is unreliable everywhere. It is shown as an indication, never as proof.
-- Criteria 1, 2 and 9 depend on public information that may be dated or incomplete. Check the
+- Criteria 1, 2, 9 and 13 depend on public information that may be dated or incomplete. Check the
   sources the report cites.
 - This is a self-assessment aid, not a hiring decision tool.
 

@@ -8,11 +8,13 @@ description: Produce an evidence-based CV-versus-job-description fit report (wei
 Follow the workflow in `AGENTS.md` at the repo root, step by step:
 
 1. Intake: `node bin/new.js --company ... --title ... --cv ... --jd ...`
-2. Ask the candidate about prior employment, referrals and (later) their risk appetite.
-3. Research with web search (industry, competitors, suppliers, market leader, top consulting
-   firms, BCG growth and share), recording every source with the exact supporting sentence.
+2. Ask the candidate about prior employment and referrals (c11). Do not ask about risk appetite.
+3. Research with web search (industry, competitors, suppliers, market leader, BCG growth and
+   share, hiring buzz for c2, expected tenure for c12, top consulting firms for c13), recording
+   every source with the exact supporting sentence.
 4. Write `assessment.json` per `docs/evidence-format.md`, judging against `docs/rubric.md`.
-   Quote `cv.txt` and `jd.txt` verbatim.
+   Quote `cv.txt` and `jd.txt` verbatim. Tag every c8 bullet with its section (achievement, experience
+   or other), list c12 roles with `current` set, and set c13 `top_in_industry` / `related_to_jd`.
 5. `node bin/score.js reports/<folder>`: fix any unverified quotes.
 6. `node bin/report.js reports/<folder>`: hand over report.html and report.pdf.
 

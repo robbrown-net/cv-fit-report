@@ -10,7 +10,6 @@
   "weights_used": {
     "core": {
       "c1_current_role": 50,
-      "c2_market_position": 5.5555556,
       "c3_tools_years": 5.5555556,
       "c4_ai_experience": 5.5555556,
       "c5_ai_generated": 5.5555556,
@@ -18,27 +17,22 @@
       "c7_grammar": 5.5555556,
       "c8_star_par": 5.5555556,
       "c9_top_university": 5.5555556,
-      "c10_qualifications": 5.5555556
+      "c10_qualifications": 5.5555556,
+      "c12_tenure": 5.5555556
     },
     "c1_subweights": {
       "title": 1,
+      "headline": 0.25,
       "same_industry": 1,
       "competitor": 1,
       "supplier": 1,
-      "top_firm": 1,
-      "top10_consulting": 1
+      "top_firm": 1
     },
     "c1_title_levels": {
       "exact": 100,
       "close": 70,
       "adjacent": 40,
       "none": 0
-    },
-    "c2_quadrant_risk_aversion": {
-      "cash_cow": 100,
-      "star": 75,
-      "question_mark": 50,
-      "dog": 25
     },
     "c3_default_required_years": 3,
     "c5_ai_generated_direction": "negative",
@@ -84,39 +78,44 @@
           "medium": 1,
           "high": 1.25
         }
-      }
-    }
+      },
+      "c13_consulting_top_in_industry": 3,
+      "c13_consulting_related_to_jd": 3,
+      "c13_cap": 10
+    },
+    "c2_strictness": {
+      "cash_cow": 1,
+      "star": 0.75,
+      "question_mark": 0.5,
+      "dog": 0.25
+    },
+    "c2_buzz_max": 0.25,
+    "c2_gamma_base": 0.5,
+    "c12_default_expected_years": 3
   },
   "weights_file": "config/weights.json",
   "weights_override_file": null,
   "verification": {
-    "quotes_total": 65,
+    "quotes_total": 73,
     "quotes_unverified": 0,
     "unverified": [],
     "sources_rejected": []
   },
   "criteria": {
     "c1": {
-      "score": 66.67,
+      "score": 60.48,
       "weight": 50,
       "not_applicable": false,
       "confidence": "low",
-      "working": "mean(title 100 (exact), same_industry 100, competitor 100, supplier 0, top_firm 0, top10_consulting 100) = 66.67",
+      "working": "weighted mean(title 100 (exact), headline 70 (close), same_industry 100, competitor 100, supplier 0, top_firm 0) = 60.48",
       "sub": {
         "title": 100,
+        "headline": 70,
         "same_industry": 100,
         "competitor": 100,
         "supplier": 0,
-        "top_firm": 0,
-        "top10_consulting": 100
+        "top_firm": 0
       }
-    },
-    "c2": {
-      "score": 85,
-      "weight": 5.5555556,
-      "not_applicable": false,
-      "confidence": "medium",
-      "working": "100 - |quadrant star 75 - risk aversion 60 (AI inferred)| = 85"
     },
     "c3": {
       "score": 66.67,
@@ -159,11 +158,11 @@
       "working": "max(0, 100 - 5 * 2 grammar errors) = 90"
     },
     "c8": {
-      "score": 47.83,
+      "score": 50,
       "weight": 5.5555556,
       "not_applicable": false,
       "confidence": "medium",
-      "working": "mean(6 full x 1, 10 partial x 0.5, 7 none x 0) over 23 bullets * 100 = 47.83"
+      "working": "mean(6 full x 1, 10 partial x 0.5, 6 none x 0) over 22 achievement/experience bullets * 100 = 50 (3 other bullets not scored)"
     },
     "c9": {
       "score": 80,
@@ -178,18 +177,82 @@
       "not_applicable": false,
       "confidence": "high",
       "working": "weighted mean(PMP certification met x2, Lean Six Sigma Green Belt or higher met x1) = 3/3 * 100 = 100"
+    },
+    "c12": {
+      "score": 77.78,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "median of 4 completed tenures (50, 20, 26, 30 months) = 28 months / (3 y * 12 = 36) capped at 1 * 100 = 77.78; current role excluded",
+      "detail": {
+        "months": [
+          50,
+          20,
+          26,
+          30
+        ],
+        "role_indexes": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "median_months": 28,
+        "expected_years": 3,
+        "expected_months": 36,
+        "current_excluded": true
+      }
+    },
+    "c2": {
+      "score": null,
+      "weight": 0,
+      "modifier": true,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "base 0.75 (star) + buzz 0 -> strictness clamp(0.75, 0.25, 1.25) = 0.75; gamma = 0.5 + 0.75 = 1.25; adjusted = 100 * (67.48/100)^1.25 = 61.16"
+    },
+    "c13": {
+      "score": null,
+      "weight": 0,
+      "bonus": true,
+      "points": 6,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "Globex Consulting (top_in_industry true, related_to_jd true) +6 = 6, capped at 10 = +6"
     }
   },
-  "core": 70.85,
+  "core": 67.48,
+  "strictness": {
+    "quadrant": "star",
+    "base": 0.75,
+    "buzz": 0,
+    "strictness": 0.75,
+    "gamma": 1.25
+  },
+  "adjusted": 61.16,
   "bonus": {
     "items": [
       {
         "label": "Referral by a colleague (senior, high visibility, 5 x 1.25)",
-        "points": 6.25
+        "points": 6.25,
+        "group": "c11"
+      },
+      {
+        "label": "Consulting at a top-10 firm for the industry: Globex Consulting, Senior Consultant",
+        "points": 3,
+        "group": "c13"
+      },
+      {
+        "label": "Consulting work related to the JD: Globex Consulting, Senior Consultant",
+        "points": 3,
+        "group": "c13"
       }
     ],
-    "total": 6.25
+    "c11": 6.25,
+    "c13": 6,
+    "c13_uncapped": 6,
+    "total": 12.25
   },
-  "total": 77.1,
-  "band": "Strong"
+  "total": 73.41,
+  "band": "Competitive"
 }

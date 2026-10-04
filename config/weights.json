@@ -1,42 +1,87 @@
 {
-  "_comment": "Default weights: c1 is 50, and c2-c10 share 50 equally (50/9 each). Copy to config/weights.local.json to customise (gitignored). Core weights are relative: they are normalised to 100 at scoring time. Bonus points are added after, and the total is clamped to 0-100.",
+  "_comment": "Default weights: c1 is 50, and the nine other scored criteria (c3-c10, c12) share 50 equally (50/9 each). c2 is a strictness modifier, not a weight. Copy to config/weights.local.json to customise (gitignored). Core weights are relative and normalised at scoring time. Bonus points (c11, c13) are added after the strictness adjustment, and the total is clamped to 0-100.",
   "core": {
-    "c1_current_role":      50,
-    "c2_market_position":   5.5555556,
-    "c3_tools_years":       5.5555556,
-    "c4_ai_experience":     5.5555556,
-    "c5_ai_generated":      5.5555556,
-    "c6_spelling":          5.5555556,
-    "c7_grammar":           5.5555556,
-    "c8_star_par":          5.5555556,
-    "c9_top_university":    5.5555556,
-    "c10_qualifications":   5.5555556
+    "c1_current_role": 50,
+    "c3_tools_years": 5.5555556,
+    "c4_ai_experience": 5.5555556,
+    "c5_ai_generated": 5.5555556,
+    "c6_spelling": 5.5555556,
+    "c7_grammar": 5.5555556,
+    "c8_star_par": 5.5555556,
+    "c9_top_university": 5.5555556,
+    "c10_qualifications": 5.5555556,
+    "c12_tenure": 5.5555556
   },
   "c1_subweights": {
-    "title":                1,
-    "same_industry":        1,
-    "competitor":           1,
-    "supplier":             1,
-    "top_firm":             1,
-    "top10_consulting":     1
+    "title": 1,
+    "headline": 0.25,
+    "same_industry": 1,
+    "competitor": 1,
+    "supplier": 1,
+    "top_firm": 1
   },
-  "c1_title_levels": { "exact": 100, "close": 70, "adjacent": 40, "none": 0 },
-  "c2_quadrant_risk_aversion": { "cash_cow": 100, "star": 75, "question_mark": 50, "dog": 25 },
+  "c1_title_levels": {
+    "exact": 100,
+    "close": 70,
+    "adjacent": 40,
+    "none": 0
+  },
   "c3_default_required_years": 3,
   "c5_ai_generated_direction": "negative",
   "c6_points_per_spelling_error": 5,
   "c7_points_per_grammar_error": 5,
   "c6_spelling_variant": "en-GB",
-  "c8_levels": { "full": 1, "partial": 0.5, "none": 0 },
-  "c9_tiers": { "oxbridge": 100, "ivy_league": 100, "russell_group": 80, "similar_top": 60, "other": 0 },
-  "c10_levels": { "met": 1, "partial": 0.5, "not_met": 0 },
+  "c8_levels": {
+    "full": 1,
+    "partial": 0.5,
+    "none": 0
+  },
+  "c9_tiers": {
+    "oxbridge": 100,
+    "ivy_league": 100,
+    "russell_group": 80,
+    "similar_top": 60,
+    "other": 0
+  },
+  "c10_levels": {
+    "met": 1,
+    "partial": 0.5,
+    "not_met": 0
+  },
   "bonus": {
-    "c11_previously_worked_here": { "points": 5, "direction": "positive" },
+    "c11_previously_worked_here": {
+      "points": 5,
+      "direction": "positive"
+    },
     "c11_referral_hiring_manager_trusted_influencer": 10,
-    "c11_referral_same_division_colleague": { "junior": 3, "mid": 5, "senior": 7, "executive": 9 },
+    "c11_referral_same_division_colleague": {
+      "junior": 3,
+      "mid": 5,
+      "senior": 7,
+      "executive": 9
+    },
     "c11_referral_colleague": {
-      "junior": 2, "mid": 3, "senior": 5, "executive": 7,
-      "visibility_multiplier": { "low": 0.75, "medium": 1, "high": 1.25 }
-    }
-  }
+      "junior": 2,
+      "mid": 3,
+      "senior": 5,
+      "executive": 7,
+      "visibility_multiplier": {
+        "low": 0.75,
+        "medium": 1,
+        "high": 1.25
+      }
+    },
+    "c13_consulting_top_in_industry": 3,
+    "c13_consulting_related_to_jd": 3,
+    "c13_cap": 10
+  },
+  "c2_strictness": {
+    "cash_cow": 1.0,
+    "star": 0.75,
+    "question_mark": 0.5,
+    "dog": 0.25
+  },
+  "c2_buzz_max": 0.25,
+  "c2_gamma_base": 0.5,
+  "c12_default_expected_years": 3
 }

@@ -33,20 +33,18 @@ This writes `reports/<folder>/` containing `cv.txt`, `jd.txt`, a `candidate.json
 `assessment.json` skeleton. **Quote only from `cv.txt` and `jd.txt`**: they are the texts your
 quotes are checked against.
 
-### 2. Ask the candidate (c11 and c2)
+### 2. Ask the candidate (c11)
 
 Ask in one short message, with defaults so they can just say "none":
 1. Have you worked for <company> before? If so, did you leave on good terms?
 2. Do you have a referral? Who to (the hiring manager, or the talent team), from whom, how senior
    are they, and how visible are they in the organisation?
-3. (After step 3 below) "I read your career as <X>/100 risk-averse, because <reason>. Does that
-   sound right?" Record any override.
 
 Write the answers to `candidate.json`. Never infer referrals or prior employment.
 
 ### 3. Research (web search required)
 
-Run these searches before judging c1 and c2. Record every page you rely on in
+Run these searches before judging c1, c2, c12 and c13. Record every page you rely on in
 `assessment.sources` (id, url, title, accessed date, and the exact supporting sentence):
 
 | For | Search for |
@@ -55,8 +53,11 @@ Run these searches before judging c1 and c2. Record every page you rely on in
 | c1 competitor | "<hiring company> competitors", analyst and market reports |
 | c1 supplier | whether the candidate's employer supplies the hiring company (case studies, partner pages, press releases) |
 | c1 top firm | the market leader in the hiring company's industry, by revenue or share |
-| c1 top-10 consulting | the top consulting firms serving that industry (Vault, Gartner, analyst rankings) |
-| c2 | market growth rate for the segment, and the company's (or division's) share against its largest rival |
+| c1 headline | no search: compare the CV's headline or tagline with the JD title |
+| c2 quadrant | market growth rate for the segment, and the company's (or division's) share against its largest rival |
+| c2 hiring buzz | current news on how the employer is hiring: freezes, lay-offs, post-merger integration, a preference for industry insiders (raise strictness) or rapid hiring, new-market launches, appetite for outside talent (lower it). Adjustment -0.25 to +0.25, 0 with no evidence |
+| c12 expected tenure | the JD's stated expected tenure; otherwise typical tenure for the level at this employer or sector; otherwise default 3 years. Record which applied in `expected_years.from` |
+| c13 consulting | for each consulting-firm role on the CV: rankings of the top 10 consultancies serving the hiring company's industry (Consultancy.uk, Vault, Gartner, analyst reports), and whether the evidenced projects relate to this JD |
 | c9 | the institution's status, if it is not obviously Oxbridge, Ivy League or Russell Group |
 
 Prefer primary and dated sources. If you cannot find evidence, write that down, mark the item
@@ -76,7 +77,10 @@ Specific care points:
 - **c6 and c7:** list real errors only. Do not count spelling variants of the configured variety,
   proper nouns, product names or style preferences. Each error needs the exact text and its
   correction.
-- **c8:** classify **every** bullet, not a sample.
+- **c8:** classify **every** bullet, not a sample, and tag each with its `section`: `achievement`, `experience` or `other`. Bullets that list competencies, skills, education or certifications are `other`: they are shown but not scored.
+- **c12:** list every dated role, one entry per employer engagement, with `current: true` on the present role (it is excluded from the median unless it is the only one). Skip aggregated lines such as "Earlier Career: A, B, C, 2007 to 2018".
+- **c13:** set `top_in_industry` and `related_to_jd` per consulting role, each with evidence. `related_to_jd` only counts for a top-10 firm.
+- **c2:** place the employer in a quadrant, cite growth and share, and record the hiring-buzz adjustment with its sources. Do not assess the candidate's risk appetite: that is no longer scored.
 - **c5:** describe signals, not verdicts. Never call a CV "AI-written".
 - **summary:** strengths, risks and concrete actions, each tagged with its criterion, for example "(c3)".
 

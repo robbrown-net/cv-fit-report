@@ -83,6 +83,8 @@ function main() {
     verification: verOut,
     criteria: result.criteria,
     core: result.core,
+    strictness: result.strictness,
+    adjusted: result.adjusted,
     bonus: result.bonus,
     total: result.total,
     band: result.band
@@ -90,14 +92,17 @@ function main() {
   fs.writeFileSync(path.join(dir, 'scored.json'), JSON.stringify(scored, null, 2) + '\n');
 
   // summary
-  const names = { c1: 'Current role', c2: 'Market position', c3: 'Tools/years', c4: 'AI experience', c5: 'AI-generated', c6: 'Spelling', c7: 'Grammar', c8: 'STAR/PAR bullets', c9: 'University', c10: 'Qualifications' };
+  const names = { c1: 'Current role', c3: 'Tools/years', c4: 'AI experience', c5: 'AI-generated', c6: 'Spelling', c7: 'Grammar', c8: 'STAR/PAR bullets', c9: 'University', c10: 'Qualifications', c12: 'Tenure' };
   console.log('\n' + assessment.meta.candidate + ' -> ' + assessment.meta.role_title + ', ' + assessment.meta.hiring_company);
   console.log('ID   Criterion          Score  Weight  Conf    ');
-  Object.keys(result.criteria).forEach((id) => {
+  Object.keys(names).forEach((id) => {
     const c = result.criteria[id];
     console.log(id.padEnd(4) + ' ' + names[id].padEnd(18) + ' ' + (c.not_applicable ? 'n/a' : f1(c.score)).padStart(5) + '  ' + String(Math.round(c.weight * 100) / 100).padStart(6) + '  ' + c.confidence + (c.unverified_quotes ? ' (' + c.unverified_quotes + ' unverified)' : ''));
   });
-  console.log('Core ' + f1(result.core) + '  Bonus ' + (result.bonus.total >= 0 ? '+' : '') + result.bonus.total + '  Total ' + f1(result.total) + '  Band: ' + result.band);
+  const sgn = (n) => (n >= 0 ? '+' : '') + n;
+  const st = result.strictness;
+  console.log('c2   Strictness: Core ' + f1(result.core) + ' -> adjusted ' + f1(result.adjusted) + ' (' + st.quadrant + ', gamma ' + st.gamma + ')');
+  console.log('Bonus ' + sgn(result.bonus.total) + ' (c11 ' + sgn(result.bonus.c11) + ', c13 ' + sgn(result.bonus.c13) + ')  Total ' + f1(result.total) + '  Band: ' + result.band);
   console.log('Quotes: ' + ver.quotes_total + ' checked, ' + ver.quotes_unverified + ' unverified; sources rejected: ' + ver.sources_rejected.length);
   ver.unverified.forEach((u) => console.log('  UNVERIFIED ' + u.path + ' (' + u.context + '): ' + JSON.stringify(u.text)));
   ver.sources_rejected.forEach((s) => console.log('  REJECTED SOURCE ' + (s.id || s.path) + ': ' + s.reason));

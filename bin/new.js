@@ -20,13 +20,16 @@ function skeleton(company, title, today) {
     current_role: { title: null, employer: null, start: null, end: null, evidence: ev() },
     c1: {
       title: { level: null, evidence: ev() },
+      headline: { level: null, evidence: ev() },
       same_industry: { match: false, candidate_industry: null, hiring_industry: null, evidence: ev() },
       competitor: { match: false, competitors_considered: [], evidence: ev() },
       supplier: { match: false, products_or_services: [], evidence: ev() },
-      top_firm: { match: false, top_firm: null, evidence: ev() },
-      top10_consulting: { match: false, firms_considered: [], candidate_firm: null, evidence: ev() }
+      top_firm: { match: false, top_firm: null, evidence: ev() }
     },
-    c2: { quadrant: null, market_growth_pct: null, relative_share: null, unit_assessed: null, candidate_risk_aversion: null, evidence: ev(), candidate_evidence: ev() },
+    c2: {
+      quadrant: null, market_growth_pct: null, relative_share: null, unit_assessed: null, evidence: ev(),
+      buzz: { adjustment: 0, summary: '', evidence: ev() }
+    },
     c3: { not_applicable: false, items: [] },
     c4: { years_using_ai: null, uses: [], evidence: ev() },
     c5: { likelihood: null, signals: [], evidence: ev() },
@@ -35,6 +38,8 @@ function skeleton(company, title, today) {
     c8: { bullets: [] },
     c9: { institution: null, tier: null, graduated: null, evidence: ev() },
     c10: { not_applicable: false, items: [] },
+    c12: { expected_years: { value: 3, from: 'default', evidence: ev() }, roles: [], evidence: ev() },
+    c13: { firms_considered: [], roles: [] },
     summary: { strengths: [], risks: [], actions: [] }
   };
 }
@@ -68,7 +73,6 @@ async function main() {
   fs.writeFileSync(path.join(dir, 'jd.txt'), jdText);
   const candidate = {
     name: null,
-    risk_aversion_override: null,
     previously_worked_here: { value: false, direction: 'positive', note: '' },
     referrals: []
   };

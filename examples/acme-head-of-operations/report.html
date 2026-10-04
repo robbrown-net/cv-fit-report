@@ -65,7 +65,7 @@ code, .mono { font-family: var(--mono); font-size: .88em; }
 .gauge-num { font: 600 44px var(--serif); fill: var(--ink); }
 .gauge-sub { font: 12px var(--sans); fill: var(--ink-3); letter-spacing: .08em; }
 .band { display: inline-block; margin-top: 4px; padding: 3px 14px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 14px; }
-.split { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 36px; }
+.split { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin-top: 36px; }
 .split div { background: var(--surface); padding: 14px 18px; }
 .split .k { font-size: 12px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em; }
 .split .v { font: 600 26px var(--serif); }
@@ -139,6 +139,16 @@ blockquote .badge { margin-left: 8px; font-family: var(--sans); }
 .bullet.full { background: var(--accent-soft); border-color: transparent; }
 .bullet.partial { background: color-mix(in srgb, var(--accent-soft) 45%, transparent); border-style: dashed; border-color: var(--accent-mid); }
 .bullet.none { color: var(--ink-3); }
+.bullet.excluded { color: var(--ink-3); background: transparent; border-style: dotted; opacity: .65; }
+.tl { margin: 10px 0 14px; }
+.tl-row { display: grid; grid-template-columns: minmax(90px, 160px) 1fr 52px; gap: 10px; align-items: center; font-size: 13px; margin: 4px 0; }
+.tl-row.ex { color: var(--ink-3); }
+.tl-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tl-track { position: relative; height: 12px; background: var(--line); border-radius: 6px; }
+.tl-track i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); border-radius: 6px; }
+.tl-row.ex .tl-track i { background: var(--ink-3); opacity: .5; }
+.tl-track u { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--ink); text-decoration: none; }
+.tl-m { text-align: right; font-variant-numeric: tabular-nums; }
 .legend { display: flex; gap: 14px; font-size: 13px; color: var(--ink-2); flex-wrap: wrap; }
 .legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; border: 1px solid var(--line); }
 .legend .lf::before { background: var(--accent-soft); }
@@ -172,6 +182,7 @@ footer { margin-top: 80px; padding-top: 24px; border-top: 1px solid var(--line);
 @media (max-width: 640px) {
   .wrap { padding: 32px 16px 56px; }
   .sliders, .cols { grid-template-columns: 1fr; }
+  .split { grid-template-columns: repeat(2, 1fr); }
   .split div { padding: 12px 12px; } .split .v { font-size: 22px; } .split .k { font-size: 10px; }
   .hero { gap: 24px; }
   .gauge { margin: 0 auto; }
@@ -205,54 +216,58 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
   <div class="hero">
     <div class="hero-text">
       <h1>Head of Operations<br><span class="muted">at Acme Corp, Payments division</span></h1>
-      <ul class="hero-meta"><li>Candidate: <b>Alex Morgan</b></li><li>Assessed: <b>2026-10-04</b></li><li>Model: <b>Claude (illustrative fictional example)</b></li><li>65 of 65 quotes verified verbatim against the CV and JD text.</li></ul>
+      <ul class="hero-meta"><li>Candidate: <b>Alex Morgan</b></li><li>Assessed: <b>2026-10-04</b></li><li>Model: <b>Claude (illustrative fictional example)</b></li><li>73 of 73 quotes verified verbatim against the CV and JD text.</li></ul>
       
     </div>
     <div class="gauge">
-      <svg viewBox="0 0 200 200" role="img" aria-label="Total score 77.1 out of 100, Strong">
+      <svg viewBox="0 0 200 200" role="img" aria-label="Total score 73.4 out of 100, Competitive">
         <circle class="ring-bg" cx="100" cy="100" r="80"/>
-        <circle id="ring-fg" class="ring-fg" cx="100" cy="100" r="80" transform="rotate(-90 100 100)" stroke-dasharray="387.5 502.7"/>
-        <text id="gauge-num" class="gauge-num" x="100" y="108" text-anchor="middle">77.1</text>
+        <circle id="ring-fg" class="ring-fg" cx="100" cy="100" r="80" transform="rotate(-90 100 100)" stroke-dasharray="369.0 502.7"/>
+        <text id="gauge-num" class="gauge-num" x="100" y="108" text-anchor="middle">73.4</text>
         <text class="gauge-sub" x="100" y="132" text-anchor="middle">OUT OF 100</text>
       </svg>
-      <span class="band" id="band">Strong</span>
+      <span class="band" id="band">Competitive</span>
     </div>
   </div>
   <div class="split">
-    <div><div class="k">Core (c1 to c10)</div><div class="v" id="v-core">70.9</div></div>
-    <div><div class="k">Bonus (c11)</div><div class="v">+6.25</div></div>
-    <div><div class="k">Total</div><div class="v" data-live-total>77.1</div></div>
+    <div><div class="k">Core</div><div class="v" id="v-core">67.5</div></div>
+    <div><div class="k">Adjusted (gamma <span data-live="gamma">1.25</span>)</div><div class="v" id="v-adjusted">61.2</div></div>
+    <div><div class="k">Bonus (c11 +6.25, c13 +6)</div><div class="v">+12.25</div></div>
+    <div><div class="k">Total</div><div class="v" data-live-total>73.4</div></div>
   </div>
   <div class="banner" id="custom-banner" role="status"></div>
 </header>
 
 <section id="how"><h2>How this score was calculated</h2>
 <p class="lede">Scores are computed by a script from the evidence below. The AI gathers evidence and makes the judgements, it never states a score.</p><div class="formula">
-    <p>core = &Sigma;(weight &times; score) / &Sigma;(weight) = 7085.3 / 100.00 = <span class="eq">70.9</span></p>
-    <p>bonus = +6.25</p>
-    <p>total = clamp(core + bonus, 0, 100) = clamp(70.9 + 6.25, 0, 100) = <span class="eq">77.1</span></p>
+    <p>core = &Sigma;(weight &times; score) / &Sigma;(weight) = 6747.8 / 100.00 = <span class="eq">67.5</span></p>
+    <p>adjusted = 100 &times; (core / 100) ^ gamma = 100 &times; (67.5 / 100) ^ 1.25 = <span class="eq">61.2</span> <span class="muted">(star, strictness 0.75, c2)</span></p>
+    <p>bonus = c11 +6.25 + c13 +6 = +12.25</p>
+    <p>total = clamp(adjusted + bonus, 0, 100) = clamp(61.2 + 12.25, 0, 100) = <span class="eq">73.4</span></p>
     </div>
-    <details class="inline"><summary>Show the arithmetic for each criterion</summary><div class="tablewrap"><table><thead><tr><th>Criterion</th><th class="num">Weight</th><th class="num">Score</th><th class="num">Weight x score</th></tr></thead><tbody><tr><td>c1 Current or most recent role</td><td class="num">50</td><td class="num">66.7</td><td class="num">3333.5</td></tr><tr><td>c2 Market position (BCG growth-share)</td><td class="num">5.56</td><td class="num">85.0</td><td class="num">472.2</td></tr><tr><td>c3 Years with the JD&#39;s tools and suppliers</td><td class="num">5.56</td><td class="num">66.7</td><td class="num">370.4</td></tr><tr><td>c4 AI experience and outcomes</td><td class="num">5.56</td><td class="num">60.8</td><td class="num">337.9</td></tr><tr><td>c5 Likelihood the CV was AI-generated</td><td class="num">5.56</td><td class="num">55.0</td><td class="num">305.6</td></tr><tr><td>c6 Spelling</td><td class="num">5.56</td><td class="num">90.0</td><td class="num">500.0</td></tr><tr><td>c7 Grammar</td><td class="num">5.56</td><td class="num">90.0</td><td class="num">500.0</td></tr><tr><td>c8 STAR / Problem-Action-Result bullets</td><td class="num">5.56</td><td class="num">47.8</td><td class="num">265.7</td></tr><tr><td>c9 Top university</td><td class="num">5.56</td><td class="num">80.0</td><td class="num">444.4</td></tr><tr><td>c10 Qualifications against the JD</td><td class="num">5.56</td><td class="num">100.0</td><td class="num">555.6</td></tr></tbody></table></div>
-    <p class="small muted">c1 itself is the weighted mean of its six sub-scores, see its card.</p></details></section>
+    <details class="inline"><summary>Show the arithmetic for each criterion</summary><div class="tablewrap"><table><thead><tr><th>Criterion</th><th class="num">Weight</th><th class="num">Score</th><th class="num">Weight x score</th></tr></thead><tbody><tr><td>c1 Current or most recent role</td><td class="num">50</td><td class="num">60.5</td><td class="num">3024.0</td></tr><tr><td>c3 Years with the JD&#39;s tools and suppliers</td><td class="num">5.56</td><td class="num">66.7</td><td class="num">370.4</td></tr><tr><td>c4 AI experience and outcomes</td><td class="num">5.56</td><td class="num">60.8</td><td class="num">337.9</td></tr><tr><td>c5 Likelihood the CV was AI-generated</td><td class="num">5.56</td><td class="num">55.0</td><td class="num">305.6</td></tr><tr><td>c6 Spelling</td><td class="num">5.56</td><td class="num">90.0</td><td class="num">500.0</td></tr><tr><td>c7 Grammar</td><td class="num">5.56</td><td class="num">90.0</td><td class="num">500.0</td></tr><tr><td>c8 STAR / Problem-Action-Result bullets</td><td class="num">5.56</td><td class="num">50.0</td><td class="num">277.8</td></tr><tr><td>c9 Top university</td><td class="num">5.56</td><td class="num">80.0</td><td class="num">444.4</td></tr><tr><td>c10 Qualifications against the JD</td><td class="num">5.56</td><td class="num">100.0</td><td class="num">555.6</td></tr><tr><td>c12 Tenure against expected longevity</td><td class="num">5.56</td><td class="num">77.8</td><td class="num">432.1</td></tr></tbody></table></div>
+    <p class="small muted">c1 itself is the weighted mean of its six sub-scores, see its card. c2 sets gamma and carries no weight of its own.</p></details></section>
 
 <section id="weights"><h2>Weights</h2>
 <p class="lede">Disagree with the emphasis? Move a slider and the total updates. Nothing is saved or sent anywhere.</p>
-<div class="panel"><h3>Core criteria</h3><div class="sliders" id="sl-core"></div><h3>c1 sub-checks</h3><div class="sliders" id="sl-c1"></div>
+<div class="panel"><h3>Core criteria</h3><div class="sliders" id="sl-core"></div><h3>c1 sub-checks</h3><div class="sliders" id="sl-c1"></div><h3>Employer strictness (c2)</h3><div class="sliders" id="sl-c2"></div>
 <div class="btns"><button id="reset" type="button">Reset</button><button id="copy" class="primary" type="button">Copy weights JSON</button><span class="copied" id="copied" role="status"></span></div>
 <pre id="snippet" class="mono small tablewrap" hidden></pre>
 <p class="small muted" id="calc-source"></p></div></section>
 
 <section id="criteria"><h2>Criteria</h2><p class="lede">Open a card to see the evidence behind its score. Quotes marked verified were found verbatim in the CV or job description.</p><div class="cards"><details class="card" id="card-c1"><summary>
-    <span class="cid">c1</span><span class="ctitle">Current or most recent role</span><span class="cscore">66.7</span>
-    <span class="bar" role="img" aria-label="score 66.7 of 100"><i style="width:66.67%"></i></span>
+    <span class="cid">c1</span><span class="ctitle">Current or most recent role</span><span class="cscore">60.5</span>
+    <span class="bar" role="img" aria-label="score 60.5 of 100"><i style="width:60.48%"></i></span>
     <span class="cmeta"><span class="chev">&#9656;</span><span data-weight-for="c1">weight 50</span><span class="badge conf-low">low confidence</span></span>
-    <span class="working">mean(title 100 (exact), same_industry 100, competitor 100, supplier 0, top_firm 0, top10_consulting 100) = 66.67</span></summary>
-    <div class="cbody"><h4>Six sub-checks</h4><div class="tablewrap"><table><thead><tr><th>Sub-check</th><th>What was found</th><th class="num">Score</th><th class="num">Sub-weight</th></tr></thead><tbody><tr><td><b>Job title</b></td><td>Level: <b>exact</b> (CV: Head of Operations, Example Payments Ltd)</td><td class="num">100</td><td class="num">1</td></tr><tr><td><b>Same industry</b> <span class="badge ok">match</span></td><td>Candidate: Payment processing (SIC 66190)<br>Hiring: Payment processing (SIC 66190)</td><td class="num">100</td><td class="num">1</td></tr><tr><td><b>Employer is a competitor</b> <span class="badge ok">match</span></td><td>Considered: Example Payments Ltd, Initech Payments</td><td class="num">100</td><td class="num">1</td></tr><tr><td><b>Employer is a supplier</b> <span class="badge">no match</span> <span class="badge bad">no evidence found</span></td><td>Products or services: none</td><td class="num">0</td><td class="num">1</td></tr><tr><td><b>Worked at the market leader</b> <span class="badge">no match</span></td><td>Market leader: Acme Corp</td><td class="num">0</td><td class="num">1</td></tr><tr><td><b>Worked at a top-10 consultancy</b> <span class="badge ok">match</span></td><td>Considered: Globex Consulting<br>Candidate firm: Globex Consulting</td><td class="num">100</td><td class="num">1</td></tr></tbody></table></div><details class="inline"><summary>Evidence: Job title</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Head of Operations<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Current title and advertised title are identical, and both own end-to-end operations. </p><p><span class="badge conf-high">high confidence</span></p></details><details class="inline"><summary>Evidence: Same industry</summary><blockquote class="cv"><span class="tag">CV</span>Operations Leader | Fintech and Payments<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Acme Corp is a leading payments processor<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Both companies are classified as payment processors in the cited report. <a class="fn" href="#src-S1">[S1]</a></p><p><span class="badge ">medium confidence</span></p></details><details class="inline"><summary>Evidence: Employer is a competitor</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Acme Corp is a leading payments processor<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The cited report names Example Payments Ltd as a direct Acme competitor, and Alex works there now. <a class="fn" href="#src-S2">[S2]</a></p><p><span class="badge ">medium confidence</span></p></details><details class="inline"><summary>Evidence: Employer is a supplier</summary><p class="reasoning">No evidence found that Example Payments Ltd supplies a product or service Acme uses. </p><p><span class="badge conf-low">low confidence</span></p></details><details class="inline"><summary>Evidence: Worked at the market leader</summary><blockquote class="jd"><span class="tag">JD</span>Acme Corp is a leading payments processor<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Acme is the market leader by revenue in the cited table. Alex has never worked there (see candidate.json). <a class="fn" href="#src-S3">[S3]</a></p><p><span class="badge ">medium confidence</span></p></details><details class="inline"><summary>Evidence: Worked at a top-10 consultancy</summary><blockquote class="cv"><span class="tag">CV</span>Globex Consulting | Senior Consultant | May 2015 - December 2016<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Acme Corp is a leading payments processor<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Globex Consulting appears in the cited illustrative ranking and Alex worked there as a Senior Consultant. <a class="fn" href="#src-S4">[S4]</a></p><p><span class="badge ">medium confidence</span></p></details><h4>Current role</h4><p class="small"><b>Head of Operations</b>, Example Payments Ltd, from 2021-03 (current)</p><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Head of Operations<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The CV shows Alex currently holds the same title as the advertised role. </p><p><span class="badge conf-high">high confidence</span></p></div></details><details class="card" id="card-c2"><summary>
-    <span class="cid">c2</span><span class="ctitle">Market position (BCG growth-share)</span><span class="cscore">85.0</span>
-    <span class="bar" role="img" aria-label="score 85.0 of 100"><i style="width:85%"></i></span>
-    <span class="cmeta"><span class="chev">&#9656;</span><span data-weight-for="c2">weight 5.56</span><span class="badge ">medium confidence</span></span>
-    <span class="working">100 - |quadrant star 75 - risk aversion 60 (AI inferred)| = 85</span></summary>
-    <div class="cbody"><h4>Where the hiring organisation sits</h4><svg class="bcg" viewBox="0 0 360 300" role="img" aria-label="BCG matrix: star, growth 14 percent, relative share 1.2"><rect class="hot" x="40" y="12" width="154" height="124"/><rect class="grid" x="40" y="12" width="308" height="248"/><line class="grid" x1="194" y1="12" x2="194" y2="260"/><line class="grid" x1="40" y1="136" x2="348" y2="136"/><text class="qlab" x="117" y="30" text-anchor="middle">STAR</text><text class="qlab" x="271" y="30" text-anchor="middle">QUESTION MARK</text><text class="qlab" x="117" y="250" text-anchor="middle">CASH COW</text><text class="qlab" x="271" y="250" text-anchor="middle">DOG</text><text x="194" y="292" text-anchor="middle">Relative market share (high &larr; &rarr; low), threshold 1.0</text><text transform="translate(12 136) rotate(-90)" text-anchor="middle">Market growth, threshold 10%</text><circle class="dot" cx="181.8" cy="86.4" r="7"/><text class="dlab" x="181.8" y="74.4" text-anchor="middle">1.20x, 14.0%</text></svg><p class="small muted">Unit assessed: division. Quadrant: <b>star</b>, market growth 14.0% a year, relative share 1.20.</p><h4>Candidate risk aversion vs quadrant fit</h4><div class="rabar" aria-label="Risk aversion 60, quadrant value 75"><i style="left:75%"><span>role suits 75</span></i><b style="left:60%"><span>candidate 60</span></b></div><p class="small">c2 = 100 &minus; |75 &minus; 60| = <b>85.0</b></p><h4>Evidence for the quadrant</h4><blockquote class="jd"><span class="tag">JD</span>Our payments division is growing quickly and needs an operations leader to scale with it.<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Market growth of 14.0 per cent is above the 10 per cent threshold and relative share of 1.2 is above 1.0, so the payments division is a star. <a class="fn" href="#src-S3">[S3]</a><a class="fn" href="#src-S5">[S5]</a></p><p><span class="badge ">medium confidence</span></p><h4>Evidence for risk aversion</h4><blockquote class="cv"><span class="tag">CV</span>Northwind Bank | Senior Operations Manager | January 2017 - February 2021<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>Globex Consulting | Senior Consultant | May 2015 - December 2016<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><p class="reasoning">Two long tenures of about four and five and a half years at established firms, one short consulting stint, no start-ups or contract work. That suggests moderate risk aversion, inferred at 60. </p><p><span class="badge ">medium confidence</span></p></div></details><details class="card" id="card-c3"><summary>
+    <span class="working">weighted mean(title 100 (exact), headline 70 (close), same_industry 100, competitor 100, supplier 0, top_firm 0) = 60.48</span></summary>
+    <div class="cbody"><h4>Six sub-checks (the headline carries a quarter of the weight of the others)</h4><div class="tablewrap"><table><thead><tr><th>Sub-check</th><th>What was found</th><th class="num">Score</th><th class="num">Sub-weight</th></tr></thead><tbody><tr><td><b>Job title</b></td><td>Level: <b>exact</b> (CV: Head of Operations, Example Payments Ltd)</td><td class="num">100</td><td class="num">1</td></tr><tr><td><b>CV headline</b></td><td>Level: <b>close</b> (CV headline: Operations Leader | Fintech and Payments)</td><td class="num">70</td><td class="num">0.25</td></tr><tr><td><b>Same industry</b> <span class="badge ok">match</span></td><td>Candidate: Payment processing (SIC 66190)<br>Hiring: Payment processing (SIC 66190)</td><td class="num">100</td><td class="num">1</td></tr><tr><td><b>Employer is a competitor</b> <span class="badge ok">match</span></td><td>Considered: Example Payments Ltd, Initech Payments</td><td class="num">100</td><td class="num">1</td></tr><tr><td><b>Employer is a supplier</b> <span class="badge">no match</span> <span class="badge bad">no evidence found</span></td><td>Products or services: none</td><td class="num">0</td><td class="num">1</td></tr><tr><td><b>Worked at the market leader</b> <span class="badge">no match</span></td><td>Market leader: Acme Corp</td><td class="num">0</td><td class="num">1</td></tr></tbody></table></div><details class="inline"><summary>Evidence: Job title</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Head of Operations<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Current title and advertised title are identical, and both own end-to-end operations. </p><p><span class="badge conf-high">high confidence</span></p></details><details class="inline"><summary>Evidence: CV headline</summary><blockquote class="cv"><span class="tag">CV</span>Operations Leader | Fintech and Payments<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Head of Operations<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The CV headline says Operations Leader, which is close to Head of Operations but is not the exact title. </p><p><span class="badge conf-high">high confidence</span></p></details><details class="inline"><summary>Evidence: Same industry</summary><blockquote class="cv"><span class="tag">CV</span>Operations Leader | Fintech and Payments<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Acme Corp is a leading payments processor<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Both companies are classified as payment processors in the cited report. <a class="fn" href="#src-S1">[S1]</a></p><p><span class="badge ">medium confidence</span></p></details><details class="inline"><summary>Evidence: Employer is a competitor</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Acme Corp is a leading payments processor<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The cited report names Example Payments Ltd as a direct Acme competitor, and Alex works there now. <a class="fn" href="#src-S2">[S2]</a></p><p><span class="badge ">medium confidence</span></p></details><details class="inline"><summary>Evidence: Employer is a supplier</summary><p class="reasoning">No evidence found that Example Payments Ltd supplies a product or service Acme uses. </p><p><span class="badge conf-low">low confidence</span></p></details><details class="inline"><summary>Evidence: Worked at the market leader</summary><blockquote class="jd"><span class="tag">JD</span>Acme Corp is a leading payments processor<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Acme is the market leader by revenue in the cited table. Alex has never worked there (see candidate.json). <a class="fn" href="#src-S3">[S3]</a></p><p><span class="badge ">medium confidence</span></p></details><h4>Current role</h4><p class="small"><b>Head of Operations</b>, Example Payments Ltd, from 2021-03 (current)</p><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Head of Operations<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The CV shows Alex currently holds the same title as the advertised role. </p><p><span class="badge conf-high">high confidence</span></p></div></details><details class="card" id="card-c2"><summary>
+    <span class="cid">c2</span><span class="ctitle">Employer strictness (BCG growth-share)</span><span class="cscore">γ 1.25</span>
+    <span class="bar" role="img" aria-label="score γ 1.25 of 100"><i style="width:60%"></i></span>
+    <span class="cmeta"><span class="chev">&#9656;</span><span>strictness <span data-live="strictness">0.75</span>, modifier: not weighted</span><span class="badge ">medium confidence</span></span>
+    <span class="working">base 0.75 (star) + buzz 0 -&gt; strictness clamp(0.75, 0.25, 1.25) = 0.75; gamma = 0.5 + 0.75 = 1.25; adjusted = 100 * (67.48/100)^1.25 = 61.16</span></summary>
+    <div class="cbody"><h4>Where the hiring organisation sits</h4><svg class="bcg" viewBox="0 0 360 300" role="img" aria-label="BCG matrix: star, growth 14 percent, relative share 1.2"><rect class="hot" x="40" y="12" width="154" height="124"/><rect class="grid" x="40" y="12" width="308" height="248"/><line class="grid" x1="194" y1="12" x2="194" y2="260"/><line class="grid" x1="40" y1="136" x2="348" y2="136"/><text class="qlab" x="117" y="30" text-anchor="middle">STAR</text><text class="qlab" x="271" y="30" text-anchor="middle">QUESTION MARK</text><text class="qlab" x="117" y="250" text-anchor="middle">CASH COW</text><text class="qlab" x="271" y="250" text-anchor="middle">DOG</text><text x="194" y="292" text-anchor="middle">Relative market share (high &larr; &rarr; low), threshold 1.0</text><text transform="translate(12 136) rotate(-90)" text-anchor="middle">Market growth, threshold 10%</text><circle class="dot" cx="181.8" cy="86.4" r="7"/><text class="dlab" x="181.8" y="74.4" text-anchor="middle">1.20x, 14.0%</text></svg><p class="small muted">Unit assessed: division. Quadrant: <b>star</b>, market growth 14.0% a year, relative share 1.20.</p><p class="small">This does not add points. It sets how strictly the employer treats any gap between the CV and the job description: a Cash Cow protects a profitable franchise and hires for a close match, a Dog has little to lose and will take a chance.</p><h4>Base strictness by quadrant</h4><div class="tablewrap"><table><thead><tr><th>Quadrant</th><th class="num">Base strictness</th></tr></thead><tbody><tr><td>cash cow</td><td class="num">1</td></tr><tr><td><b>star</b> <span class="badge ok">this employer</span></td><td class="num">0.75</td></tr><tr><td>question mark</td><td class="num">0.5</td></tr><tr><td>dog</td><td class="num">0.25</td></tr></tbody></table></div><h4>Hiring buzz adjustment</h4><p class="small">Adjustment <b>0</b> (range &minus;0.25 to +0.25): Neutral hiring signals: no freeze, no lay-offs, no stated preference for insiders or outsiders.</p><blockquote class="jd"><span class="tag">JD</span>Our payments division is growing quickly and needs an operations leader to scale with it.<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The cited report shows steady, ordinary hiring with nothing that raises or lowers how strict Acme will be, so the adjustment is 0. <a class="fn" href="#src-S7">[S7]</a></p><p><span class="badge ">medium confidence</span></p><h4>Worked formula</h4><div class="formula"><p>strictness = clamp(base 0.75 + buzz 0, 0.25, 1.25) = <span data-live="strictness">0.75</span></p>
+<p>gamma = 0.5 + strictness = <span data-live="gamma">1.25</span></p>
+<p>adjusted = 100 &times; (core / 100) ^ gamma = 100 &times; (<span data-live="core">67.5</span> / 100) ^ <span data-live="gamma">1.25</span> = <span class="eq"><span data-live="adjusted">61.2</span></span></p></div><p class="small muted">A core of 100 stays 100 in every quadrant. Move the strictness slider under Weights to see another employer's view.</p><h4>Evidence for the quadrant</h4><blockquote class="jd"><span class="tag">JD</span>Our payments division is growing quickly and needs an operations leader to scale with it.<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Market growth of 14.0 per cent is above the 10 per cent threshold and relative share of 1.2 is above 1.0, so the payments division is a star. <a class="fn" href="#src-S3">[S3]</a><a class="fn" href="#src-S5">[S5]</a></p><p><span class="badge ">medium confidence</span></p></div></details><details class="card" id="card-c3"><summary>
     <span class="cid">c3</span><span class="ctitle">Years with the JD&#39;s tools and suppliers</span><span class="cscore">66.7</span>
     <span class="bar" role="img" aria-label="score 66.7 of 100"><i style="width:66.67%"></i></span>
     <span class="cmeta"><span class="chev">&#9656;</span><span data-weight-for="c3">weight 5.56</span><span class="badge ">medium confidence</span></span>
@@ -278,11 +293,11 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     <span class="cmeta"><span class="chev">&#9656;</span><span data-weight-for="c7">weight 5.56</span><span class="badge ">medium confidence</span></span>
     <span class="working">max(0, 100 - 5 * 2 grammar errors) = 90</span></summary>
     <div class="cbody"><p class="small">2 error(s), 5 points each.</p><div class="tablewrap"><table><thead><tr><th>Original</th><th>Correction</th><th>Rule</th><th class="num">Line</th></tr></thead><tbody><tr><td><span style="text-decoration:line-through;text-decoration-color:var(--bad)">which have cut repeat contacts by 18%</span></td><td><b>which has cut repeat contacts by 18%</b></td><td>subject-verb agreement</td><td class="num">18</td></tr><tr><td><span style="text-decoration:line-through;text-decoration-color:var(--bad)">and negotiate a 12% saving</span></td><td><b>and negotiated a 12% saving</b></td><td>tense consistency</td><td class="num">26</td></tr></tbody></table></div></div></details><details class="card" id="card-c8"><summary>
-    <span class="cid">c8</span><span class="ctitle">STAR / Problem-Action-Result bullets</span><span class="cscore">47.8</span>
-    <span class="bar" role="img" aria-label="score 47.8 of 100"><i style="width:47.83%"></i></span>
+    <span class="cid">c8</span><span class="ctitle">STAR / Problem-Action-Result bullets</span><span class="cscore">50.0</span>
+    <span class="bar" role="img" aria-label="score 50.0 of 100"><i style="width:50%"></i></span>
     <span class="cmeta"><span class="chev">&#9656;</span><span data-weight-for="c8">weight 5.56</span><span class="badge ">medium confidence</span></span>
-    <span class="working">mean(6 full x 1, 10 partial x 0.5, 7 none x 0) over 23 bullets * 100 = 47.83</span></summary>
-    <div class="cbody"><p class="small">23 bullets: 6 full, 10 partial, 7 none.</p><div class="legend"><span class="lf">full: situation, action, result</span><span class="lp">partial</span><span class="ln">none</span></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Faced with chargeback backlogs averaging 9 days in 2021, redesigned the disputes workflow in ServiceNow and introduced automated triage, cutting average handling time to 3 days by Q2 2022.</div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Inherited a manual merchant onboarding process taking 14 days; rebuilt it in Salesforce with automated KYC checks, reducing onboarding to 5 days and lifting merchant NPS from 31 to 52.</div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> After a regulator flagged settlement delays, redesigned daily reconcilliation checks and cut exceptions by 35%.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Piloted an LLM-based assistant for dispute evidence summarisation in 2024, saving the disputes team around 1,400 analyst hours a year.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Introduced machine-learning fraud alerts with the risk team, which improved detection of suspicious merchant activity.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Rolled out Copilot to 60 team members in 2025 for drafting customer communications, with positive feedback from colleagues.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Introduced a new escalation model which have cut repeat contacts by 18%.</div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip" title="action missing">A</span><span class="chip" title="result missing">R</span> Responsible for operational dashboards and monthly reporting in Power BI.</div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip" title="action missing">A</span><span class="chip" title="result missing">R</span> Spearheaded a culture of continuous improvement and leveraged Lean methods to drive operational excellence.</div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> When the payments backlog hit 4,000 items after a core banking migration, set up a war-room and cross-trained 45 staff, clearing the backlog in 3 weeks.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Delivered a 3.2m GBP cost-reduction programme using Lean Six Sigma, closing 2 sites.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Managed vendor contracts worth 6m GBP and negotiate a 12% saving.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Implemented ServiceNow for incident and change management, reducing major incidents by 22%.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Migrated the complaints team to Salesforce Service Cloud in 2019, improving first-contact resolution from 62% to 74%.</div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip" title="action missing">A</span><span class="chip" title="result missing">R</span> Recieved the Chairman&#39;s Award for Excellence in 2019.</div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip" title="action missing">A</span><span class="chip" title="result missing">R</span> Member of the bank&#39;s operational risk committee.</div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> A top-5 UK bank was losing 6% of card applications to slow manual checks; led a 6-person team to redesign the workflow, which recovered 4.5m GBP of annual revenue.</div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Advised three retail banks on operating model redesign and process automation.</div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Facilitated workshops and prepared steering committee papers.</div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Peak-season returns delays were driving a 15% rise in complaints; introduced a returns triage cell and extended shifts, cutting complaints by 30% over the 2014 peak.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Managed a team of 35 across two distribution sites, improving productivity by 12%.</div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Analysed delivery performance data and produced weekly reports.</div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Built route-planning spreadsheets that reduced fuel costs by 8%.</div></div></div></details><details class="card" id="card-c9"><summary>
+    <span class="working">mean(6 full x 1, 10 partial x 0.5, 6 none x 0) over 22 achievement/experience bullets * 100 = 50 (3 other bullets not scored)</span></summary>
+    <div class="cbody"><p class="small">22 achievement and experience bullets scored: 6 full, 10 partial, 6 none. 3 other bullet(s) (skills, certifications, education) are listed but not scored.</p><div class="legend"><span class="lf">full: situation, action, result</span><span class="lp">partial</span><span class="ln">none</span></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Faced with chargeback backlogs averaging 9 days in 2021, redesigned the disputes workflow in ServiceNow and introduced automated triage, cutting average handling time to 3 days by Q2 2022. <span class="badge">achievement</span></div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Inherited a manual merchant onboarding process taking 14 days; rebuilt it in Salesforce with automated KYC checks, reducing onboarding to 5 days and lifting merchant NPS from 31 to 52. <span class="badge">achievement</span></div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> After a regulator flagged settlement delays, redesigned daily reconcilliation checks and cut exceptions by 35%. <span class="badge">achievement</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Piloted an LLM-based assistant for dispute evidence summarisation in 2024, saving the disputes team around 1,400 analyst hours a year. <span class="badge">achievement</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Introduced machine-learning fraud alerts with the risk team, which improved detection of suspicious merchant activity. <span class="badge">experience</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Rolled out Copilot to 60 team members in 2025 for drafting customer communications, with positive feedback from colleagues. <span class="badge">experience</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Introduced a new escalation model which have cut repeat contacts by 18%. <span class="badge">achievement</span></div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip" title="action missing">A</span><span class="chip" title="result missing">R</span> Responsible for operational dashboards and monthly reporting in Power BI. <span class="badge">experience</span></div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip" title="action missing">A</span><span class="chip" title="result missing">R</span> Spearheaded a culture of continuous improvement and leveraged Lean methods to drive operational excellence. <span class="badge">experience</span></div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> When the payments backlog hit 4,000 items after a core banking migration, set up a war-room and cross-trained 45 staff, clearing the backlog in 3 weeks. <span class="badge">achievement</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Delivered a 3.2m GBP cost-reduction programme using Lean Six Sigma, closing 2 sites. <span class="badge">achievement</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Managed vendor contracts worth 6m GBP and negotiate a 12% saving. <span class="badge">achievement</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Implemented ServiceNow for incident and change management, reducing major incidents by 22%. <span class="badge">achievement</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Migrated the complaints team to Salesforce Service Cloud in 2019, improving first-contact resolution from 62% to 74%. <span class="badge">achievement</span></div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip" title="action missing">A</span><span class="chip" title="result missing">R</span> Recieved the Chairman&#39;s Award for Excellence in 2019. <span class="badge">achievement</span></div></div><div class="bullet excluded"><div>Member of the bank&#39;s operational risk committee. <span class="badge">other: not scored</span></div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> A top-5 UK bank was losing 6% of card applications to slow manual checks; led a 6-person team to redesign the workflow, which recovered 4.5m GBP of annual revenue. <span class="badge">achievement</span></div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Advised three retail banks on operating model redesign and process automation. <span class="badge">experience</span></div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Facilitated workshops and prepared steering committee papers. <span class="badge">experience</span></div></div><div class="bullet full"><div><span class="chip on" title="situation found">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Peak-season returns delays were driving a 15% rise in complaints; introduced a returns triage cell and extended shifts, cutting complaints by 30% over the 2014 peak. <span class="badge">achievement</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Managed a team of 35 across two distribution sites, improving productivity by 12%. <span class="badge">achievement</span></div></div><div class="bullet none"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip" title="result missing">R</span> Analysed delivery performance data and produced weekly reports. <span class="badge">experience</span></div></div><div class="bullet partial"><div><span class="chip" title="situation missing">S</span><span class="chip on" title="action found">A</span><span class="chip on" title="result found">R</span> Built route-planning spreadsheets that reduced fuel costs by 8%. <span class="badge">achievement</span></div></div><div class="bullet excluded"><div>Operating model design, process improvement, vendor management, regulatory change, KYC and disputes, stakeholder management, Salesforce, ServiceNow, Power BI. <span class="badge">other: not scored</span></div></div><div class="bullet excluded"><div>Project Management Professional (PMP), PMI, 2018 <span class="badge">other: not scored</span></div></div></div></details><details class="card" id="card-c9"><summary>
     <span class="cid">c9</span><span class="ctitle">Top university</span><span class="cscore">80.0</span>
     <span class="bar" role="img" aria-label="score 80.0 of 100"><i style="width:80%"></i></span>
     <span class="cmeta"><span class="chev">&#9656;</span><span data-weight-for="c9">weight 5.56</span><span class="badge ">medium confidence</span></span>
@@ -292,16 +307,23 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     <span class="bar" role="img" aria-label="score 100.0 of 100"><i style="width:100%"></i></span>
     <span class="cmeta"><span class="chev">&#9656;</span><span data-weight-for="c10">weight 5.56</span><span class="badge conf-high">high confidence</span></span>
     <span class="working">weighted mean(PMP certification met x2, Lean Six Sigma Green Belt or higher met x1) = 3/3 * 100 = 100</span></summary>
-    <div class="cbody"><div class="tablewrap"><table><thead><tr><th>Requirement</th><th>Type</th><th>Status</th></tr></thead><tbody><tr><td>PMP certification</td><td>required (x2)</td><td><span class="badge ok">met</span></td></tr><tr><td>Lean Six Sigma Green Belt or higher</td><td>desirable</td><td><span class="badge ok">met</span></td></tr></tbody></table></div><details class="inline"><summary>PMP certification</summary><blockquote class="jd"><span class="tag">JD</span>PMP certification (required)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>Project Management Professional (PMP), PMI, 2018<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>PMP certification (required)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The CV lists PMP directly. </p><p><span class="badge conf-high">high confidence</span></p></details><details class="inline"><summary>Lean Six Sigma Green Belt or higher</summary><blockquote class="jd"><span class="tag">JD</span>Lean Six Sigma Green Belt or higher (desirable)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>Lean Six Sigma Green Belt, 2016<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Lean Six Sigma Green Belt or higher (desirable)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The CV lists a Green Belt, which meets the minimum. </p><p><span class="badge conf-high">high confidence</span></p></details></div></details><details class="card" id="card-c11"><summary><span class="cid">c11</span><span class="ctitle">Candidate's own access (bonus)</span><span class="cscore">+6.25</span>
-    <span class="cmeta"><span class="chev">&#9656;</span><span>self-reported, never inferred by the AI</span></span></summary><div class="cbody"><div class="tablewrap"><table><thead><tr><th>Item</th><th class="num">Points</th></tr></thead><tbody><tr><td>Referral by a colleague (senior, high visibility, 5 x 1.25)</td><td class="num">+6.25</td></tr></tbody></table></div><p class="small">Referral (colleague, senior, high visibility): Fictional: former colleague, now a senior leader in Acme Corp talent acquisition</p></div></details></div></section>
+    <div class="cbody"><div class="tablewrap"><table><thead><tr><th>Requirement</th><th>Type</th><th>Status</th></tr></thead><tbody><tr><td>PMP certification</td><td>required (x2)</td><td><span class="badge ok">met</span></td></tr><tr><td>Lean Six Sigma Green Belt or higher</td><td>desirable</td><td><span class="badge ok">met</span></td></tr></tbody></table></div><details class="inline"><summary>PMP certification</summary><blockquote class="jd"><span class="tag">JD</span>PMP certification (required)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>Project Management Professional (PMP), PMI, 2018<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>PMP certification (required)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The CV lists PMP directly. </p><p><span class="badge conf-high">high confidence</span></p></details><details class="inline"><summary>Lean Six Sigma Green Belt or higher</summary><blockquote class="jd"><span class="tag">JD</span>Lean Six Sigma Green Belt or higher (desirable)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>Lean Six Sigma Green Belt, 2016<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>Lean Six Sigma Green Belt or higher (desirable)<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">The CV lists a Green Belt, which meets the minimum. </p><p><span class="badge conf-high">high confidence</span></p></details></div></details><details class="card" id="card-c12"><summary>
+    <span class="cid">c12</span><span class="ctitle">Tenure against expected longevity</span><span class="cscore">77.8</span>
+    <span class="bar" role="img" aria-label="score 77.8 of 100"><i style="width:77.78%"></i></span>
+    <span class="cmeta"><span class="chev">&#9656;</span><span data-weight-for="c12">weight 5.56</span><span class="badge ">medium confidence</span></span>
+    <span class="working">median of 4 completed tenures (50, 20, 26, 30 months) = 28 months / (3 y * 12 = 36) capped at 1 * 100 = 77.78; current role excluded</span></summary>
+    <div class="cbody"><p class="small">Expected tenure: <b>3 years</b> (default). Median tenure of the counted roles: <b>28 months</b>. c12 = min(median / (3 &times; 12), 1) &times; 100 = <b>77.8</b>.</p><h4>Role timeline against expected tenure</h4><div class="tl" role="img" aria-label="Tenure of each role in months against the expected 36 months"><div class="tl-row ex"><span class="tl-name">Example Payments Ltd</span><span class="tl-track"><i style="width:100.0%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">68 m</span></div><div class="tl-row"><span class="tl-name">Northwind Bank</span><span class="tl-track"><i style="width:73.5%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">50 m</span></div><div class="tl-row"><span class="tl-name">Globex Consulting</span><span class="tl-track"><i style="width:29.4%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">20 m</span></div><div class="tl-row"><span class="tl-name">Contoso Retail</span><span class="tl-track"><i style="width:38.2%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">26 m</span></div><div class="tl-row"><span class="tl-name">Fabrikam Logistics</span><span class="tl-track"><i style="width:44.1%"></i><u style="left:52.9%" title="expected 36 months"></u></span><span class="tl-m">30 m</span></div><p class="small muted">The vertical mark is the expected 36 months.</p></div><div class="tablewrap"><table><thead><tr><th>Employer</th><th>Title</th><th>Dates</th><th class="num">Months</th><th>Counted</th></tr></thead><tbody><tr><td><b>Example Payments Ltd</b></td><td>Head of Operations</td><td>2021-03 to present</td><td class="num">68</td><td><span class="badge">current role: excluded</span></td></tr><tr><td><b>Northwind Bank</b></td><td>Senior Operations Manager</td><td>2017-01 to 2021-02</td><td class="num">50</td><td><span class="badge ok">counted</span></td></tr><tr><td><b>Globex Consulting</b></td><td>Senior Consultant</td><td>2015-05 to 2016-12</td><td class="num">20</td><td><span class="badge ok">counted</span></td></tr><tr><td><b>Contoso Retail</b></td><td>Operations Manager</td><td>2013-03 to 2015-04</td><td class="num">26</td><td><span class="badge ok">counted</span></td></tr><tr><td><b>Fabrikam Logistics</b></td><td>Operations Analyst, then Shift Supervisor</td><td>2010-09 to 2013-02</td><td class="num">30</td><td><span class="badge ok">counted</span></td></tr></tbody></table></div><h4>Expected years</h4><p class="reasoning">The JD does not state an expected tenure and no research was cited, so the default of 3 years applies. </p><p><span class="badge ">medium confidence</span></p><details class="inline"><summary>Example Payments Ltd</summary><blockquote class="cv"><span class="tag">CV</span>Example Payments Ltd | Head of Operations | March 2021 - Present<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Northwind Bank</summary><blockquote class="cv"><span class="tag">CV</span>Northwind Bank | Senior Operations Manager | January 2017 - February 2021<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Globex Consulting</summary><blockquote class="cv"><span class="tag">CV</span>Globex Consulting | Senior Consultant | May 2015 - December 2016<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Contoso Retail</summary><blockquote class="cv"><span class="tag">CV</span>Contoso Retail | Operations Manager | March 2013 - April 2015<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><details class="inline"><summary>Fabrikam Logistics</summary><blockquote class="cv"><span class="tag">CV</span>Fabrikam Logistics | Operations Analyst, then Shift Supervisor | September 2010 - February 2013<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote></details><p class="reasoning">Five dated roles; the current role is excluded as unfinished. The four completed tenures are 50, 20, 26 and 30 months. </p><p><span class="badge conf-high">high confidence</span></p></div></details><details class="card" id="card-c11"><summary><span class="cid">c11</span><span class="ctitle">Candidate's own access (bonus)</span><span class="cscore">+6.25</span>
+    <span class="cmeta"><span class="chev">&#9656;</span><span>self-reported, never inferred by the AI. Added after the strictness adjustment.</span></span></summary><div class="cbody"><div class="tablewrap"><table><thead><tr><th>Item</th><th class="num">Points</th></tr></thead><tbody><tr><td>Referral by a colleague (senior, high visibility, 5 x 1.25)</td><td class="num">+6.25</td></tr></tbody></table></div><p class="small">Referral (colleague, senior, high visibility): Fictional: former colleague, now a senior leader in Acme Corp talent acquisition</p></div></details><details class="card" id="card-c13"><summary><span class="cid">c13</span><span class="ctitle">Consulting experience (bonus)</span><span class="cscore">+6</span>
+    <span class="cmeta"><span class="chev">&#9656;</span><span>bonus, capped at +10</span><span class="badge ">medium confidence</span></span>
+    <span class="working">Globex Consulting (top_in_industry true, related_to_jd true) +6 = 6, capped at 10 = +6</span></summary><div class="cbody"><p class="small">Per consulting role: +3 if the firm is in the top 10 for the hiring company's industry, and +3 more if its work relates to this JD (only for a top-10 firm). Capped at +10.</p><div class="tablewrap"><table><thead><tr><th>Role</th><th>Top 10 for the industry</th><th>Related to the JD</th></tr></thead><tbody><tr><td><b>Globex Consulting</b>, Senior Consultant</td><td><span class="badge ok">yes +3</span></td><td><span class="badge ok">yes +3</span></td></tr></tbody></table></div><div class="tablewrap"><table><thead><tr><th>Item</th><th class="num">Points</th></tr></thead><tbody><tr><td>Consulting at a top-10 firm for the industry: Globex Consulting, Senior Consultant</td><td class="num">+3</td></tr><tr><td>Consulting work related to the JD: Globex Consulting, Senior Consultant</td><td class="num">+3</td></tr></tbody></table></div><details class="inline"><summary>Globex Consulting</summary><blockquote class="cv"><span class="tag">CV</span>Globex Consulting | Senior Consultant | May 2015 - December 2016<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="cv"><span class="tag">CV</span>A top-5 UK bank was losing 6% of card applications to slow manual checks; led a 6-person team to redesign the workflow, which recovered 4.5m GBP of annual revenue.<span class="badge ok" title="Found in the CV text">&#10003; verified</span></blockquote><blockquote class="jd"><span class="tag">JD</span>own end-to-end operations for merchant onboarding, settlement, disputes and customer support<span class="badge ok" title="Found in the job description text">&#10003; verified</span></blockquote><p class="reasoning">Globex Consulting is ranked eighth in the cited illustrative ranking for payments and banking, and its workflow-redesign project in banking relates to the operations this role owns. <a class="fn" href="#src-S4">[S4]</a></p><p><span class="badge ">medium confidence</span></p></details></div></details></div></section>
 
 <section id="summary"><h2>Summary</h2><div class="cols"><div><h3>Strengths</h3><ul><li>Same title, same industry and a direct competitor employer, so the current role is a very close match (c1).</li><li>Holds the required PMP and the desirable Green Belt (c10).</li><li>Salesforce and ServiceNow experience well beyond the years asked (c3).</li><li>Several full situation-action-result bullets with numbers (c8).</li></ul></div><div><h3>Risks</h3><ul><li>No Snowflake experience shown on the CV (c3).</li><li>Only one AI use is quantified, so AI evidence is moderate (c4).</li><li>Four spelling and grammar slips in a CV for a senior role (c6, c7).</li><li>Several bullets describe duties with no result (c8) and some phrasing reads as stock AI wording (c5).</li></ul></div><div><h3>Actions</h3><ul><li>Fix the two spelling errors and two grammar errors before applying (c6, c7).</li><li>Add a result to the duty bullets, or cut them (c8).</li><li>Add Snowflake or similar warehouse experience if true, for example via the Power BI reporting (c3).</li><li>Quantify the fraud-alert and Copilot outcomes (c4).</li><li>Replace &quot;spearheaded&quot; and &quot;leveraged&quot; phrasing with specifics (c5).</li></ul></div></div></section>
 
-<section id="sources"><h2>Sources</h2><ol class="sources"><li id="src-S1"><span class="sid">[S1]</span><b>Example industry report (illustrative): UK payments industry classification</b><br><a class="url" href="https://example.com/reports/uk-payments-industry-classification" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/uk-payments-industry-classification</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp and Example Payments Ltd are both classified as payment processors (SIC 66190).</blockquote></li><li id="src-S2"><span class="sid">[S2]</span><b>Example industry report (illustrative): merchant acquiring competitor landscape</b><br><a class="url" href="https://example.com/reports/merchant-acquiring-competitor-landscape" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/merchant-acquiring-competitor-landscape</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Example Payments Ltd is named as a direct competitor of Acme Corp in UK merchant acquiring.</blockquote></li><li id="src-S3"><span class="sid">[S3]</span><b>Example market share table (illustrative): UK merchant acquiring</b><br><a class="url" href="https://example.com/rankings/uk-merchant-acquiring-market-share" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/uk-merchant-acquiring-market-share</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp is the largest UK merchant acquirer by revenue, 1.2 times the size of its nearest rival.</blockquote></li><li id="src-S4"><span class="sid">[S4]</span><b>Example consulting ranking (illustrative): top 10 firms serving payments</b><br><a class="url" href="https://example.com/rankings/top-consulting-firms-payments" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/top-consulting-firms-payments</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Globex Consulting is ranked eighth among consulting firms serving payments and banking clients.</blockquote></li><li id="src-S5"><span class="sid">[S5]</span><b>Example industry report (illustrative): payments market growth forecast</b><br><a class="url" href="https://example.com/reports/payments-market-growth-forecast" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/payments-market-growth-forecast</a><div class="small muted">Accessed 2026-10-04</div><blockquote>UK merchant payments processing is forecast to grow by 14.0 per cent a year to 2030.</blockquote></li><li id="src-S6"><span class="sid">[S6]</span><b>Example university groupings (illustrative)</b><br><a class="url" href="https://example.com/rankings/uk-universities-groups" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/uk-universities-groups</a><div class="small muted">Accessed 2026-10-04</div><blockquote>The University of Example is a member of the research-intensive Russell Group-style mission group.</blockquote></li></ol></section>
+<section id="sources"><h2>Sources</h2><ol class="sources"><li id="src-S1"><span class="sid">[S1]</span><b>Example industry report (illustrative): UK payments industry classification</b><br><a class="url" href="https://example.com/reports/uk-payments-industry-classification" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/uk-payments-industry-classification</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp and Example Payments Ltd are both classified as payment processors (SIC 66190).</blockquote></li><li id="src-S2"><span class="sid">[S2]</span><b>Example industry report (illustrative): merchant acquiring competitor landscape</b><br><a class="url" href="https://example.com/reports/merchant-acquiring-competitor-landscape" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/merchant-acquiring-competitor-landscape</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Example Payments Ltd is named as a direct competitor of Acme Corp in UK merchant acquiring.</blockquote></li><li id="src-S3"><span class="sid">[S3]</span><b>Example market share table (illustrative): UK merchant acquiring</b><br><a class="url" href="https://example.com/rankings/uk-merchant-acquiring-market-share" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/uk-merchant-acquiring-market-share</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp is the largest UK merchant acquirer by revenue, 1.2 times the size of its nearest rival.</blockquote></li><li id="src-S4"><span class="sid">[S4]</span><b>Example consulting ranking (illustrative): top 10 firms serving payments</b><br><a class="url" href="https://example.com/rankings/top-consulting-firms-payments" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/top-consulting-firms-payments</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Globex Consulting is ranked eighth among consulting firms serving payments and banking clients.</blockquote></li><li id="src-S5"><span class="sid">[S5]</span><b>Example industry report (illustrative): payments market growth forecast</b><br><a class="url" href="https://example.com/reports/payments-market-growth-forecast" rel="noopener noreferrer nofollow" target="_blank">https://example.com/reports/payments-market-growth-forecast</a><div class="small muted">Accessed 2026-10-04</div><blockquote>UK merchant payments processing is forecast to grow by 14.0 per cent a year to 2030.</blockquote></li><li id="src-S6"><span class="sid">[S6]</span><b>Example university groupings (illustrative)</b><br><a class="url" href="https://example.com/rankings/uk-universities-groups" rel="noopener noreferrer nofollow" target="_blank">https://example.com/rankings/uk-universities-groups</a><div class="small muted">Accessed 2026-10-04</div><blockquote>The University of Example is a member of the research-intensive Russell Group-style mission group.</blockquote></li><li id="src-S7"><span class="sid">[S7]</span><b>Example news (illustrative): Acme Corp hiring outlook</b><br><a class="url" href="https://example.com/news/acme-hiring-outlook" rel="noopener noreferrer nofollow" target="_blank">https://example.com/news/acme-hiring-outlook</a><div class="small muted">Accessed 2026-10-04</div><blockquote>Acme Corp has no hiring freeze and is recruiting across its payments division, with no stated preference for industry insiders.</blockquote></li></ol></section>
 
 <footer>Every number above can be recomputed from docs/rubric.md and the evidence shown.</footer>
 </div>
-<script type="application/json" id="report-data">{"names":{"c1":"Current or most recent role","c2":"Market position (BCG growth-share)","c3":"Years with the JD's tools and suppliers","c4":"AI experience and outcomes","c5":"Likelihood the CV was AI-generated","c6":"Spelling","c7":"Grammar","c8":"STAR / Problem-Action-Result bullets","c9":"Top university","c10":"Qualifications against the JD"},"keys":{"c1":"c1_current_role","c2":"c2_market_position","c3":"c3_tools_years","c4":"c4_ai_experience","c5":"c5_ai_generated","c6":"c6_spelling","c7":"c7_grammar","c8":"c8_star_par","c9":"c9_top_university","c10":"c10_qualifications"},"weights":{"core":{"c1_current_role":50,"c2_market_position":5.5555556,"c3_tools_years":5.5555556,"c4_ai_experience":5.5555556,"c5_ai_generated":5.5555556,"c6_spelling":5.5555556,"c7_grammar":5.5555556,"c8_star_par":5.5555556,"c9_top_university":5.5555556,"c10_qualifications":5.5555556},"c1_subweights":{"title":1,"same_industry":1,"competitor":1,"supplier":1,"top_firm":1,"top10_consulting":1}},"total":77.1,"core":70.85,"bonusTotal":6.25,"criteria":{"c1":{"score":66.67,"weight":50,"na":false,"sub":{"title":100,"same_industry":100,"competitor":100,"supplier":0,"top_firm":0,"top10_consulting":100}},"c2":{"score":85,"weight":5.5555556,"na":false,"sub":null},"c3":{"score":66.67,"weight":5.5555556,"na":false,"sub":null},"c4":{"score":60.83,"weight":5.5555556,"na":false,"sub":null},"c5":{"score":55,"weight":5.5555556,"na":false,"sub":null},"c6":{"score":90,"weight":5.5555556,"na":false,"sub":null},"c7":{"score":90,"weight":5.5555556,"na":false,"sub":null},"c8":{"score":47.83,"weight":5.5555556,"na":false,"sub":null},"c9":{"score":80,"weight":5.5555556,"na":false,"sub":null},"c10":{"score":100,"weight":5.5555556,"na":false,"sub":null}}}</script>
+<script type="application/json" id="report-data">{"names":{"c1":"Current or most recent role","c2":"Employer strictness (BCG growth-share)","c3":"Years with the JD's tools and suppliers","c4":"AI experience and outcomes","c5":"Likelihood the CV was AI-generated","c6":"Spelling","c7":"Grammar","c8":"STAR / Problem-Action-Result bullets","c9":"Top university","c10":"Qualifications against the JD","c12":"Tenure against expected longevity","c13":"Consulting experience (bonus)"},"keys":{"c1":"c1_current_role","c3":"c3_tools_years","c4":"c4_ai_experience","c5":"c5_ai_generated","c6":"c6_spelling","c7":"c7_grammar","c8":"c8_star_par","c9":"c9_top_university","c10":"c10_qualifications","c12":"c12_tenure"},"weights":{"core":{"c1_current_role":50,"c3_tools_years":5.5555556,"c4_ai_experience":5.5555556,"c5_ai_generated":5.5555556,"c6_spelling":5.5555556,"c7_grammar":5.5555556,"c8_star_par":5.5555556,"c9_top_university":5.5555556,"c10_qualifications":5.5555556,"c12_tenure":5.5555556},"c1_subweights":{"title":1,"headline":0.25,"same_industry":1,"competitor":1,"supplier":1,"top_firm":1}},"total":73.41,"core":67.48,"adjusted":61.16,"bonusTotal":12.25,"bonusC11":6.25,"bonusC13":6,"strictness":{"quadrant":"star","base":0.75,"buzz":0,"value":0.75,"gamma":1.25,"gammaBase":0.5,"bases":{"cash_cow":1,"star":0.75,"question_mark":0.5,"dog":0.25}},"criteria":{"c1":{"score":60.48,"weight":50,"na":false,"sub":{"title":100,"headline":70,"same_industry":100,"competitor":100,"supplier":0,"top_firm":0}},"c3":{"score":66.67,"weight":5.5555556,"na":false,"sub":null},"c4":{"score":60.83,"weight":5.5555556,"na":false,"sub":null},"c5":{"score":55,"weight":5.5555556,"na":false,"sub":null},"c6":{"score":90,"weight":5.5555556,"na":false,"sub":null},"c7":{"score":90,"weight":5.5555556,"na":false,"sub":null},"c8":{"score":50,"weight":5.5555556,"na":false,"sub":null},"c9":{"score":80,"weight":5.5555556,"na":false,"sub":null},"c10":{"score":100,"weight":5.5555556,"na":false,"sub":null},"c12":{"score":77.78,"weight":5.5555556,"na":false,"sub":null}}}</script>
 <script>var __m={exports:{}};(function(module,exports,require){try{
 'use strict';
 // Deterministic scoring engine. Pure functions, no fs. Implements docs/rubric.md exactly.
@@ -310,9 +332,10 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
   if (typeof module === 'object' && module.exports) module.exports = factory();
   else root.CVFit = factory();
 })(typeof window !== 'undefined' ? window : this, function () {
-  var CRITERIA = ['c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10'];
-  var C1_SUBS = ['title', 'same_industry', 'competitor', 'supplier', 'top_firm', 'top10_consulting'];
-  var C1_WEB = ['same_industry', 'competitor', 'supplier', 'top_firm', 'top10_consulting'];
+  // Weighted core criteria. c2 is a strictness modifier and c11/c13 are bonuses, so none of them are here.
+  var CRITERIA = ['c1', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10', 'c12'];
+  var C1_SUBS = ['title', 'headline', 'same_industry', 'competitor', 'supplier', 'top_firm'];
+  var C1_WEB = ['same_industry', 'competitor', 'supplier', 'top_firm'];
   var CONF_RANK = { low: 0, medium: 1, high: 2 };
 
   function r2(x) { return Math.round((x + Number.EPSILON) * 100) / 100; }
@@ -372,6 +395,9 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     var t = c1.title || {};
     sub.title = lookup(levels, t.level, 'c1.title.level');
     notes.push('title ' + sub.title + ' (' + t.level + ')');
+    var hd = c1.headline || {};
+    sub.headline = lookup(levels, hd.level, 'c1.headline.level');
+    notes.push('headline ' + sub.headline + ' (' + hd.level + ')');
     C1_WEB.forEach(function (k) {
       var s = c1[k] || {};
       var ids = (s.evidence && s.evidence.source_ids) || [];
@@ -393,18 +419,22 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     };
   }
 
-  // ---- c2 ----
-  function scoreC2(a, candidate, w) {
+  // ---- c2: strictness modifier (not weighted) ----
+  function computeStrictness(a, w) {
     var c2 = a.c2 || {};
-    var qv = lookup(w.c2_quadrant_risk_aversion, c2.quadrant, 'c2.quadrant');
-    var ov = candidate && candidate.risk_aversion_override;
-    var hasOv = typeof ov === 'number' && isFinite(ov);
-    var ra = hasOv ? ov : num(c2.candidate_risk_aversion, 'c2.candidate_risk_aversion');
-    var score = clamp(100 - Math.abs(qv - ra), 0, 100);
-    return {
-      score: score, not_applicable: false, confidence: minConfidence(c2),
-      working: '100 - |quadrant ' + c2.quadrant + ' ' + qv + ' - risk aversion ' + ra + (hasOv ? ' (candidate override)' : ' (AI inferred)') + '| = ' + fmt(score)
-    };
+    var base = lookup(w.c2_strictness, c2.quadrant, 'c2.quadrant');
+    var max = w.c2_buzz_max === undefined ? 0.25 : w.c2_buzz_max;
+    var rawBuzz = (c2.buzz && typeof c2.buzz.adjustment === 'number' && isFinite(c2.buzz.adjustment)) ? c2.buzz.adjustment : 0;
+    var buzz = clamp(rawBuzz, -max, max);
+    var strictness = clamp(base + buzz, 0.25, 1.25);
+    var gb = w.c2_gamma_base === undefined ? 0.5 : w.c2_gamma_base;
+    return { quadrant: c2.quadrant, base: base, buzz: buzz, strictness: strictness, gamma: gb + strictness, gamma_base: gb, buzz_raw: rawBuzz };
+  }
+  function strictnessWorking(st, core, adjusted) {
+    return 'base ' + st.base + ' (' + st.quadrant + ') + buzz ' + fmt(st.buzz) + (st.buzz !== st.buzz_raw ? ' (clamped from ' + fmt(st.buzz_raw) + ')' : '') +
+      ' -> strictness clamp(' + fmt(st.base + st.buzz) + ', 0.25, 1.25) = ' + fmt(st.strictness) +
+      '; gamma = ' + st.gamma_base + ' + ' + fmt(st.strictness) + ' = ' + fmt(st.gamma) +
+      '; adjusted = 100 * (' + fmt(core) + '/100)^' + fmt(st.gamma) + ' = ' + fmt(adjusted);
   }
 
   // ---- c3 ----
@@ -489,18 +519,23 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
   }
 
   // ---- c8 ----
+  // Only achievement and experience bullets are scored. A missing section counts as scored (legacy files).
   function scoreC8(a, w) {
-    var bullets = (a.c8 || {}).bullets || [];
-    if (bullets.length === 0) return na('not applicable: no bullets classified', 'low');
+    var all = (a.c8 || {}).bullets || [];
+    var bullets = all.filter(function (b) { return b.section !== 'other'; });
+    var excluded = all.length - bullets.length;
+    if (bullets.length === 0) return na('not applicable: no achievement or experience bullets classified' + (excluded ? ' (' + excluded + ' other bullets listed but not scored)' : ''), 'low');
     var counts = { full: 0, partial: 0, none: 0 }, sum = 0;
-    bullets.forEach(function (b, i) {
+    bullets.forEach(function (b) {
+      var i = all.indexOf(b);
       sum += lookup(w.c8_levels, b.level, 'c8.bullets[' + i + '].level');
       counts[b.level] = (counts[b.level] || 0) + 1;
     });
     var score = sum / bullets.length * 100;
     return { score: score, not_applicable: false, confidence: minConfidence(a.c8),
       working: 'mean(' + counts.full + ' full x ' + w.c8_levels.full + ', ' + counts.partial + ' partial x ' + w.c8_levels.partial +
-        ', ' + counts.none + ' none x ' + w.c8_levels.none + ') over ' + bullets.length + ' bullets * 100 = ' + fmt(score) };
+        ', ' + counts.none + ' none x ' + w.c8_levels.none + ') over ' + bullets.length + ' achievement/experience bullets * 100 = ' + fmt(score) +
+        (excluded ? ' (' + excluded + ' other bullets not scored)' : '') };
   }
 
   // ---- c9 ----
@@ -529,8 +564,41 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
       working: 'weighted mean(' + notes.join(', ') + ') = ' + num_ + '/' + den + ' * 100 = ' + fmt(score) };
   }
 
+  // ---- c12 tenure ----
+  function median(xs) {
+    var v = xs.slice().sort(function (x, y) { return x - y; });
+    var n = v.length, m = Math.floor(n / 2);
+    return n % 2 ? v[m] : (v[m - 1] + v[m]) / 2;
+  }
+  function roleMonths(r, cap, path) {
+    var s = monthIndex(r.start, path + '.start');
+    var e = (r.end === null || r.end === undefined) ? cap : monthIndex(r.end, path + '.end');
+    if (e < s) throw new Error(path + '.end is before start');
+    return e - s + 1;
+  }
+  function scoreC12(a, w) {
+    var c12 = a.c12 || {};
+    var roles = c12.roles || [];
+    if (c12.not_applicable === true || roles.length === 0) return na('not applicable: no dated roles on the CV', 'low');
+    var cap = monthIndex(String((a.meta && a.meta.assessed_on) || '').slice(0, 7), 'meta.assessed_on');
+    var isCur = function (r) { return r.current === true || r.end === null || r.end === undefined; };
+    var done = roles.map(function (r, i) { return { r: r, i: i }; }).filter(function (x) { return !isCur(x.r); });
+    var used = done.length ? done : roles.map(function (r, i) { return { r: r, i: i }; });
+    var months = used.map(function (x) { return roleMonths(x.r, cap, 'c12.roles[' + x.i + ']'); });
+    var med = median(months);
+    var ev = c12.expected_years || {};
+    var yrs = (typeof ev.value === 'number' && isFinite(ev.value)) ? ev.value : w.c12_default_expected_years;
+    var exp = yrs * 12;
+    var score = exp > 0 ? Math.min(med / exp, 1) * 100 : 100;
+    return { score: score, not_applicable: false, confidence: minConfidence(c12),
+      detail: { months: months, role_indexes: used.map(function (x) { return x.i; }), median_months: med, expected_years: yrs, expected_months: exp, current_excluded: done.length > 0 && done.length < roles.length },
+      working: 'median of ' + months.length + ' ' + (done.length ? 'completed' : 'current (only role)') + ' tenure' + (months.length === 1 ? '' : 's') + ' (' + months.join(', ') + ' months) = ' + fmt(med) +
+        ' months / (' + yrs + ' y * 12 = ' + exp + ') capped at 1 * 100 = ' + fmt(score) +
+        (done.length > 0 && done.length < roles.length ? '; current role excluded' : '') };
+  }
+
   // ---- c11 bonus ----
-  function computeBonus(candidate, w) {
+  function computeBonus(candidate, w, assessment) {
     var b = w.bonus || {};
     var items = [];
     candidate = candidate || {};
@@ -539,33 +607,51 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
       var cfg = b.c11_previously_worked_here || { points: 5, direction: 'positive' };
       var dir = pw.direction || cfg.direction || 'positive';
       var pts = (dir === 'negative' ? -1 : 1) * Math.abs(cfg.points);
-      items.push({ label: 'Previously worked for the hiring organisation' + (dir === 'negative' ? ' (negative)' : ''), points: pts });
+      items.push({ label: 'Previously worked for the hiring organisation' + (dir === 'negative' ? ' (negative)' : ''), points: pts, group: 'c11' });
     }
     (candidate.referrals || []).forEach(function (r, i) {
       var p = 'candidate.referrals[' + i + ']';
       if (r.type === 'hiring_manager_trusted_influencer') {
-        items.push({ label: 'Referral to the hiring manager by a trusted influencer', points: b.c11_referral_hiring_manager_trusted_influencer });
+        items.push({ label: 'Referral to the hiring manager by a trusted influencer', points: b.c11_referral_hiring_manager_trusted_influencer, group: 'c11' });
       } else if (r.type === 'same_division_colleague') {
         items.push({ label: 'Referral by a same-division colleague (' + r.seniority + ')',
-          points: lookup(b.c11_referral_same_division_colleague, r.seniority, p + '.seniority') });
+          points: lookup(b.c11_referral_same_division_colleague, r.seniority, p + '.seniority'), group: 'c11' });
       } else if (r.type === 'colleague') {
         var t = b.c11_referral_colleague || {};
         var base = lookup(t, r.seniority, p + '.seniority');
         var vis = r.visibility || 'medium';
         var mult = lookup(t.visibility_multiplier, vis, p + '.visibility');
-        items.push({ label: 'Referral by a colleague (' + r.seniority + ', ' + vis + ' visibility, ' + base + ' x ' + mult + ')', points: r2(base * mult) });
+        items.push({ label: 'Referral by a colleague (' + r.seniority + ', ' + vis + ' visibility, ' + base + ' x ' + mult + ')', points: r2(base * mult), group: 'c11' });
       } else {
         throw new Error(p + '.type must be hiring_manager_trusted_influencer, same_division_colleague or colleague');
       }
     });
-    var total = items.reduce(function (s, it) { return s + it.points; }, 0);
-    return { items: items, total: r2(total) };
+    var c11 = r2(items.reduce(function (s, it) { return s + it.points; }, 0));
+    var c13 = 0;
+    var roles = ((assessment || {}).c13 || {}).roles || [];
+    var topPts = b.c13_consulting_top_in_industry === undefined ? 3 : b.c13_consulting_top_in_industry;
+    var relPts = b.c13_consulting_related_to_jd === undefined ? 3 : b.c13_consulting_related_to_jd;
+    var cap = b.c13_cap === undefined ? 10 : b.c13_cap;
+    var c13items = [];
+    roles.forEach(function (r) {
+      var who = (r.employer || 'consulting firm') + (r.title ? ', ' + r.title : '');
+      if (r.top_in_industry === true) {
+        c13items.push({ label: 'Consulting at a top-10 firm for the industry: ' + who, points: topPts, group: 'c13' });
+        if (r.related_to_jd === true) c13items.push({ label: 'Consulting work related to the JD: ' + who, points: relPts, group: 'c13' });
+      }
+    });
+    var c13raw = r2(c13items.reduce(function (s, it) { return s + it.points; }, 0));
+    c13 = Math.min(c13raw, cap);
+    items = items.concat(c13items);
+    if (c13raw > cap) items.push({ label: 'c13 capped at +' + cap, points: r2(cap - c13raw), group: 'c13' });
+    return { items: items, c11: c11, c13: r2(c13), c13_uncapped: c13raw, total: r2(c11 + c13) };
   }
 
   // ---- combine (also used by the in-browser sliders) ----
   // criteriaScores: {c1: 61.7, c3: null (n/a), ...}. coreWeights keyed 'c1' or 'c1_current_role'.
   // c1Sub: {title: 70,...} + c1Subweights: when given, c1 is recomputed from them.
-  function combine(criteriaScores, coreWeights, c1Sub, c1Subweights, bonusTotal) {
+  // gamma: exponent from the c2 strictness step (omitted = 1, no adjustment).
+  function combine(criteriaScores, coreWeights, c1Sub, c1Subweights, bonusTotal, gamma) {
     var scores = {};
     Object.keys(criteriaScores || {}).forEach(function (k) { scores[critId(k)] = criteriaScores[k]; });
     if (c1Sub && c1Subweights) {
@@ -581,19 +667,21 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
       num_ += wt * s; den += wt;
     });
     var core = den > 0 ? r2(num_ / den) : 0;
+    var g = (typeof gamma === 'number' && isFinite(gamma)) ? gamma : 1;
+    var adjusted = r2(100 * Math.pow(clamp(core, 0, 100) / 100, g));
     var bonus = bonusTotal || 0;
-    var total = r2(clamp(core + bonus, 0, 100));
-    return { c1: scores.c1 === undefined ? null : r2(scores.c1), core: core, bonus: bonus, total: total, band: band(total) };
+    var total = r2(clamp(adjusted + bonus, 0, 100));
+    return { c1: scores.c1 === undefined ? null : r2(scores.c1), core: core, gamma: g, adjusted: adjusted, bonus: bonus, total: total, band: band(total) };
   }
 
   function scoreAll(assessment, candidate, weights) {
     var a = assessment || {}, w = weights;
     var raw = {
-      c1: scoreC1(a, w), c2: scoreC2(a, candidate, w), c3: scoreC3(a, w), c4: scoreC4(a),
+      c1: scoreC1(a, w), c3: scoreC3(a, w), c4: scoreC4(a),
       c5: scoreC5(a, w),
       c6: scoreErrors(a.c6, w.c6_points_per_spelling_error, 'spelling'),
       c7: scoreErrors(a.c7, w.c7_points_per_grammar_error, 'grammar'),
-      c8: scoreC8(a, w), c9: scoreC9(a, w), c10: scoreC10(a, w)
+      c8: scoreC8(a, w), c9: scoreC9(a, w), c10: scoreC10(a, w), c12: scoreC12(a, w)
     };
     var criteria = {}, forCombine = {};
     CRITERIA.forEach(function (id) {
@@ -607,17 +695,34 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
       };
       if (c.sub) out.sub = c.sub;
       if (c.item_scores) out.item_scores = c.item_scores.map(r2);
+      if (c.detail) out.detail = c.detail;
       criteria[id] = out;
       forCombine[id] = c.score;
     });
-    var bonus = computeBonus(candidate, w);
-    var comb = combine(forCombine, w.core, null, null, bonus.total);
-    // use unrounded c1 etc. above; surface rounded criteria
-    return { criteria: criteria, core: comb.core, bonus: bonus, total: comb.total, band: comb.band };
+    var st = computeStrictness(a, w);
+    var bonus = computeBonus(candidate, w, a);
+    var comb = combine(forCombine, w.core, null, null, bonus.total, st.gamma);
+    var strictness = { quadrant: st.quadrant, base: st.base, buzz: st.buzz, strictness: r2(st.strictness), gamma: r2(st.gamma) };
+    // c2 is a modifier and c13 a bonus: they appear in criteria for their working string and confidence, with no score or weight.
+    var c2conf = minConfidence(a.c2 || {});
+    criteria.c2 = { score: null, weight: 0, modifier: true, not_applicable: false, confidence: c2conf, working: strictnessWorking(st, comb.core, comb.adjusted) };
+    criteria.c13 = { score: null, weight: 0, bonus: true, points: bonus.c13, not_applicable: false, confidence: minConfidence(a.c13 || {}),
+      working: c13Working(a, bonus, w) };
+    return { criteria: criteria, core: comb.core, strictness: strictness, adjusted: comb.adjusted, bonus: bonus, total: comb.total, band: comb.band };
+  }
+
+  function c13Working(a, bonus, w) {
+    var roles = ((a.c13 || {}).roles || []);
+    if (!roles.length) return 'no consulting roles: +0';
+    var parts = roles.map(function (r) {
+      var pts = r.top_in_industry === true ? (w.bonus.c13_consulting_top_in_industry + (r.related_to_jd === true ? w.bonus.c13_consulting_related_to_jd : 0)) : 0;
+      return (r.employer || 'role') + ' (top_in_industry ' + (r.top_in_industry === true) + ', related_to_jd ' + (r.related_to_jd === true) + (r.related_to_jd === true && r.top_in_industry !== true ? ', ignored: not a top firm' : '') + ') +' + pts;
+    });
+    return parts.join('; ') + ' = ' + fmt(bonus.c13_uncapped) + ', capped at ' + w.bonus.c13_cap + ' = +' + fmt(bonus.c13);
   }
 
   return {
-    scoreAll: scoreAll, combine: combine, computeBonus: computeBonus, band: band,
+    scoreAll: scoreAll, combine: combine, computeBonus: computeBonus, computeStrictness: computeStrictness, band: band,
     unionMonths: unionMonths, monthIndex: monthIndex, CRITERIA: CRITERIA, C1_SUBS: C1_SUBS
   };
 });
@@ -627,13 +732,14 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
   "use strict";
   var D = JSON.parse(document.getElementById("report-data").textContent);
   var NAMES = D.names;
-  var IDS = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10"];
-  var SUBS = ["title", "same_industry", "competitor", "supplier", "top_firm", "top10_consulting"];
+  var IDS = ["c1", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10", "c12"];
+  var SUBS = ["title", "headline", "same_industry", "competitor", "supplier", "top_firm"];
+  var ST = D.strictness || {};
   var $ = function (id) { return document.getElementById(id); };
   var round1 = function (n) { return Math.round(n * 10) / 10; };
 
   // ---- fallback combine (used only if the embedded lib/scoring.js is absent or disagrees with scored.json)
-  function fallbackCombine(scores, coreW, c1Sub, c1SubW, bonus) {
+  function fallbackCombine(scores, coreW, c1Sub, c1SubW, bonus, gamma) {
     var sub = 0, sw = 0;
     SUBS.forEach(function (k) {
       var w = Number(c1SubW[k]); if (!isFinite(w)) w = 1;
@@ -648,15 +754,16 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
       num += w * s; den += w;
     });
     var core = den > 0 ? num / den : 0;
-    return { core: core, total: Math.min(100, Math.max(0, core + bonus)) };
+    var g = isFinite(gamma) ? gamma : 1;
+    var adjusted = 100 * Math.pow(Math.min(100, Math.max(0, core)) / 100, g);
+    return { core: core, adjusted: adjusted, total: Math.min(100, Math.max(0, adjusted + bonus)) };
   }
 
   function normalise(r) {
-    if (typeof r === "number") return { total: r, core: r - D.bonusTotal };
+    if (typeof r === "number") return { total: r, core: r - D.bonusTotal, adjusted: r - D.bonusTotal };
     if (r && typeof r === "object") {
-      var total = r.total != null ? r.total : (r.core != null ? r.core + D.bonusTotal : null);
-      var core = r.core != null ? r.core : (r.total != null ? r.total - D.bonusTotal : null);
-      if (total != null && isFinite(total)) return { total: total, core: core };
+      var total = r.total;
+      if (total != null && isFinite(total)) return { total: total, core: r.core, adjusted: r.adjusted != null ? r.adjusted : r.core };
     }
     return null;
   }
@@ -664,18 +771,18 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
   var scoring = window.__scoring || {};
   var embeddedFns = [];
   if (typeof scoring.combine === "function") {
-    // the signature is combine(criteriaScores, coreWeights, c1Sub, c1Subweights, bonusTotal);
+    // the signature is combine(criteriaScores, coreWeights, c1Sub, c1Subweights, bonusTotal, gamma);
     // criteriaScores may be keyed by c1.. or by config key: pick whichever reproduces scored.json.
-    embeddedFns.push(function (s, w, a, b, c) { return scoring.combine(s, w, a, b, c); });
-    embeddedFns.push(function (s, w, a, b, c) {
+    embeddedFns.push(function (s, w, a, b, c, g) { return scoring.combine(s, w, a, b, c, g); });
+    embeddedFns.push(function (s, w, a, b, c, g) {
       var k = {}; IDS.forEach(function (id) { k[D.keys[id]] = s[id]; });
-      return scoring.combine(k, w, a, b, c);
+      return scoring.combine(k, w, a, b, c, g);
     });
   }
   var combineImpl = fallbackCombine, source = "fallback (inline)";
   for (var i = 0; i < embeddedFns.length; i++) {
     try {
-      var r = normalise(embeddedFns[i](scoreMap(), clone(D.weights.core), clone(D.criteria.c1.sub || {}), clone(D.weights.c1_subweights), D.bonusTotal));
+      var r = normalise(embeddedFns[i](scoreMap(), clone(D.weights.core), clone(D.criteria.c1.sub || {}), clone(D.weights.c1_subweights), D.bonusTotal, ST.gamma));
       if (r && Math.abs(r.total - D.total) < 0.06) {
         (function (fn) { combineImpl = fn; })(embeddedFns[i]); source = "lib/scoring.js"; break;
       }
@@ -687,27 +794,31 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
     IDS.forEach(function (id) { var c = D.criteria[id]; m[id] = c && !c.na && c.score != null ? c.score : null; });
     return m;
   }
-  function combine(w, sw) {
-    var raw = combineImpl(scoreMap(), clone(w), clone(D.criteria.c1.sub || {}), clone(sw), D.bonusTotal);
+  function combine(w, sw, gamma) {
+    var raw = combineImpl(scoreMap(), clone(w), clone(D.criteria.c1.sub || {}), clone(sw), D.bonusTotal, gamma);
     var r = normalise(raw);
-    return r || fallbackCombine(scoreMap(), w, D.criteria.c1.sub || {}, sw, D.bonusTotal);
+    return r || fallbackCombine(scoreMap(), w, D.criteria.c1.sub || {}, sw, D.bonusTotal, gamma);
   }
   var src = $("calc-source"); if (src) src.textContent = "Live total computed with " + source + ".";
 
   // ---- state
-  var W = clone(D.weights.core), SW = clone(D.weights.c1_subweights);
+  var W = clone(D.weights.core), SW = clone(D.weights.c1_subweights), STRICT = ST.value;
+  function gammaOf(v) { return ST.gammaBase + v; }
   var gauge = $("ring-fg"), CIRC = 2 * Math.PI * 80;
 
   function band(t) { return t >= 75 ? "Strong" : t >= 60 ? "Competitive" : t >= 45 ? "Stretch" : "Long shot"; }
 
   function render() {
-    var r = combine(W, SW);
+    var r = combine(W, SW, gammaOf(STRICT));
     var total = round1(r.total);
     $("gauge-num").textContent = total.toFixed(1);
     gauge.setAttribute("stroke-dasharray", (CIRC * Math.max(0, Math.min(100, total)) / 100).toFixed(1) + " " + CIRC.toFixed(1));
     $("band").textContent = band(total);
     $("v-core").textContent = round1(r.core).toFixed(1);
-    var changed = JSON.stringify(W) !== JSON.stringify(D.weights.core) || JSON.stringify(SW) !== JSON.stringify(D.weights.c1_subweights);
+    $("v-adjusted").textContent = round1(r.adjusted).toFixed(1);
+    var live = { core: round1(r.core).toFixed(1), adjusted: round1(r.adjusted).toFixed(1), strictness: trim(STRICT), gamma: trim(gammaOf(STRICT)) };
+    document.querySelectorAll("[data-live]").forEach(function (e) { var v = live[e.getAttribute("data-live")]; if (v !== undefined) e.textContent = v; });
+    var changed = JSON.stringify(W) !== JSON.stringify(D.weights.core) || JSON.stringify(SW) !== JSON.stringify(D.weights.c1_subweights) || Math.abs(STRICT - ST.value) > 1e-9;
     var b = $("custom-banner");
     b.classList.toggle("on", changed);
     b.textContent = changed ? "Custom weights: total " + total.toFixed(1) + " (as scored: " + round1(D.total).toFixed(1) + "). The evidence and criterion scores below are unchanged." : "";
@@ -744,13 +855,32 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
   });
   SUBS.forEach(function (k) { controls.push(slider($("sl-c1"), k.replace(/_/g, " "), k, false, 0, 5, 0.25)); });
 
+  // strictness slider (c2): strictness 0.25 to 1.25, gamma = gamma base + strictness
+  var sIn, sOut;
+  (function () {
+    var wrap = document.createElement("div"); wrap.className = "sl";
+    var lab = document.createElement("label");
+    var t = document.createElement("span"); t.textContent = "Strictness (" + String(ST.quadrant || "").replace(/_/g, " ") + " base " + trim(ST.base) + ", buzz " + trim(ST.buzz || 0) + ")";
+    sOut = document.createElement("output");
+    lab.appendChild(t); lab.appendChild(sOut);
+    sIn = document.createElement("input");
+    sIn.type = "range"; sIn.min = 0.25; sIn.max = 1.25; sIn.step = 0.05; sIn.value = STRICT;
+    sIn.setAttribute("aria-label", "Employer strictness");
+    function show() { sOut.textContent = trim(STRICT) + " (gamma " + trim(gammaOf(STRICT)) + ")"; }
+    sIn.addEventListener("input", function () { STRICT = Number(sIn.value); show(); render(); });
+    sIn._show = show; show();
+    wrap.appendChild(lab); wrap.appendChild(sIn); $("sl-c2").appendChild(wrap);
+  })();
+
   $("reset").addEventListener("click", function () {
-    W = clone(D.weights.core); SW = clone(D.weights.c1_subweights);
+    W = clone(D.weights.core); SW = clone(D.weights.c1_subweights); STRICT = ST.value; sIn.value = STRICT; sIn._show();
     controls.forEach(function (c) { var v = (c.isCore ? W : SW)[c.key]; c.input.value = v; c.out.textContent = trim(v); });
     render();
   });
   $("copy").addEventListener("click", function () {
-    var snippet = JSON.stringify({ core: W, c1_subweights: SW }, null, 2);
+    // c2_strictness holds base values; the slider sets the final strictness, so the base is the slider value minus the buzz adjustment.
+    var bases = clone(ST.bases || {}); if (ST.quadrant) bases[ST.quadrant] = Math.round((STRICT - (ST.buzz || 0)) * 100) / 100;
+    var snippet = JSON.stringify({ core: W, c1_subweights: SW, c2_strictness: bases }, null, 2);
     var done = function (ok) { var m = $("copied"); m.textContent = ok ? "Copied. Save as config/weights.local.json" : "Copy failed: select the text below"; };
     var box = $("snippet"); box.textContent = snippet; box.hidden = false;
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(snippet).then(function () { done(true); }, function () { done(false); });

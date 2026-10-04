@@ -21,13 +21,13 @@ function base() {
     sources: [{ id: 'S1', url: 'https://example.com/x', title: 'T', accessed: '2026-10-04', quote: 'q' }],
     c1: {
       title: { level: 'close', evidence: ev() },
+      headline: { level: 'none', evidence: ev() },
       same_industry: { match: true, evidence: ev({ source_ids: S1 }) },
       competitor: { match: false, evidence: ev() },
       supplier: { match: true, evidence: ev({ source_ids: S1 }) },
-      top_firm: { match: false, evidence: ev() },
-      top10_consulting: { match: false, evidence: ev() }
+      top_firm: { match: false, evidence: ev() }
     },
-    c2: { quadrant: 'star', candidate_risk_aversion: 60, evidence: ev() },
+    c2: { quadrant: 'star', evidence: ev(), buzz: { adjustment: 0, evidence: ev() } },
     c3: { items: [] },
     c4: { years_using_ai: 1.5, uses: [
       { category: 'cost_saving', quantified: true, quote: { text: 'a' } },
@@ -38,36 +38,71 @@ function base() {
     c7: { errors: [] },
     c8: { bullets: [{ level: 'full' }, { level: 'full' }, { level: 'partial' }, { level: 'none' }] },
     c9: { tier: 'russell_group', graduated: true, evidence: ev() },
-    c10: { items: [] }
+    c10: { items: [] },
+    c12: { expected_years: { value: 3, from: 'jd' }, roles: [] },
+    c13: { roles: [] }
   };
 }
 
-test('c1 weighted mean of six sub-scores', () => {
+test('c1 weighted mean of six sub-scores, headline carries 0.25', () => {
   const r = scoreAll(base(), {}, WD);
-  approx(r.criteria.c1.score, (70 + 100 + 0 + 100 + 0 + 0) / 6); // 45
+  approx(r.criteria.c1.score, (70 + 0.25 * 0 + 100 + 0 + 100 + 0) / 5.25); // 51.43
   assert.equal(r.criteria.c1.sub.title, 70);
-  assert.match(r.criteria.c1.working, /= 45$/);
+  assert.equal(r.criteria.c1.sub.headline, 0);
+  assert.match(r.criteria.c1.working, /= 51\.43$/);
+  const a = base(); a.c1.headline.level = 'exact';
+  approx(scoreAll(a, {}, WD).criteria.c1.score, (70 + 25 + 100 + 100) / 5.25); // 57.14
+  assert.equal(scoreAll(base(), {}, WD).criteria.c1.sub.top10_consulting, undefined);
 });
 
 test('c1 custom subweights', () => {
   const w = deepMerge(WD, { c1_subweights: { title: 3 } });
-  approx(scoreAll(base(), {}, w).criteria.c1.score, (70 * 3 + 100 + 100) / 8); // 51.25 -> 51.25
+  approx(scoreAll(base(), {}, w).criteria.c1.score, (70 * 3 + 100 + 100) / (3 + 0.25 + 4)); // 56.55
 });
 
 test('c1 web sub-check with no source scores 0 and confidence low', () => {
   const a = base();
   a.c1.same_industry.evidence.source_ids = [];
   const r = scoreAll(a, {}, WD);
-  approx(r.criteria.c1.score, (70 + 0 + 0 + 100) / 6);
+  approx(r.criteria.c1.score, (70 + 0 + 0 + 100) / 5.25);
   assert.equal(r.criteria.c1.confidence, 'low');
   assert.match(r.criteria.c1.working, /no evidence found/);
 });
 
-test('c2 quadrant fit and candidate override', () => {
-  approx(scoreAll(base(), {}, WD).criteria.c2.score, 85);
-  approx(scoreAll(base(), { risk_aversion_override: 100 }, WD).criteria.c2.score, 75);
-  const a = base(); a.c2.quadrant = 'dog'; a.c2.candidate_risk_aversion = 100;
-  approx(scoreAll(a, {}, WD).criteria.c2.score, 25);
+test('c2 strictness: gamma = 0.5 + clamp(base + buzz), adjusted = 100 * (core/100)^gamma', () => {
+  const st = (q, adj) => { const a = base(); a.c2.quadrant = q; a.c2.buzz.adjustment = adj; return scoreAll(a, {}, WD).strictness; };
+  let s = st('star', 0);
+  assert.deepEqual([s.base, s.buzz, s.strictness, s.gamma], [0.75, 0, 0.75, 1.25]);
+  s = st('cash_cow', 0.1);
+  approx(s.strictness, 1.1); approx(s.gamma, 1.6);
+  s = st('dog', -0.25); // 0.25 - 0.25 = 0 -> clamped up to 0.25
+  assert.equal(s.strictness, 0.25); assert.equal(s.gamma, 0.75);
+  s = st('cash_cow', 0.25); // 1.25 is the ceiling
+  assert.equal(s.strictness, 1.25); assert.equal(s.gamma, 1.75);
+  // worked example from the rubric: core 70 -> cash cow gamma 1.5 gives 58.6, dog gamma 0.75 gives 76.5
+  approx(combine({ c1: 70 }, { c1: 50 }, null, null, 0, 1.5).adjusted, 58.56, 0.01);
+  approx(combine({ c1: 70 }, { c1: 50 }, null, null, 0, 0.75).adjusted, 76.5, 0.05);
+  assert.equal(combine({ c1: 100 }, { c1: 50 }, null, null, 0, 1.75).adjusted, 100);
+});
+
+test('c2 buzz adjustment is clamped to +/- c2_buzz_max', () => {
+  const a = base(); a.c2.quadrant = 'question_mark'; a.c2.buzz.adjustment = 0.9;
+  const s = scoreAll(a, {}, WD).strictness;
+  assert.equal(s.buzz, 0.25); approx(s.strictness, 0.75); approx(s.gamma, 1.25);
+  a.c2.buzz.adjustment = -0.9;
+  assert.equal(scoreAll(a, {}, WD).strictness.buzz, -0.25);
+  const w = deepMerge(WD, { c2_buzz_max: 0.1 });
+  a.c2.buzz.adjustment = 0.9;
+  assert.equal(scoreAll(a, {}, w).strictness.buzz, 0.1);
+});
+
+test('c2 is not weighted, and legacy risk fields are ignored', () => {
+  const a = base(); a.c2.candidate_risk_aversion = 99; a.c2.candidate_evidence = ev();
+  const r = scoreAll(a, { risk_aversion_override: 10 }, WD);
+  assert.equal(r.criteria.c2.score, null);
+  assert.equal(r.criteria.c2.weight, 0);
+  assert.equal(r.strictness.gamma, 1.25);
+  assert.match(r.criteria.c2.working, /gamma = 0.5 \+ 0.75 = 1.25/);
 });
 
 test('c3 overlapping roles counted once, open end uses assessed_on month, default 3 years', () => {
@@ -112,7 +147,20 @@ test('c6 and c7 error points, floored at 0', () => {
 });
 
 test('c8 STAR levels', () => {
-  approx(scoreAll(base(), {}, WD).criteria.c8.score, 62.5);
+  approx(scoreAll(base(), {}, WD).criteria.c8.score, 62.5); // no section tag: all scored (legacy)
+});
+
+test('c8 only scores achievement and experience bullets; other is excluded', () => {
+  const a = base();
+  a.c8.bullets = [
+    { section: 'achievement', level: 'full' }, { section: 'experience', level: 'none' },
+    { section: 'other', level: 'none' }, { section: 'other', level: 'none' }];
+  const r = scoreAll(a, {}, WD);
+  approx(r.criteria.c8.score, 50);
+  assert.match(r.criteria.c8.working, /over 2 achievement\/experience bullets/);
+  assert.match(r.criteria.c8.working, /2 other bullets not scored/);
+  a.c8.bullets = [{ section: 'other', level: 'full' }];
+  assert.equal(scoreAll(a, {}, WD).criteria.c8.not_applicable, true);
 });
 
 test('c9 tier and graduation', () => {
@@ -131,16 +179,68 @@ test('c10 required counts double; n/a when none', () => {
   assert.equal(scoreAll(base(), {}, WD).criteria.c10.not_applicable, true);
 });
 
-test('renormalisation drops n/a weights; total = core + bonus', () => {
-  const r = scoreAll(base(), {}, WD); // c3 and c10 n/a
-  const s = { c1: 45, c2: 85, c4: 55, c5: 65, c6: 85, c7: 100, c8: 62.5, c9: 80 };
+test('c12 median of completed tenures excludes the current role', () => {
+  const a = base();
+  a.c12.roles = [
+    { employer: 'Now', start: '2020-01', end: null, current: true }, // would be 36 months, excluded
+    { employer: 'A', start: '2019-01', end: '2019-12' }, // 12
+    { employer: 'B', start: '2017-01', end: '2018-06' }, // 18
+    { employer: 'C', start: '2014-01', end: '2016-12' }]; // 36
+  const r = scoreAll(a, {}, WD);
+  approx(r.criteria.c12.score, 18 / 36 * 100); // median 18 months, expected 3 y = 36 months
+  assert.equal(r.criteria.c12.detail.median_months, 18);
+  assert.match(r.criteria.c12.working, /current role excluded/);
+  a.c12.roles.splice(3, 1); // 12 and 18 -> median 15
+  approx(scoreAll(a, {}, WD).criteria.c12.score, 15 / 36 * 100);
+  a.c12.expected_years.value = 1; // capped at 1
+  assert.equal(scoreAll(a, {}, WD).criteria.c12.score, 100);
+});
+
+test('c12 uses the current role when it is the only one; n/a with no roles', () => {
+  const a = base();
+  a.c12.roles = [{ employer: 'Now', start: '2022-01', end: null, current: true }]; // assessed 2022-12: 12 months
+  approx(scoreAll(a, {}, WD).criteria.c12.score, 12 / 36 * 100);
+  assert.equal(scoreAll(base(), {}, WD).criteria.c12.not_applicable, true);
+  a.c12.not_applicable = true;
+  assert.equal(scoreAll(a, {}, WD).criteria.c12.not_applicable, true);
+});
+
+test('c12 expected years falls back to the default when absent', () => {
+  const a = base(); delete a.c12.expected_years;
+  a.c12.roles = [{ start: '2019-01', end: '2020-12' }]; // 24 months vs default 3 y
+  approx(scoreAll(a, {}, WD).criteria.c12.score, 24 / 36 * 100);
+});
+
+test('c13: +3 top_in_industry, +3 more if related, related alone earns nothing, capped at 10', () => {
+  const run = (roles) => scoreAll(Object.assign(base(), { c13: { roles } }), {}, WD).bonus;
+  assert.equal(run([{ top_in_industry: true, related_to_jd: false }]).c13, 3);
+  assert.equal(run([{ top_in_industry: true, related_to_jd: true }]).c13, 6);
+  assert.equal(run([{ top_in_industry: false, related_to_jd: true }]).c13, 0);
+  const capped = run([{ top_in_industry: true, related_to_jd: true }, { top_in_industry: true, related_to_jd: true }]);
+  assert.equal(capped.c13_uncapped, 12);
+  assert.equal(capped.c13, 10);
+  assert.equal(capped.total, 10);
+  assert.ok(capped.items.every((i) => i.group === 'c13'));
+  assert.equal(capped.items.reduce((s, i) => s + i.points, 0), 10);
+});
+
+test('bonus items carry group and total splits c11/c13', () => {
+  const a = base(); a.c13.roles = [{ employer: 'X', top_in_industry: true, related_to_jd: false }];
+  const b = computeBonus({ referrals: [{ type: 'hiring_manager_trusted_influencer' }] }, WD, a);
+  assert.equal(b.c11, 10); assert.equal(b.c13, 3); assert.equal(b.total, 13);
+  assert.deepEqual(b.items.map((i) => i.group), ['c11', 'c13']);
+});
+
+test('renormalisation drops n/a weights; total = adjusted + bonus', () => {
+  const r = scoreAll(base(), {}, WD); // c3, c10, c12 n/a; star gamma 1.25
   const wt = 50 / 9;
-  const core = (50 * 45 + wt * (85 + 55 + 65 + 85 + 100 + 62.5 + 80)) / (50 + 7 * wt);
+  const c1 = 270 / 5.25;
+  const core = (50 * c1 + wt * (55 + 65 + 85 + 100 + 62.5 + 80)) / (50 + 6 * wt);
   approx(r.core, core);
-  approx(r.total, core);
+  approx(r.adjusted, 100 * Math.pow(core / 100, 1.25));
+  approx(r.total, r.adjusted);
   assert.equal(r.band, band(r.total));
   assert.equal(r.criteria.c1.weight, 50);
-  void s;
 });
 
 test('c11 bonus table and visibility multiplier', () => {
@@ -157,6 +257,13 @@ test('c11 bonus table and visibility multiplier', () => {
   assert.equal(computeBonus(null, WD).total, 0);
 });
 
+test('bonus is added after the strictness adjustment', () => {
+  const r = combine({ c1: 80 }, { c1: 50 }, null, null, 5, 1.5);
+  approx(r.adjusted, 71.55, 0.01);
+  approx(r.total, 76.55, 0.01);
+  assert.equal(r.gamma, 1.5);
+});
+
 test('bonus clamps total to 0-100', () => {
   const crit = { c1: 95 };
   assert.equal(combine(crit, { c1: 50 }, null, null, 20).total, 100);
@@ -169,19 +276,21 @@ test('bands', () => {
 });
 
 test('combine recomputes c1 from sliders and renormalises n/a', () => {
-  const r = combine({ c1: 0, c2: 100, c3: null }, { c1_current_role: 50, c2_market_position: 50, c3_tools_years: 50 },
-    { title: 100, same_industry: 0, competitor: 0, supplier: 0, top_firm: 0, top10_consulting: 0 },
-    { title: 1, same_industry: 1, competitor: 1, supplier: 1, top_firm: 1, top10_consulting: 1 }, 0);
+  const r = combine({ c1: 0, c4: 100, c3: null }, { c1_current_role: 50, c4_ai_experience: 50, c3_tools_years: 50 },
+    { title: 100, headline: 0, same_industry: 0, competitor: 0, supplier: 0, top_firm: 0 },
+    { title: 1, headline: 1, same_industry: 1, competitor: 1, supplier: 1, top_firm: 1 }, 0);
   approx(r.c1, 16.67);
   approx(r.core, (50 * 16.6667 + 50 * 100) / 100); // 58.33
+  assert.equal(r.adjusted, r.core); // no gamma: unchanged
 });
 
 test('scoreAll matches combine on its own output', () => {
   const r = scoreAll(base(), { referrals: [{ type: 'hiring_manager_trusted_influencer' }] }, WD);
   const scores = {};
   Object.keys(r.criteria).forEach((k) => { scores[k] = r.criteria[k].score; });
-  const c = combine(scores, WD.core, r.criteria.c1.sub, WD.c1_subweights, r.bonus.total);
+  const c = combine(scores, WD.core, r.criteria.c1.sub, WD.c1_subweights, r.bonus.total, r.strictness.gamma);
   approx(c.total, r.total, 0.02);
+  approx(c.adjusted, r.adjusted, 0.02);
 });
 
 // ---- verify ----
@@ -223,7 +332,7 @@ test('verify: source validation', () => {
 test('weights deep merge', () => {
   const m = deepMerge(WD, { core: { c1_current_role: 40 }, _comment: 'x' });
   assert.equal(m.core.c1_current_role, 40);
-  assert.equal(m.core.c2_market_position, 5.5555556);
+  assert.equal(m.core.c12_tenure, 5.5555556);
   assert.equal(m._comment, WD._comment); // override _comment keys ignored
   assert.ok(W.core);
 });
@@ -237,6 +346,7 @@ function runCli(mutate, cvText) {
   a.summary = { strengths: [], risks: [], actions: [] };
   a.c4.uses.forEach((u, i) => { u.quote = { text: 'line ' + i }; });
   a.c8.bullets.forEach((b) => { b.quote = { text: 'line 0' }; });
+  a.c12.roles = [{ employer: 'X', start: '2019-01', end: '2020-12', quote: { text: 'line 2' } }];
   a.c6.errors = a.c6.errors.map(() => ({ quote: { text: 'line 1' } }));
   mutate(a);
   fs.writeFileSync(path.join(dir, 'cv.txt'), cvText || 'line 0\nline 1\nline 2\n');
@@ -252,6 +362,10 @@ test('CLI: ok run exits 0 and writes scored.json', () => {
   const s = JSON.parse(fs.readFileSync(path.join(dir, 'scored.json'), 'utf8'));
   assert.equal(s.verification.quotes_unverified, 0);
   assert.ok(typeof s.total === 'number' && s.band);
+  assert.equal(s.strictness.quadrant, 'star');
+  assert.equal(s.strictness.gamma, 1.25);
+  assert.ok(typeof s.adjusted === 'number');
+  assert.ok(r.stdout.includes('adjusted') && r.stdout.includes('c11') && r.stdout.includes('c12'));
 });
 
 test('CLI: unverified quote exits 1 and forces confidence low', () => {

@@ -5,7 +5,7 @@ Each assessment lives in `reports/<YYYYMMDD>-<company>-<title>/`:
 ```
 cv.txt            CV text, extracted by bin/extract.js (the text that quotes are checked against)
 jd.txt            job description text
-candidate.json    the candidate's self-reported answers (c11, plus any risk-aversion override)
+candidate.json    the candidate's self-reported answers (c11: prior employment and referrals)
 assessment.json   the AI's evidence and judgements (written by the agent, shape below)
 scored.json       written by bin/score.js: verification results, every sub-score and the total
 report.html       written by bin/report.js: self-contained, with interactive weights
@@ -33,7 +33,6 @@ report.pdf        written by bin/report.js
 ```jsonc
 {
   "name": "Alex Morgan",
-  "risk_aversion_override": null,            // 0-100, or null to accept the AI's inference
   "previously_worked_here": { "value": false, "direction": "positive", "note": "" },
   "referrals": [
     // type: "hiring_manager_trusted_influencer" | "same_division_colleague" | "colleague"
@@ -63,16 +62,17 @@ report.pdf        written by bin/report.js
     "same_industry":    { "match": true,  "candidate_industry": "...", "hiring_industry": "...", "evidence": Evidence },
     "competitor":       { "match": false, "competitors_considered": ["..."], "evidence": Evidence },
     "supplier":         { "match": false, "products_or_services": ["..."], "evidence": Evidence },
-    "top_firm":         { "match": false, "top_firm": "...", "evidence": Evidence },
-    "top10_consulting": { "match": false, "firms_considered": ["..."], "candidate_firm": null, "evidence": Evidence }
+    "headline":         { "level": "exact|close|adjacent|none", "evidence": Evidence },
+    "top_firm":         { "match": false, "top_firm": "...", "evidence": Evidence }
   },
   "c2": {
     "quadrant": "cash_cow|star|question_mark|dog",
     "market_growth_pct": 4.5, "relative_share": 1.3,
     "unit_assessed": "company|division|product",
-    "candidate_risk_aversion": 70,
     "evidence": Evidence,
-    "candidate_evidence": Evidence
+    "buzz": { "adjustment": 0.1,                   // -0.25 to +0.25; 0 with no evidence
+              "summary": "post-merger integration and announced job cuts",
+              "evidence": Evidence }
   },
   "c3": {
     "not_applicable": false,
@@ -93,13 +93,24 @@ report.pdf        written by bin/report.js
   },
   "c6": { "variant": "en-GB", "errors": [ { "quote": Quote, "correction": "...", "line": 12 } ] },
   "c7": { "errors": [ { "quote": Quote, "correction": "...", "rule": "subject-verb agreement", "line": 30 } ] },
-  "c8": { "bullets": [ { "quote": Quote, "level": "full|partial|none",
+  "c8": { "bullets": [ { "quote": Quote, "section": "achievement|experience|other", "level": "full|partial|none",
                          "parts": { "situation": true, "action": true, "result": true } } ] },
   "c9": { "institution": "University of Example", "tier": "russell_group", "graduated": true, "evidence": Evidence },
   "c10": {
     "not_applicable": false,
     "items": [ { "requirement": "PMP or equivalent", "required": true, "status": "met|partial|not_met",
                  "jd_quote": Quote, "evidence": Evidence } ]
+  },
+  "c12": {
+    "expected_years": { "value": 3, "from": "jd|research|default", "evidence": Evidence },
+    "roles": [ { "employer": "...", "title": "...", "start": "2019-06", "end": "2020-05",
+                 "current": false, "quote": Quote } ],
+    "evidence": Evidence
+  },
+  "c13": {
+    "firms_considered": ["..."],
+    "roles": [ { "employer": "PwC", "title": "...", "top_in_industry": true, "related_to_jd": false,
+                 "quote": Quote, "evidence": Evidence } ]
   },
   "summary": {
     "strengths": ["..."],               // each strength names the criterion it comes from, e.g. "(c1)"
@@ -125,8 +136,11 @@ The agent never writes a score field. `bin/score.js` computes all of them.
             "sub": { "title": 70, "same_industry": 100, ... } },
     "...": {}
   },
-  "core": 58.2, "bonus": { "items": [ { "label": "...", "points": 5 } ], "total": 5 },
-  "total": 63.2, "band": "Strong | Competitive | Stretch | Long shot"
+  "core": 58.2,
+  "strictness": { "quadrant": "star", "base": 0.75, "buzz": 0.1, "strictness": 0.85, "gamma": 1.35 },
+  "adjusted": 48.1,
+  "bonus": { "items": [ { "label": "...", "points": 5, "group": "c11|c13" } ], "total": 8 },
+  "total": 56.1, "band": "Strong | Competitive | Stretch | Long shot"
 }
 ```
 

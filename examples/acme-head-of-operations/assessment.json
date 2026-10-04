@@ -49,6 +49,13 @@
       "title": "Example university groupings (illustrative)",
       "accessed": "2026-10-04",
       "quote": "The University of Example is a member of the research-intensive Russell Group-style mission group."
+    },
+    {
+      "id": "S7",
+      "url": "https://example.com/news/acme-hiring-outlook",
+      "title": "Example news (illustrative): Acme Corp hiring outlook",
+      "accessed": "2026-10-04",
+      "quote": "Acme Corp has no hiring freeze and is recruiting across its payments division, with no stated preference for industry insiders."
     }
   ],
   "current_role": {
@@ -88,6 +95,24 @@
         ],
         "source_ids": [],
         "reasoning": "Current title and advertised title are identical, and both own end-to-end operations.",
+        "confidence": "high"
+      }
+    },
+    "headline": {
+      "level": "close",
+      "evidence": {
+        "cv_quotes": [
+          {
+            "text": "Operations Leader | Fintech and Payments"
+          }
+        ],
+        "jd_quotes": [
+          {
+            "text": "Head of Operations"
+          }
+        ],
+        "source_ids": [],
+        "reasoning": "The CV headline says Operations Leader, which is close to Head of Operations but is not the exact title.",
         "confidence": "high"
       }
     },
@@ -164,30 +189,6 @@
         "reasoning": "Acme is the market leader by revenue in the cited table. Alex has never worked there (see candidate.json).",
         "confidence": "medium"
       }
-    },
-    "top10_consulting": {
-      "match": true,
-      "firms_considered": [
-        "Globex Consulting"
-      ],
-      "candidate_firm": "Globex Consulting",
-      "evidence": {
-        "cv_quotes": [
-          {
-            "text": "Globex Consulting | Senior Consultant | May 2015 - December 2016"
-          }
-        ],
-        "jd_quotes": [
-          {
-            "text": "Acme Corp is a leading payments processor"
-          }
-        ],
-        "source_ids": [
-          "S4"
-        ],
-        "reasoning": "Globex Consulting appears in the cited illustrative ranking and Alex worked there as a Senior Consultant.",
-        "confidence": "medium"
-      }
     }
   },
   "c2": {
@@ -195,7 +196,6 @@
     "market_growth_pct": 14,
     "relative_share": 1.2,
     "unit_assessed": "division",
-    "candidate_risk_aversion": 60,
     "evidence": {
       "cv_quotes": [],
       "jd_quotes": [
@@ -210,22 +210,22 @@
       "reasoning": "Market growth of 14.0 per cent is above the 10 per cent threshold and relative share of 1.2 is above 1.0, so the payments division is a star.",
       "confidence": "medium"
     },
-    "candidate_evidence": {
-      "cv_quotes": [
-        {
-          "text": "Northwind Bank | Senior Operations Manager | January 2017 - February 2021"
-        },
-        {
-          "text": "Example Payments Ltd | Head of Operations | March 2021 - Present"
-        },
-        {
-          "text": "Globex Consulting | Senior Consultant | May 2015 - December 2016"
-        }
-      ],
-      "jd_quotes": [],
-      "source_ids": [],
-      "reasoning": "Two long tenures of about four and five and a half years at established firms, one short consulting stint, no start-ups or contract work. That suggests moderate risk aversion, inferred at 60.",
-      "confidence": "medium"
+    "buzz": {
+      "adjustment": 0,
+      "summary": "Neutral hiring signals: no freeze, no lay-offs, no stated preference for insiders or outsiders.",
+      "evidence": {
+        "cv_quotes": [],
+        "jd_quotes": [
+          {
+            "text": "Our payments division is growing quickly and needs an operations leader to scale with it."
+          }
+        ],
+        "source_ids": [
+          "S7"
+        ],
+        "reasoning": "The cited report shows steady, ordinary hiring with nothing that raises or lowers how strict Acme will be, so the adjustment is 0.",
+        "confidence": "medium"
+      }
     }
   },
   "c3": {
@@ -425,7 +425,8 @@
           "situation": true,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -436,7 +437,8 @@
           "situation": true,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -447,7 +449,8 @@
           "situation": true,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -458,7 +461,8 @@
           "situation": false,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -469,7 +473,8 @@
           "situation": false,
           "action": true,
           "result": false
-        }
+        },
+        "section": "experience"
       },
       {
         "quote": {
@@ -480,7 +485,8 @@
           "situation": false,
           "action": true,
           "result": false
-        }
+        },
+        "section": "experience"
       },
       {
         "quote": {
@@ -491,7 +497,8 @@
           "situation": false,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -502,7 +509,8 @@
           "situation": false,
           "action": false,
           "result": false
-        }
+        },
+        "section": "experience"
       },
       {
         "quote": {
@@ -513,7 +521,8 @@
           "situation": false,
           "action": false,
           "result": false
-        }
+        },
+        "section": "experience"
       },
       {
         "quote": {
@@ -524,7 +533,8 @@
           "situation": true,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -535,7 +545,8 @@
           "situation": false,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -546,7 +557,8 @@
           "situation": false,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -557,7 +569,8 @@
           "situation": false,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -568,7 +581,8 @@
           "situation": false,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -579,7 +593,8 @@
           "situation": false,
           "action": false,
           "result": false
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -590,7 +605,8 @@
           "situation": false,
           "action": false,
           "result": false
-        }
+        },
+        "section": "other"
       },
       {
         "quote": {
@@ -601,7 +617,8 @@
           "situation": true,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -612,7 +629,8 @@
           "situation": false,
           "action": true,
           "result": false
-        }
+        },
+        "section": "experience"
       },
       {
         "quote": {
@@ -623,7 +641,8 @@
           "situation": false,
           "action": true,
           "result": false
-        }
+        },
+        "section": "experience"
       },
       {
         "quote": {
@@ -634,7 +653,8 @@
           "situation": true,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -645,7 +665,8 @@
           "situation": false,
           "action": true,
           "result": true
-        }
+        },
+        "section": "achievement"
       },
       {
         "quote": {
@@ -656,7 +677,8 @@
           "situation": false,
           "action": true,
           "result": false
-        }
+        },
+        "section": "experience"
       },
       {
         "quote": {
@@ -667,6 +689,31 @@
           "situation": false,
           "action": true,
           "result": true
+        },
+        "section": "achievement"
+      },
+      {
+        "quote": {
+          "text": "Operating model design, process improvement, vendor management, regulatory change, KYC and disputes, stakeholder management, Salesforce, ServiceNow, Power BI."
+        },
+        "section": "other",
+        "level": "none",
+        "parts": {
+          "situation": false,
+          "action": false,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "Project Management Professional (PMP), PMI, 2018"
+        },
+        "section": "other",
+        "level": "none",
+        "parts": {
+          "situation": false,
+          "action": false,
+          "result": false
         }
       }
     ]
@@ -759,6 +806,111 @@
       "Add Snowflake or similar warehouse experience if true, for example via the Power BI reporting (c3).",
       "Quantify the fraud-alert and Copilot outcomes (c4).",
       "Replace \"spearheaded\" and \"leveraged\" phrasing with specifics (c5)."
+    ]
+  },
+  "c12": {
+    "expected_years": {
+      "value": 3,
+      "from": "default",
+      "evidence": {
+        "cv_quotes": [],
+        "jd_quotes": [],
+        "source_ids": [],
+        "reasoning": "The JD does not state an expected tenure and no research was cited, so the default of 3 years applies.",
+        "confidence": "medium"
+      }
+    },
+    "roles": [
+      {
+        "employer": "Example Payments Ltd",
+        "title": "Head of Operations",
+        "start": "2021-03",
+        "end": null,
+        "current": true,
+        "quote": {
+          "text": "Example Payments Ltd | Head of Operations | March 2021 - Present"
+        }
+      },
+      {
+        "employer": "Northwind Bank",
+        "title": "Senior Operations Manager",
+        "start": "2017-01",
+        "end": "2021-02",
+        "current": false,
+        "quote": {
+          "text": "Northwind Bank | Senior Operations Manager | January 2017 - February 2021"
+        }
+      },
+      {
+        "employer": "Globex Consulting",
+        "title": "Senior Consultant",
+        "start": "2015-05",
+        "end": "2016-12",
+        "current": false,
+        "quote": {
+          "text": "Globex Consulting | Senior Consultant | May 2015 - December 2016"
+        }
+      },
+      {
+        "employer": "Contoso Retail",
+        "title": "Operations Manager",
+        "start": "2013-03",
+        "end": "2015-04",
+        "current": false,
+        "quote": {
+          "text": "Contoso Retail | Operations Manager | March 2013 - April 2015"
+        }
+      },
+      {
+        "employer": "Fabrikam Logistics",
+        "title": "Operations Analyst, then Shift Supervisor",
+        "start": "2010-09",
+        "end": "2013-02",
+        "current": false,
+        "quote": {
+          "text": "Fabrikam Logistics | Operations Analyst, then Shift Supervisor | September 2010 - February 2013"
+        }
+      }
+    ],
+    "evidence": {
+      "cv_quotes": [],
+      "jd_quotes": [],
+      "source_ids": [],
+      "reasoning": "Five dated roles; the current role is excluded as unfinished. The four completed tenures are 50, 20, 26 and 30 months.",
+      "confidence": "high"
+    }
+  },
+  "c13": {
+    "firms_considered": [
+      "Globex Consulting"
+    ],
+    "roles": [
+      {
+        "employer": "Globex Consulting",
+        "title": "Senior Consultant",
+        "top_in_industry": true,
+        "related_to_jd": true,
+        "quote": {
+          "text": "Globex Consulting | Senior Consultant | May 2015 - December 2016"
+        },
+        "evidence": {
+          "cv_quotes": [
+            {
+              "text": "A top-5 UK bank was losing 6% of card applications to slow manual checks; led a 6-person team to redesign the workflow, which recovered 4.5m GBP of annual revenue."
+            }
+          ],
+          "jd_quotes": [
+            {
+              "text": "own end-to-end operations for merchant onboarding, settlement, disputes and customer support"
+            }
+          ],
+          "source_ids": [
+            "S4"
+          ],
+          "reasoning": "Globex Consulting is ranked eighth in the cited illustrative ranking for payments and banking, and its workflow-redesign project in banking relates to the operations this role owns.",
+          "confidence": "medium"
+        }
+      }
     ]
   }
 }

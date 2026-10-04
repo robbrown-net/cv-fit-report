@@ -8,10 +8,12 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = path.resolve(__dirname, "..");
-const IDS = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10"];
+// IDS are the weighted core criteria. c2 is a strictness modifier, c11 and c13 are bonuses.
+const IDS = ["c1", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10", "c12"];
+const ORDER = ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10", "c12"];
 const NAMES = {
   c1: "Current or most recent role",
-  c2: "Market position (BCG growth-share)",
+  c2: "Employer strictness (BCG growth-share)",
   c3: "Years with the JD's tools and suppliers",
   c4: "AI experience and outcomes",
   c5: "Likelihood the CV was AI-generated",
@@ -20,16 +22,18 @@ const NAMES = {
   c8: "STAR / Problem-Action-Result bullets",
   c9: "Top university",
   c10: "Qualifications against the JD",
+  c12: "Tenure against expected longevity",
+  c13: "Consulting experience (bonus)",
 };
 const DEFAULT_KEYS = {
-  c1: "c1_current_role", c2: "c2_market_position", c3: "c3_tools_years", c4: "c4_ai_experience",
+  c1: "c1_current_role", c3: "c3_tools_years", c4: "c4_ai_experience",
   c5: "c5_ai_generated", c6: "c6_spelling", c7: "c7_grammar", c8: "c8_star_par",
-  c9: "c9_top_university", c10: "c10_qualifications",
+  c9: "c9_top_university", c10: "c10_qualifications", c12: "c12_tenure",
 };
-const SUBS = ["title", "same_industry", "competitor", "supplier", "top_firm", "top10_consulting"];
+const SUBS = ["title", "headline", "same_industry", "competitor", "supplier", "top_firm"];
 const SUB_LABEL = {
-  title: "Job title", same_industry: "Same industry", competitor: "Employer is a competitor",
-  supplier: "Employer is a supplier", top_firm: "Worked at the market leader", top10_consulting: "Worked at a top-10 consultancy",
+  title: "Job title", headline: "CV headline", same_industry: "Same industry", competitor: "Employer is a competitor",
+  supplier: "Employer is a supplier", top_firm: "Worked at the market leader",
 };
 
 // ---------- helpers
@@ -136,19 +140,20 @@ function c1Detail(ctx, a, sc, w) {
   const detail = (k, o) => {
     if (!o) return "";
     if (k === "title") return `Level: <b>${esc(o.level)}</b>` + (a.current_role ? ` (CV: ${esc(a.current_role.title)}, ${esc(a.current_role.employer)})` : "");
+    if (k === "headline") { const q = arr((o.evidence || {}).cv_quotes)[0]; return `Level: <b>${esc(o.level)}</b>` + (q ? ` (CV headline: ${esc(q.text)})` : ""); }
     if (k === "same_industry") return `Candidate: ${esc(o.candidate_industry)}<br>Hiring: ${esc(o.hiring_industry)}`;
     if (k === "competitor") return `Considered: ${arr(o.competitors_considered).map(esc).join(", ") || "none"}`;
     if (k === "supplier") return `Products or services: ${arr(o.products_or_services).map(esc).join(", ") || "none"}`;
     if (k === "top_firm") return `Market leader: ${esc(o.top_firm)}`;
-    return `Considered: ${arr(o.firms_considered).map(esc).join(", ") || "none"}` + (o.candidate_firm ? `<br>Candidate firm: ${esc(o.candidate_firm)}` : "");
+    return "";
   };
   const rows = SUBS.map((k) => {
     const o = c1[k] || {};
-    const verdict = k === "title" ? "" : o.match ? ' <span class="badge ok">match</span>' : ' <span class="badge">no match</span>';
-    const noEv = !o.evidence || (!arr(o.evidence.source_ids).length && !arr(o.evidence.cv_quotes).length && k !== "title") ? ' <span class="badge bad">no evidence found</span>' : "";
+    const verdict = k === "title" || k === "headline" ? "" : o.match ? ' <span class="badge ok">match</span>' : ' <span class="badge">no match</span>';
+    const noEv = !o.evidence || (!arr(o.evidence.source_ids).length && !arr(o.evidence.cv_quotes).length && k !== "title" && k !== "headline") ? ' <span class="badge bad">no evidence found</span>' : "";
     return [`<b>${esc(SUB_LABEL[k])}</b>${verdict}${noEv}`, detail(k, o), num(sub[k], 0), esc(trim(Number(sw[k]) || 0))];
   });
-  let h = h4("Six sub-checks") + table(["Sub-check", "What was found", "Score", "Sub-weight"], rows, [2, 3]);
+  let h = h4("Six sub-checks (the headline carries a quarter of the weight of the others)") + table(["Sub-check", "What was found", "Score", "Sub-weight"], rows, [2, 3]);
   h += SUBS.map((k) => {
     const o = c1[k]; if (!o || !o.evidence) return "";
     const inner = evidence(ctx, o.evidence, `c1.${k}.evidence`);
@@ -157,7 +162,7 @@ function c1Detail(ctx, a, sc, w) {
   return h;
 }
 
-function bcgSvg(c2, risk) {
+function bcgSvg(c2) {
   const W = 360, H = 300, L = 40, T = 12, R = 12, B = 40;
   const pw = W - L - R, ph = H - T - B;
   // x: relative share on a log scale, high share on the left (BCG convention): 10x .. 0.1x
@@ -181,18 +186,25 @@ function bcgSvg(c2, risk) {
 
 function c2Detail(ctx, a, sc, w) {
   const c = a.c2 || {};
-  const qv = (w.quadrant || {})[c.quadrant];
-  const quad = ((ctx.defaults || {}).c2_quadrant_risk_aversion || { cash_cow: 100, star: 75, question_mark: 50, dog: 25 })[c.quadrant];
-  const ra = typeof (ctx.cand || {}).risk_aversion_override === "number" ? ctx.cand.risk_aversion_override : c.candidate_risk_aversion;
-  const left = (v) => Math.max(0, Math.min(100, v)) + "%";
-  let h = h4("Where the hiring organisation sits") + bcgSvg(c, ra);
+  const st = ctx.scored.strictness || {};
+  const bases = (ctx.scored.weights_used || {}).c2_strictness || (ctx.defaults || {}).c2_strictness || { cash_cow: 1, star: 0.75, question_mark: 0.5, dog: 0.25 };
+  const gb = Number((ctx.scored.weights_used || {}).c2_gamma_base);
+  const gammaBase = isFinite(gb) ? gb : 0.5;
+  const buzz = c.buzz || {};
+  const L = (k, v) => `<span data-live="${k}">${esc(v)}</span>`;
+  let h = h4("Where the hiring organisation sits") + bcgSvg(c);
   h += `<p class="small muted">Unit assessed: ${esc(c.unit_assessed || "company")}. Quadrant: <b>${esc(String(c.quadrant || "").replace("_", " "))}</b>, market growth ${esc(num(c.market_growth_pct))}% a year, relative share ${esc(num(c.relative_share, 2))}.</p>`;
-  h += h4("Candidate risk aversion vs quadrant fit");
-  h += `<div class="rabar" aria-label="Risk aversion ${esc(ra)}, quadrant value ${esc(quad)}"><i style="left:${left(quad)}"><span>role suits ${esc(quad)}</span></i><b style="left:${left(ra)}"><span>candidate ${esc(ra)}</span></b></div>`;
-  h += `<p class="small">c2 = 100 &minus; |${esc(quad)} &minus; ${esc(ra)}| = <b>${esc(num(sc.score))}</b>` +
-    (typeof ctx.cand.risk_aversion_override === "number" ? " (risk aversion overridden by the candidate)" : "") + `</p>`;
+  h += `<p class="small">This does not add points. It sets how strictly the employer treats any gap between the CV and the job description: a Cash Cow protects a profitable franchise and hires for a close match, a Dog has little to lose and will take a chance.</p>`;
+  h += h4("Base strictness by quadrant");
+  h += table(["Quadrant", "Base strictness"], ["cash_cow", "star", "question_mark", "dog"].map((q) => [q === c.quadrant ? `<b>${esc(q.replace("_", " "))}</b> <span class="badge ok">this employer</span>` : esc(q.replace("_", " ")), esc(trim(Number(bases[q])))]), [1]);
+  h += h4("Hiring buzz adjustment");
+  h += `<p class="small">Adjustment <b>${esc(trim(Number(st.buzz) || 0))}</b> (range &minus;0.25 to +0.25)${buzz.summary ? ": " + esc(buzz.summary) : ""}</p>` + evidence(ctx, buzz.evidence, "c2.buzz.evidence");
+  h += h4("Worked formula");
+  h += `<div class="formula"><p>strictness = clamp(base ${esc(trim(Number(st.base)))} + buzz ${esc(trim(Number(st.buzz) || 0))}, 0.25, 1.25) = ${L("strictness", trim(Number(st.strictness)))}</p>
+<p>gamma = ${esc(trim(gammaBase))} + strictness = ${L("gamma", trim(Number(st.gamma)))}</p>
+<p>adjusted = 100 &times; (core / 100) ^ gamma = 100 &times; (${L("core", num(Number(ctx.scored.core)))} / 100) ^ ${L("gamma", trim(Number(st.gamma)))} = <span class="eq">${L("adjusted", num(Number(ctx.scored.adjusted)))}</span></p></div>`;
+  h += `<p class="small muted">A core of 100 stays 100 in every quadrant. Move the strictness slider under Weights to see another employer's view.</p>`;
   h += h4("Evidence for the quadrant") + evidence(ctx, c.evidence, "c2.evidence");
-  h += h4("Evidence for risk aversion") + evidence(ctx, c.candidate_evidence, "c2.candidate_evidence");
   return h;
 }
 
@@ -251,16 +263,20 @@ const c6Detail = (ctx, a, sc) => `<p class="small">Variety checked: ${esc((a.c6 
 const c7Detail = (ctx, a, sc) => `<p class="small">${arr((a.c7 || {}).errors).length} error(s), 5 points each.</p>` + errList(ctx, arr((a.c7 || {}).errors), "c7", true);
 
 function c8Detail(ctx, a, sc) {
-  const b = arr((a.c8 || {}).bullets);
-  const n = (l) => b.filter((x) => x.level === l).length;
-  let h = `<p class="small">${b.length} bullets: ${n("full")} full, ${n("partial")} partial, ${n("none")} none.</p>`;
+  const all = arr((a.c8 || {}).bullets);
+  const scoredB = all.filter((x) => x.section !== "other");
+  const n = (l) => scoredB.filter((x) => x.level === l).length;
+  const ex = all.length - scoredB.length;
+  let h = `<p class="small">${scoredB.length} achievement and experience bullets scored: ${n("full")} full, ${n("partial")} partial, ${n("none")} none.${ex ? ` ${ex} other bullet(s) (skills, certifications, education) are listed but not scored.` : ""}</p>`;
   h += `<div class="legend"><span class="lf">full: situation, action, result</span><span class="lp">partial</span><span class="ln">none</span></div>`;
-  h += b.map((x, i) => {
+  h += all.map((x, i) => {
     const p = x.parts || {};
     const chip = (k, l) => `<span class="chip${p[k] ? " on" : ""}" title="${esc(k)}${p[k] ? " found" : " missing"}">${l}</span>`;
     const ok = ctx.verified(x.quote, `c8.bullets[${i}].quote`);
     const lvl = ["full", "partial", "none"].includes(x.level) ? x.level : "none";
-    return `<div class="bullet ${lvl}"><div>${chip("situation", "S")}${chip("action", "A")}${chip("result", "R")} ${esc(x.quote && x.quote.text)}${ok ? "" : ' <span class="badge bad">&#10007; unverified</span>'}</div></div>`;
+    const sec = x.section ? ` <span class="badge">${esc(x.section)}</span>` : "";
+    if (x.section === "other") return `<div class="bullet excluded"><div>${esc(x.quote && x.quote.text)}${ok ? "" : ' <span class="badge bad">&#10007; unverified</span>'} <span class="badge">other: not scored</span></div></div>`;
+    return `<div class="bullet ${lvl}"><div>${chip("situation", "S")}${chip("action", "A")}${chip("result", "R")} ${esc(x.quote && x.quote.text)}${sec}${ok ? "" : ' <span class="badge bad">&#10007; unverified</span>'}</div></div>`;
   }).join("");
   return h;
 }
@@ -282,6 +298,41 @@ function c10Detail(ctx, a, sc) {
   return h;
 }
 
+function c12Detail(ctx, a, sc) {
+  const c = a.c12 || {};
+  const roles = arr(c.roles);
+  const d = sc.detail || {};
+  const asOf = a.meta && a.meta.assessed_on;
+  const now = parseYM(asOf, new Date().getFullYear() * 12 + new Date().getMonth());
+  const months = roles.map((r) => { const s0 = parseYM(r.start, null), e0 = parseYM(r.end, now); return s0 == null ? 0 : Math.max(0, e0 - s0 + 1); });
+  const counted = new Set(arr(d.role_indexes));
+  const ev = c.expected_years || {};
+  const expM = Number(d.expected_months) || (Number(ev.value) || 3) * 12;
+  const scale = Math.max(expM, ...months, 1);
+  let h = `<p class="small">Expected tenure: <b>${esc(trim(expM / 12))} years</b> (${esc(ev.from || "default")}). Median tenure of the counted roles: <b>${esc(trim(Number(d.median_months) || 0))} months</b>. c12 = min(median / (${esc(trim(expM / 12))} &times; 12), 1) &times; 100 = <b>${esc(num(sc.score))}</b>.</p>`;
+  h += h4("Role timeline against expected tenure");
+  h += `<div class="tl" role="img" aria-label="Tenure of each role in months against the expected ${esc(trim(expM))} months">` +
+    roles.map((r, i) => `<div class="tl-row${counted.has(i) ? "" : " ex"}"><span class="tl-name">${esc(r.employer)}</span><span class="tl-track"><i style="width:${(months[i] / scale * 100).toFixed(1)}%"></i><u style="left:${(expM / scale * 100).toFixed(1)}%" title="expected ${esc(trim(expM))} months"></u></span><span class="tl-m">${months[i]} m</span></div>`).join("") +
+    `<p class="small muted">The vertical mark is the expected ${esc(trim(expM))} months.</p></div>`;
+  h += table(["Employer", "Title", "Dates", "Months", "Counted"], roles.map((r, i) => [`<b>${esc(r.employer)}</b>`, esc(r.title), `${esc(r.start)} to ${esc(r.end || "present")}`, String(months[i]), counted.has(i) ? '<span class="badge ok">counted</span>' : '<span class="badge">current role: excluded</span>']), [3]);
+  h += h4("Expected years") + evidence(ctx, ev.evidence, "c12.expected_years.evidence");
+  h += roles.map((r, i) => r.quote ? `<details class="inline"><summary>${esc(r.employer)}</summary>${quoteBlock(ctx, r.quote, "CV", `c12.roles[${i}].quote`)}</details>` : "").join("");
+  h += evidence(ctx, c.evidence, "c12.evidence");
+  return h;
+}
+
+function c13Body(ctx, a) {
+  const c = a.c13 || {};
+  const roles = arr(c.roles);
+  const items = arr((ctx.scored.bonus || {}).items).filter((i) => i.group === "c13");
+  let h = `<p class="small">Per consulting role: +3 if the firm is in the top 10 for the hiring company's industry, and +3 more if its work relates to this JD (only for a top-10 firm). Capped at +10.</p>`;
+  if (!roles.length) return h + "<p>No consulting roles on the CV.</p>";
+  h += table(["Role", "Top 10 for the industry", "Related to the JD"], roles.map((r) => [`<b>${esc(r.employer)}</b>${r.title ? ", " + esc(r.title) : ""}`, r.top_in_industry ? '<span class="badge ok">yes +3</span>' : '<span class="badge">no</span>', r.related_to_jd ? (r.top_in_industry ? '<span class="badge ok">yes +3</span>' : '<span class="badge">yes, but not a top-10 firm: +0</span>') : '<span class="badge">no</span>']));
+  if (items.length) h += table(["Item", "Points"], items.map((i) => [esc(i.label), esc((i.points >= 0 ? "+" : "") + trim(i.points))]), [1]);
+  h += roles.map((r, i) => `<details class="inline"><summary>${esc(r.employer)}</summary>${quoteBlock(ctx, r.quote, "CV", `c13.roles[${i}].quote`)}${evidence(ctx, r.evidence, `c13.roles[${i}].evidence`)}</details>`).join("");
+  return h;
+}
+
 // ---------- card
 function card(ctx, id, detail, w) {
   const sc = ctx.scored.criteria[id] || {};
@@ -292,12 +343,15 @@ function card(ctx, id, detail, w) {
   let body = "";
   try { body = detail(ctx, a, sc, w); } catch (e) { body = `<p class="muted">Detail unavailable: ${esc(e.message)}</p>`; }
   if (id === "c1") body += h4("Current role") + (a.current_role ? `<p class="small"><b>${esc(a.current_role.title)}</b>, ${esc(a.current_role.employer)}, from ${esc(a.current_role.start)} ${a.current_role.end ? "to " + esc(a.current_role.end) : "(current)"}</p>` + evidence(ctx, a.current_role.evidence, "current_role.evidence") : "");
-  const score = na ? "n/a" : num(sc.score);
+  const st = ctx.scored.strictness || {};
+  const score = na ? "n/a" : sc.modifier ? "\u03b3 " + trim(Number(st.gamma)) : num(sc.score);
+  const barPct = na ? 0 : sc.modifier ? Math.max(0, Math.min(100, (Number(st.strictness) || 0) / 1.25 * 100)) : Math.max(0, Math.min(100, Number(sc.score) || 0));
+  const metaTxt = sc.modifier ? `<span>strictness <span data-live="strictness">${esc(trim(Number(st.strictness)))}</span>, modifier: not weighted</span>` : `<span data-weight-for="${id}">weight ${esc(trim(Number(sc.weight) || 0))}</span>`;
   const conf = sc.confidence || (ev && ev.confidence);
   return `<details class="card${na ? " na" : ""}" id="card-${id}"><summary>
     <span class="cid">${id}</span><span class="ctitle">${esc(NAMES[id])}</span><span class="cscore">${esc(score)}</span>
-    <span class="bar" role="img" aria-label="score ${esc(score)} of 100"><i style="width:${na ? 0 : Math.max(0, Math.min(100, Number(sc.score) || 0))}%"></i></span>
-    <span class="cmeta"><span class="chev">&#9656;</span>${na ? '<span class="badge">not applicable: weight dropped, rest renormalised</span>' : `<span data-weight-for="${id}">weight ${esc(trim(Number(sc.weight) || 0))}</span>`}${confBadge(conf)}</span>
+    <span class="bar" role="img" aria-label="score ${esc(score)} of 100"><i style="width:${barPct}%"></i></span>
+    <span class="cmeta"><span class="chev">&#9656;</span>${na ? '<span class="badge">not applicable: weight dropped, rest renormalised</span>' : metaTxt}${confBadge(conf)}</span>
     <span class="working">${esc(sc.working || "")}</span></summary>
     <div class="cbody">${na ? `<p>This criterion could not be assessed, so it does not count towards the total.</p>` : ""}${body}</div></details>`;
 }
@@ -315,28 +369,38 @@ function buildHtml(d) {
   const ver = scored.verification || {};
 
   // formula + arithmetic
+  const st = scored.strictness || {};
+  const adjusted = typeof scored.adjusted === "number" ? scored.adjusted : core;
   const live = IDS.map((id) => ({ id, sc: scored.criteria[id] || {} })).filter((x) => !x.sc.not_applicable && typeof x.sc.score === "number");
   const sumW = live.reduce((s, x) => s + (Number(x.sc.weight) || 0), 0);
   const sumWS = live.reduce((s, x) => s + (Number(x.sc.weight) || 0) * x.sc.score, 0);
   const na = IDS.filter((id) => (scored.criteria[id] || {}).not_applicable);
+  const bt = scored.bonus || {};
+  const bc11 = Number(bt.c11) || 0, bc13 = Number(bt.c13) || 0;
+  const sg = (n) => (n >= 0 ? "+" : "") + trim(n);
   const formula = `<div class="formula">
     <p>core = &Sigma;(weight &times; score) / &Sigma;(weight) = ${esc(num(sumWS, 1))} / ${esc(num(sumW, 2))} = <span class="eq">${esc(num(core))}</span></p>
-    <p>bonus = ${esc(bonusTotal >= 0 ? "+" : "")}${esc(trim(bonusTotal))}</p>
-    <p>total = clamp(core + bonus, 0, 100) = clamp(${esc(num(core))} ${bonusTotal < 0 ? "&minus;" : "+"} ${esc(trim(Math.abs(bonusTotal)))}, 0, 100) = <span class="eq">${esc(num(total))}</span></p>
+    <p>adjusted = 100 &times; (core / 100) ^ gamma = 100 &times; (${esc(num(core))} / 100) ^ ${esc(trim(Number(st.gamma)))} = <span class="eq">${esc(num(adjusted))}</span> <span class="muted">(${esc(String(st.quadrant || "").replace("_", " "))}, strictness ${esc(trim(Number(st.strictness)))}, c2)</span></p>
+    <p>bonus = c11 ${esc(sg(bc11))} + c13 ${esc(sg(bc13))} = ${esc(sg(bonusTotal))}</p>
+    <p>total = clamp(adjusted + bonus, 0, 100) = clamp(${esc(num(adjusted))} ${bonusTotal < 0 ? "&minus;" : "+"} ${esc(trim(Math.abs(bonusTotal)))}, 0, 100) = <span class="eq">${esc(num(total))}</span></p>
     ${na.length ? `<p class="muted">Not applicable, weight dropped: ${na.join(", ")}</p>` : ""}</div>
-    <details class="inline"><summary>Show the arithmetic for each criterion</summary>${table(["Criterion", "Weight", "Score", "Weight &times; score"].map((x) => x.replace("&times;", "x")),
+    <details class="inline"><summary>Show the arithmetic for each criterion</summary>${table(["Criterion", "Weight", "Score", "Weight x score"],
       IDS.map((id) => { const s = scored.criteria[id] || {}; const n = s.not_applicable; return [`${id} ${esc(NAMES[id])}`, n ? "dropped" : esc(trim(Number(s.weight) || 0)), n ? "n/a" : esc(num(s.score)), n ? "" : esc(num((Number(s.weight) || 0) * s.score, 1))]; }), [1, 2, 3])}
-    <p class="small muted">c1 itself is the weighted mean of its six sub-scores, see its card.</p></details>`;
+    <p class="small muted">c1 itself is the weighted mean of its six sub-scores, see its card. c2 sets gamma and carries no weight of its own.</p></details>`;
 
-  const bonusItems = arr((scored.bonus || {}).items);
-  const bonusCard = `<details class="card" id="card-c11"><summary><span class="cid">c11</span><span class="ctitle">Candidate's own access (bonus)</span><span class="cscore">${bonusTotal >= 0 ? "+" : ""}${esc(trim(bonusTotal))}</span>
-    <span class="cmeta"><span class="chev">&#9656;</span><span>self-reported, never inferred by the AI</span></span></summary><div class="cbody">` +
+  const bonusItems = arr((scored.bonus || {}).items).filter((i) => i.group !== "c13");
+  const bonusCard = `<details class="card" id="card-c11"><summary><span class="cid">c11</span><span class="ctitle">Candidate's own access (bonus)</span><span class="cscore">${bc11 >= 0 ? "+" : ""}${esc(trim(bc11))}</span>
+    <span class="cmeta"><span class="chev">&#9656;</span><span>self-reported, never inferred by the AI. Added after the strictness adjustment.</span></span></summary><div class="cbody">` +
     (bonusItems.length ? table(["Item", "Points"], bonusItems.map((i) => [esc(i.label), esc((i.points >= 0 ? "+" : "") + trim(i.points))]), [1]) : "<p>No bonus items were reported.</p>") +
     (cand.previously_worked_here && cand.previously_worked_here.note ? `<p class="small">Previously worked here: ${esc(cand.previously_worked_here.note)}</p>` : "") +
     arr(cand.referrals).map((r) => `<p class="small">Referral (${esc(String(r.type).replace(/_/g, " "))}${r.seniority ? ", " + esc(r.seniority) : ""}${r.visibility ? ", " + esc(r.visibility) + " visibility" : ""})${r.note ? ": " + esc(r.note) : ""}</p>`).join("") +
     `</div></details>`;
+  const c13sc = scored.criteria.c13 || {};
+  const c13Card = `<details class="card" id="card-c13"><summary><span class="cid">c13</span><span class="ctitle">${esc(NAMES.c13)}</span><span class="cscore">${bc13 >= 0 ? "+" : ""}${esc(trim(bc13))}</span>
+    <span class="cmeta"><span class="chev">&#9656;</span><span>bonus, capped at +${esc(trim(Number(((scored.weights_used || {}).bonus || {}).c13_cap) || 10))}</span>${confBadge(c13sc.confidence)}</span>
+    <span class="working">${esc(c13sc.working || "")}</span></summary><div class="cbody">${c13Body(ctx, a)}</div></details>`;
 
-  const cards = IDS.map((id) => card(ctx, id, { c1: c1Detail, c2: c2Detail, c3: c3Detail, c4: c4Detail, c5: c5Detail, c6: c6Detail, c7: c7Detail, c8: c8Detail, c9: c9Detail, c10: c10Detail }[id], weights)).join("") + bonusCard;
+  const cards = ORDER.map((id) => card(ctx, id, { c1: c1Detail, c2: c2Detail, c3: c3Detail, c4: c4Detail, c5: c5Detail, c6: c6Detail, c7: c7Detail, c8: c8Detail, c9: c9Detail, c10: c10Detail, c12: c12Detail }[id], weights)).join("") + bonusCard + c13Card;
 
   const sm = a.summary || {};
   const list = (t, items) => `<div><h3>${esc(t)}</h3><ul>${arr(items).map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
@@ -353,7 +417,9 @@ function buildHtml(d) {
 
   // client data
   const D = {
-    names: NAMES, keys, weights, total, core, bonusTotal,
+    names: NAMES, keys, weights, total, core, adjusted, bonusTotal, bonusC11: bc11, bonusC13: bc13,
+    strictness: { quadrant: st.quadrant, base: st.base, buzz: st.buzz, value: st.strictness, gamma: st.gamma,
+      gammaBase: Number((scored.weights_used || {}).c2_gamma_base) || 0.5, bases: (scored.weights_used || {}).c2_strictness || (d.defaults || {}).c2_strictness || {} },
     criteria: Object.fromEntries(IDS.map((id) => { const s = scored.criteria[id] || {}; return [id, { score: s.score == null ? null : s.score, weight: s.weight, na: !!s.not_applicable, sub: s.sub || null }]; })),
   };
   if (!D.criteria.c1.sub) D.criteria.c1.sub = {};
@@ -389,8 +455,9 @@ function buildHtml(d) {
     </div>
   </div>
   <div class="split">
-    <div><div class="k">Core (c1 to c10)</div><div class="v" id="v-core">${esc(num(core))}</div></div>
-    <div><div class="k">Bonus (c11)</div><div class="v">${bonusTotal >= 0 ? "+" : ""}${esc(trim(bonusTotal))}</div></div>
+    <div><div class="k">Core</div><div class="v" id="v-core">${esc(num(core))}</div></div>
+    <div><div class="k">Adjusted (gamma <span data-live="gamma">${esc(trim(Number(st.gamma)))}</span>)</div><div class="v" id="v-adjusted">${esc(num(adjusted))}</div></div>
+    <div><div class="k">Bonus (c11 ${esc(sg(bc11))}, c13 ${esc(sg(bc13))})</div><div class="v">${bonusTotal >= 0 ? "+" : ""}${esc(trim(bonusTotal))}</div></div>
     <div><div class="k">Total</div><div class="v" data-live-total>${esc(num(total))}</div></div>
   </div>
   <div class="banner" id="custom-banner" role="status"></div>
@@ -401,7 +468,7 @@ function buildHtml(d) {
 
 <section id="weights"><h2>Weights</h2>
 <p class="lede">Disagree with the emphasis? Move a slider and the total updates. Nothing is saved or sent anywhere.</p>
-<div class="panel"><h3>Core criteria</h3><div class="sliders" id="sl-core"></div><h3>c1 sub-checks</h3><div class="sliders" id="sl-c1"></div>
+<div class="panel"><h3>Core criteria</h3><div class="sliders" id="sl-core"></div><h3>c1 sub-checks</h3><div class="sliders" id="sl-c1"></div><h3>Employer strictness (c2)</h3><div class="sliders" id="sl-c2"></div>
 <div class="btns"><button id="reset" type="button">Reset</button><button id="copy" class="primary" type="button">Copy weights JSON</button><span class="copied" id="copied" role="status"></span></div>
 <pre id="snippet" class="mono small tablewrap" hidden></pre>
 <p class="small muted" id="calc-source"></p></div></section>
@@ -435,12 +502,15 @@ async function buildPdf(d, outPath) {
   const total = Number(scored.total), core = Number(scored.core), bonus = Number((scored.bonus || {}).total) || 0;
   const hdr = (t) => ({ text: t, fontSize: 13, bold: true, margin: [0, 16, 0, 6] });
   const ul = (items) => ({ ul: arr(items).map((x) => String(x)), margin: [0, 0, 0, 4], fontSize: 9.5 });
-  const rows = IDS.map((id) => {
+  const stp = scored.strictness || {};
+  const adjusted = typeof scored.adjusted === "number" ? scored.adjusted : core;
+  const rows = ORDER.concat(["c13"]).map((id) => {
     const s = scored.criteria[id] || {};
+    const mod = id === "c2", bon = id === "c13";
     return [
       { text: id, bold: true, color: ACC }, { text: NAMES[id], bold: true },
-      { text: s.not_applicable ? "n/a" : num(s.score), alignment: "right" },
-      { text: s.not_applicable ? "dropped" : trim(Number(s.weight) || 0), alignment: "right" },
+      { text: s.not_applicable ? "n/a" : mod ? "gamma " + trim(Number(stp.gamma)) : bon ? "+" + trim(Number((scored.bonus || {}).c13) || 0) : num(s.score), alignment: "right" },
+      { text: s.not_applicable ? "dropped" : mod ? "modifier" : bon ? "bonus" : trim(Number(s.weight) || 0), alignment: "right" },
       { text: (s.not_applicable ? "Not applicable: weight dropped. " : "") + (s.working || ""), fontSize: 8, color: GREY },
     ];
   });
@@ -459,8 +529,8 @@ async function buildPdf(d, outPath) {
         { width: 120, stack: [
           { text: num(total), fontSize: 38, bold: true, color: ACC, alignment: "right" },
           { text: String(scored.band || bandOf(total)), fontSize: 11, bold: true, alignment: "right" },
-          { text: `core ${num(core)}  bonus ${bonus >= 0 ? "+" : ""}${trim(bonus)}`, fontSize: 8.5, color: GREY, alignment: "right" } ] } ] },
-      { text: `total = clamp(core + bonus, 0, 100) = clamp(${num(core)} ${bonus < 0 ? "-" : "+"} ${trim(Math.abs(bonus))}, 0, 100) = ${num(total)}`, fontSize: 8.5, color: GREY, margin: [0, 10, 0, 0] },
+          { text: `core ${num(core)}  adjusted ${num(adjusted)}  bonus ${bonus >= 0 ? "+" : ""}${trim(bonus)}`, fontSize: 8.5, color: GREY, alignment: "right" } ] } ] },
+      { text: `Core ${num(core)} -> adjusted ${num(adjusted)} (${String(stp.quadrant || "").replace("_", " ")}, gamma ${trim(Number(stp.gamma))}); total = clamp(adjusted + bonus, 0, 100) = clamp(${num(adjusted)} ${bonus < 0 ? "-" : "+"} ${trim(Math.abs(bonus))}, 0, 100) = ${num(total)}`, fontSize: 8.5, color: GREY, margin: [0, 10, 0, 0] },
       hdr("Criteria"),
       { table: { headerRows: 1, widths: [22, 130, 34, 38, "*"], body: [
         ["", "Criterion", "Score", "Weight", "Working"].map((t, i) => ({ text: t, bold: true, fontSize: 8, color: GREY, alignment: i === 2 || i === 3 ? "right" : "left" })), ...rows ] },
