@@ -1,0 +1,9 @@
+# Candidate data: never committed
+reports/*
+inputs/*
+!reports/.gitkeep
+!inputs/.gitkeep
+config/weights.local.json
+
+node_modules/
+.DS_Store

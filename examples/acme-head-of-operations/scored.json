@@ -1,0 +1,195 @@
+{
+  "meta": {
+    "candidate": "Alex Morgan",
+    "hiring_company": "Acme Corp",
+    "role_title": "Head of Operations",
+    "division_or_product": "Payments division",
+    "assessed_on": "2026-10-04",
+    "assessed_by": "Claude (illustrative fictional example)"
+  },
+  "weights_used": {
+    "core": {
+      "c1_current_role": 50,
+      "c2_market_position": 5.5555556,
+      "c3_tools_years": 5.5555556,
+      "c4_ai_experience": 5.5555556,
+      "c5_ai_generated": 5.5555556,
+      "c6_spelling": 5.5555556,
+      "c7_grammar": 5.5555556,
+      "c8_star_par": 5.5555556,
+      "c9_top_university": 5.5555556,
+      "c10_qualifications": 5.5555556
+    },
+    "c1_subweights": {
+      "title": 1,
+      "same_industry": 1,
+      "competitor": 1,
+      "supplier": 1,
+      "top_firm": 1,
+      "top10_consulting": 1
+    },
+    "c1_title_levels": {
+      "exact": 100,
+      "close": 70,
+      "adjacent": 40,
+      "none": 0
+    },
+    "c2_quadrant_risk_aversion": {
+      "cash_cow": 100,
+      "star": 75,
+      "question_mark": 50,
+      "dog": 25
+    },
+    "c3_default_required_years": 3,
+    "c5_ai_generated_direction": "negative",
+    "c6_points_per_spelling_error": 5,
+    "c7_points_per_grammar_error": 5,
+    "c6_spelling_variant": "en-GB",
+    "c8_levels": {
+      "full": 1,
+      "partial": 0.5,
+      "none": 0
+    },
+    "c9_tiers": {
+      "oxbridge": 100,
+      "ivy_league": 100,
+      "russell_group": 80,
+      "similar_top": 60,
+      "other": 0
+    },
+    "c10_levels": {
+      "met": 1,
+      "partial": 0.5,
+      "not_met": 0
+    },
+    "bonus": {
+      "c11_previously_worked_here": {
+        "points": 5,
+        "direction": "positive"
+      },
+      "c11_referral_hiring_manager_trusted_influencer": 10,
+      "c11_referral_same_division_colleague": {
+        "junior": 3,
+        "mid": 5,
+        "senior": 7,
+        "executive": 9
+      },
+      "c11_referral_colleague": {
+        "junior": 2,
+        "mid": 3,
+        "senior": 5,
+        "executive": 7,
+        "visibility_multiplier": {
+          "low": 0.75,
+          "medium": 1,
+          "high": 1.25
+        }
+      }
+    }
+  },
+  "weights_file": "config/weights.json",
+  "weights_override_file": null,
+  "verification": {
+    "quotes_total": 65,
+    "quotes_unverified": 0,
+    "unverified": [],
+    "sources_rejected": []
+  },
+  "criteria": {
+    "c1": {
+      "score": 66.67,
+      "weight": 50,
+      "not_applicable": false,
+      "confidence": "low",
+      "working": "mean(title 100 (exact), same_industry 100, competitor 100, supplier 0, top_firm 0, top10_consulting 100) = 66.67",
+      "sub": {
+        "title": 100,
+        "same_industry": 100,
+        "competitor": 100,
+        "supplier": 0,
+        "top_firm": 0,
+        "top10_consulting": 100
+      }
+    },
+    "c2": {
+      "score": 85,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "100 - |quadrant star 75 - risk aversion 60 (AI inferred)| = 85"
+    },
+    "c3": {
+      "score": 66.67,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "mean(Salesforce: 94 months = 7.83 y / 5 y required = 100; ServiceNow: 118 months = 9.83 y / 3 y required = 100; Snowflake: 0 months = 0 y / 3 y required = 0) = 66.67",
+      "item_scores": [
+        100,
+        100,
+        0
+      ]
+    },
+    "c4": {
+      "score": 60.83,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "breadth min(3/4,1)*50 = 37.5 + depth min(1/3,1)*30 = 10 + tenure min(2/3,1)*20 = 13.33 = 60.83"
+    },
+    "c5": {
+      "score": 55,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "low",
+      "working": "direction negative: 100 - likelihood 45 = 55 (an indication, not proof)"
+    },
+    "c6": {
+      "score": 90,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "max(0, 100 - 5 * 2 spelling errors) = 90"
+    },
+    "c7": {
+      "score": 90,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "max(0, 100 - 5 * 2 grammar errors) = 90"
+    },
+    "c8": {
+      "score": 47.83,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "mean(6 full x 1, 10 partial x 0.5, 7 none x 0) over 23 bullets * 100 = 47.83"
+    },
+    "c9": {
+      "score": 80,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "medium",
+      "working": "tier russell_group = 80"
+    },
+    "c10": {
+      "score": 100,
+      "weight": 5.5555556,
+      "not_applicable": false,
+      "confidence": "high",
+      "working": "weighted mean(PMP certification met x2, Lean Six Sigma Green Belt or higher met x1) = 3/3 * 100 = 100"
+    }
+  },
+  "core": 70.85,
+  "bonus": {
+    "items": [
+      {
+        "label": "Referral by a colleague (senior, high visibility, 5 x 1.25)",
+        "points": 6.25
+      }
+    ],
+    "total": 6.25
+  },
+  "total": 77.1,
+  "band": "Strong"
+}

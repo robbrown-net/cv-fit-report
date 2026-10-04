@@ -1,0 +1,80 @@
+# cv-fit-report
+
+How well does this CV fit this job, and **why**? An AI-assisted report that scores a CV against a
+job description on ten weighted criteria plus referral bonuses. Every judgement is backed by a
+verbatim quote or a cited web source, and every number can be recomputed by hand.
+
+Works with **Claude Code**, **Codex**, **Cursor**, or any agent that reads `AGENTS.md`.
+
+## What it scores
+
+| # | Criterion | Default weight |
+|---|---|---|
+| 1 | Current or most recent role: title match, same industry, competitor, supplier, ever at the market leader, ever at a top-10 consulting firm for the industry | 50% |
+| 2 | Hiring company's BCG growth-share quadrant against the candidate's risk appetite | 5.56% |
+| 3 | Years with the tools, services and suppliers the JD names | 5.56% |
+| 4 | AI experience, and the outcomes it delivered | 5.56% |
+| 5 | Likelihood that the CV is AI-generated (penalty or bonus, your choice) | 5.56% |
+| 6 | Spelling (minus points per error) | 5.56% |
+| 7 | Grammar (minus points per error) | 5.56% |
+| 8 | STAR or Problem-Action-Result shape, checked on every bullet | 5.56% |
+| 9 | Top-university graduate (Oxbridge, Ivy League, Russell Group or similar) | 5.56% |
+| 10 | Qualifications and certifications against the JD | 5.56% |
+| 11 | The candidate's own access: previously worked there, referrals by route and seniority | bonus points |
+
+The full logic, with every formula, is in [docs/rubric.md](docs/rubric.md). Change any weight in
+`config/weights.local.json`, or live with the sliders in the HTML report.
+
+## How it stays honest
+
+- **The AI judges, the script counts.** The agent writes evidence and judgements to
+  `assessment.json`. `bin/score.js` computes every score, so the AI never asserts a number.
+- **Quotes are verified.** Every CV or JD quote is checked against the extracted text, and one
+  that is not there is flagged in red on the report.
+- **Sources are cited.** Industry, competitor, supplier, market-leader, consulting and BCG
+  judgements need web sources, each with the URL, the date accessed and the supporting sentence.
+- **No evidence means no points**, marked low confidence. It is never a guess.
+
+## Quick start
+
+```bash
+git clone https://github.com/robbrown-net/cv-fit-report.git
+cd cv-fit-report
+npm install
+```
+
+Open the folder in your agent and say:
+
+> Assess my CV against this job. *(attach or paste both)*
+
+The agent follows [AGENTS.md](AGENTS.md): intake, a couple of questions about referrals,
+web research, evidence, scoring, then `report.html` and `report.pdf` in `reports/<folder>/`.
+
+Requirements: Node.js 18 or later, and an agent with web search, which industry and market
+judgements need.
+
+## Example
+
+[examples/acme-head-of-operations/](examples/acme-head-of-operations/) is a complete fictional
+run: CV, JD, evidence file and the finished report.
+
+```bash
+node bin/score.js examples/acme-head-of-operations
+node bin/report.js examples/acme-head-of-operations
+```
+
+## Privacy
+
+CVs are personal data. `reports/` and `inputs/` are gitignored, and the agent is instructed never
+to send a CV to a third-party service without permission.
+
+## Caveats
+
+- AI-detection (criterion 5) is unreliable everywhere. It is shown as an indication, never as proof.
+- Criteria 1, 2 and 9 depend on public information that may be dated or incomplete. Check the
+  sources the report cites.
+- This is a self-assessment aid, not a hiring decision tool.
+
+## License
+
+MIT

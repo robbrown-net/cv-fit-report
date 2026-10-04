@@ -1,0 +1,21 @@
+Head of Operations
+Acme Corp | Payments division | London (hybrid)
+
+About Acme Corp
+Acme Corp is a leading payments processor serving more than 40,000 merchants across the UK and Europe. Our payments division is growing quickly and needs an operations leader to scale with it.
+
+The role
+Reporting to the Chief Operating Officer, you will own end-to-end operations for merchant onboarding, settlement, disputes and customer support, leading a team of around 200.
+
+Requirements
+- 10+ years of operations leadership, ideally in payments or financial services
+- 5+ years of hands-on experience with Salesforce in an operations setting
+- Experience with ServiceNow for incident, change and workflow management
+- Working knowledge of Snowflake for operational analytics
+- PMP certification (required)
+- Lean Six Sigma Green Belt or higher (desirable)
+- Track record of measurable improvements in cost, speed and quality
+
+AI in operations
+- You will identify and deploy practical AI and automation in operations, from dispute handling to fraud triage, and report measurable outcomes
+- Experience introducing AI tools to teams and building colleague adoption is expected

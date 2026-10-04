@@ -1,0 +1,20 @@
+{
+  "name": "cv-fit-report",
+  "version": "0.1.0",
+  "description": "AI-assisted CV-vs-job-description fit report with a deterministic, auditable score",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "new": "node bin/new.js",
+    "score": "node bin/score.js",
+    "test": "node --test test/*.test.js",
+    "report": "node bin/report.js"
+  },
+  "dependencies": {
+    "mammoth": "^1.8.0",
+    "pdfjs-dist": "^4.10.38",
+    "pdfmake": "^0.3.11"
+  }
+}

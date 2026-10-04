@@ -1,0 +1,17 @@
+{
+  "name": "Alex Morgan",
+  "risk_aversion_override": null,
+  "previously_worked_here": {
+    "value": false,
+    "direction": "positive",
+    "note": ""
+  },
+  "referrals": [
+    {
+      "type": "colleague",
+      "seniority": "senior",
+      "visibility": "high",
+      "note": "Fictional: former colleague, now a senior leader in Acme Corp talent acquisition"
+    }
+  ]
+}

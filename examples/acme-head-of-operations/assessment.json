@@ -1,0 +1,764 @@
+{
+  "meta": {
+    "candidate": "Alex Morgan",
+    "hiring_company": "Acme Corp",
+    "role_title": "Head of Operations",
+    "division_or_product": "Payments division",
+    "assessed_on": "2026-10-04",
+    "assessed_by": "Claude (illustrative fictional example)"
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "url": "https://example.com/reports/uk-payments-industry-classification",
+      "title": "Example industry report (illustrative): UK payments industry classification",
+      "accessed": "2026-10-04",
+      "quote": "Acme Corp and Example Payments Ltd are both classified as payment processors (SIC 66190)."
+    },
+    {
+      "id": "S2",
+      "url": "https://example.com/reports/merchant-acquiring-competitor-landscape",
+      "title": "Example industry report (illustrative): merchant acquiring competitor landscape",
+      "accessed": "2026-10-04",
+      "quote": "Example Payments Ltd is named as a direct competitor of Acme Corp in UK merchant acquiring."
+    },
+    {
+      "id": "S3",
+      "url": "https://example.com/rankings/uk-merchant-acquiring-market-share",
+      "title": "Example market share table (illustrative): UK merchant acquiring",
+      "accessed": "2026-10-04",
+      "quote": "Acme Corp is the largest UK merchant acquirer by revenue, 1.2 times the size of its nearest rival."
+    },
+    {
+      "id": "S4",
+      "url": "https://example.com/rankings/top-consulting-firms-payments",
+      "title": "Example consulting ranking (illustrative): top 10 firms serving payments",
+      "accessed": "2026-10-04",
+      "quote": "Globex Consulting is ranked eighth among consulting firms serving payments and banking clients."
+    },
+    {
+      "id": "S5",
+      "url": "https://example.com/reports/payments-market-growth-forecast",
+      "title": "Example industry report (illustrative): payments market growth forecast",
+      "accessed": "2026-10-04",
+      "quote": "UK merchant payments processing is forecast to grow by 14.0 per cent a year to 2030."
+    },
+    {
+      "id": "S6",
+      "url": "https://example.com/rankings/uk-universities-groups",
+      "title": "Example university groupings (illustrative)",
+      "accessed": "2026-10-04",
+      "quote": "The University of Example is a member of the research-intensive Russell Group-style mission group."
+    }
+  ],
+  "current_role": {
+    "title": "Head of Operations",
+    "employer": "Example Payments Ltd",
+    "start": "2021-03",
+    "end": null,
+    "evidence": {
+      "cv_quotes": [
+        {
+          "text": "Example Payments Ltd | Head of Operations | March 2021 - Present"
+        }
+      ],
+      "jd_quotes": [
+        {
+          "text": "Head of Operations"
+        }
+      ],
+      "source_ids": [],
+      "reasoning": "The CV shows Alex currently holds the same title as the advertised role.",
+      "confidence": "high"
+    }
+  },
+  "c1": {
+    "title": {
+      "level": "exact",
+      "evidence": {
+        "cv_quotes": [
+          {
+            "text": "Example Payments Ltd | Head of Operations | March 2021 - Present"
+          }
+        ],
+        "jd_quotes": [
+          {
+            "text": "Head of Operations"
+          }
+        ],
+        "source_ids": [],
+        "reasoning": "Current title and advertised title are identical, and both own end-to-end operations.",
+        "confidence": "high"
+      }
+    },
+    "same_industry": {
+      "match": true,
+      "candidate_industry": "Payment processing (SIC 66190)",
+      "hiring_industry": "Payment processing (SIC 66190)",
+      "evidence": {
+        "cv_quotes": [
+          {
+            "text": "Operations Leader | Fintech and Payments"
+          }
+        ],
+        "jd_quotes": [
+          {
+            "text": "Acme Corp is a leading payments processor"
+          }
+        ],
+        "source_ids": [
+          "S1"
+        ],
+        "reasoning": "Both companies are classified as payment processors in the cited report.",
+        "confidence": "medium"
+      }
+    },
+    "competitor": {
+      "match": true,
+      "competitors_considered": [
+        "Example Payments Ltd",
+        "Initech Payments"
+      ],
+      "evidence": {
+        "cv_quotes": [
+          {
+            "text": "Example Payments Ltd | Head of Operations | March 2021 - Present"
+          }
+        ],
+        "jd_quotes": [
+          {
+            "text": "Acme Corp is a leading payments processor"
+          }
+        ],
+        "source_ids": [
+          "S2"
+        ],
+        "reasoning": "The cited report names Example Payments Ltd as a direct Acme competitor, and Alex works there now.",
+        "confidence": "medium"
+      }
+    },
+    "supplier": {
+      "match": false,
+      "products_or_services": [],
+      "evidence": {
+        "cv_quotes": [],
+        "jd_quotes": [],
+        "source_ids": [],
+        "reasoning": "No evidence found that Example Payments Ltd supplies a product or service Acme uses.",
+        "confidence": "low"
+      }
+    },
+    "top_firm": {
+      "match": false,
+      "top_firm": "Acme Corp",
+      "evidence": {
+        "cv_quotes": [],
+        "jd_quotes": [
+          {
+            "text": "Acme Corp is a leading payments processor"
+          }
+        ],
+        "source_ids": [
+          "S3"
+        ],
+        "reasoning": "Acme is the market leader by revenue in the cited table. Alex has never worked there (see candidate.json).",
+        "confidence": "medium"
+      }
+    },
+    "top10_consulting": {
+      "match": true,
+      "firms_considered": [
+        "Globex Consulting"
+      ],
+      "candidate_firm": "Globex Consulting",
+      "evidence": {
+        "cv_quotes": [
+          {
+            "text": "Globex Consulting | Senior Consultant | May 2015 - December 2016"
+          }
+        ],
+        "jd_quotes": [
+          {
+            "text": "Acme Corp is a leading payments processor"
+          }
+        ],
+        "source_ids": [
+          "S4"
+        ],
+        "reasoning": "Globex Consulting appears in the cited illustrative ranking and Alex worked there as a Senior Consultant.",
+        "confidence": "medium"
+      }
+    }
+  },
+  "c2": {
+    "quadrant": "star",
+    "market_growth_pct": 14,
+    "relative_share": 1.2,
+    "unit_assessed": "division",
+    "candidate_risk_aversion": 60,
+    "evidence": {
+      "cv_quotes": [],
+      "jd_quotes": [
+        {
+          "text": "Our payments division is growing quickly and needs an operations leader to scale with it."
+        }
+      ],
+      "source_ids": [
+        "S3",
+        "S5"
+      ],
+      "reasoning": "Market growth of 14.0 per cent is above the 10 per cent threshold and relative share of 1.2 is above 1.0, so the payments division is a star.",
+      "confidence": "medium"
+    },
+    "candidate_evidence": {
+      "cv_quotes": [
+        {
+          "text": "Northwind Bank | Senior Operations Manager | January 2017 - February 2021"
+        },
+        {
+          "text": "Example Payments Ltd | Head of Operations | March 2021 - Present"
+        },
+        {
+          "text": "Globex Consulting | Senior Consultant | May 2015 - December 2016"
+        }
+      ],
+      "jd_quotes": [],
+      "source_ids": [],
+      "reasoning": "Two long tenures of about four and five and a half years at established firms, one short consulting stint, no start-ups or contract work. That suggests moderate risk aversion, inferred at 60.",
+      "confidence": "medium"
+    }
+  },
+  "c3": {
+    "not_applicable": false,
+    "items": [
+      {
+        "name": "Salesforce",
+        "required_years": 5,
+        "jd_quote": {
+          "text": "5+ years of hands-on experience with Salesforce in an operations setting"
+        },
+        "cv_roles": [
+          {
+            "employer": "Northwind Bank",
+            "start": "2019-01",
+            "end": "2021-02",
+            "quote": {
+              "text": "Migrated the complaints team to Salesforce Service Cloud in 2019"
+            }
+          },
+          {
+            "employer": "Example Payments Ltd",
+            "start": "2021-03",
+            "end": null,
+            "quote": {
+              "text": "rebuilt it in Salesforce with automated KYC checks"
+            }
+          }
+        ]
+      },
+      {
+        "name": "ServiceNow",
+        "required_years": null,
+        "jd_quote": {
+          "text": "Experience with ServiceNow for incident, change and workflow management"
+        },
+        "cv_roles": [
+          {
+            "employer": "Northwind Bank",
+            "start": "2017-01",
+            "end": "2021-02",
+            "quote": {
+              "text": "Implemented ServiceNow for incident and change management"
+            }
+          },
+          {
+            "employer": "Example Payments Ltd",
+            "start": "2021-03",
+            "end": null,
+            "quote": {
+              "text": "redesigned the disputes workflow in ServiceNow"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Snowflake",
+        "required_years": null,
+        "jd_quote": {
+          "text": "Working knowledge of Snowflake for operational analytics"
+        },
+        "cv_roles": []
+      }
+    ]
+  },
+  "c4": {
+    "years_using_ai": 2,
+    "uses": [
+      {
+        "description": "LLM assistant summarising dispute evidence, saving analyst hours",
+        "category": "cost_saving",
+        "quantified": true,
+        "quote": {
+          "text": "saving the disputes team around 1,400 analyst hours a year"
+        }
+      },
+      {
+        "description": "Machine-learning fraud alerts, improved detection (not quantified)",
+        "category": "risk_reduction",
+        "quantified": false,
+        "quote": {
+          "text": "Introduced machine-learning fraud alerts with the risk team"
+        }
+      },
+      {
+        "description": "Copilot rolled out for drafting customer communications",
+        "category": "communication",
+        "quantified": false,
+        "quote": {
+          "text": "Rolled out Copilot to 60 team members in 2025"
+        }
+      }
+    ],
+    "evidence": {
+      "cv_quotes": [
+        {
+          "text": "Piloted an LLM-based assistant for dispute evidence summarisation in 2024"
+        }
+      ],
+      "jd_quotes": [
+        {
+          "text": "You will identify and deploy practical AI and automation in operations"
+        }
+      ],
+      "source_ids": [],
+      "reasoning": "Three AI uses across three outcome categories since 2024, one with a quantified saving. Two years of use is inferred from the 2024 pilot.",
+      "confidence": "medium"
+    }
+  },
+  "c5": {
+    "likelihood": 45,
+    "signals": [
+      {
+        "signal": "Stock AI phrasing in the profile",
+        "quote": {
+          "text": "Dynamic operations leader with a proven track record"
+        },
+        "weight": "moderate"
+      },
+      {
+        "signal": "Stock verbs \"spearheaded\" and \"leveraged\"",
+        "quote": {
+          "text": "Spearheaded a culture of continuous improvement and leveraged Lean methods to drive operational excellence"
+        },
+        "weight": "moderate"
+      },
+      {
+        "signal": "Generic bullet with no numbers",
+        "quote": {
+          "text": "Facilitated workshops and prepared steering committee papers"
+        },
+        "weight": "weak"
+      },
+      {
+        "signal": "Specific, numbered, situation-led bullets suggest human drafting",
+        "quote": {
+          "text": "Peak-season returns delays were driving a 15% rise in complaints"
+        },
+        "weight": "weak"
+      }
+    ],
+    "evidence": {
+      "cv_quotes": [],
+      "jd_quotes": [],
+      "source_ids": [],
+      "reasoning": "A mix of stock phrasing and specific, uneven human detail (including typos). This is an indication only and AI detection is unreliable.",
+      "confidence": "low"
+    }
+  },
+  "c6": {
+    "variant": "en-GB",
+    "errors": [
+      {
+        "quote": {
+          "text": "reconcilliation"
+        },
+        "correction": "reconciliation",
+        "line": 14
+      },
+      {
+        "quote": {
+          "text": "Recieved"
+        },
+        "correction": "Received",
+        "line": 29
+      }
+    ]
+  },
+  "c7": {
+    "errors": [
+      {
+        "quote": {
+          "text": "which have cut repeat contacts by 18%"
+        },
+        "correction": "which has cut repeat contacts by 18%",
+        "rule": "subject-verb agreement",
+        "line": 18
+      },
+      {
+        "quote": {
+          "text": "and negotiate a 12% saving"
+        },
+        "correction": "and negotiated a 12% saving",
+        "rule": "tense consistency",
+        "line": 26
+      }
+    ]
+  },
+  "c8": {
+    "bullets": [
+      {
+        "quote": {
+          "text": "Faced with chargeback backlogs averaging 9 days in 2021, redesigned the disputes workflow in ServiceNow and introduced automated triage, cutting average handling time to 3 days by Q2 2022."
+        },
+        "level": "full",
+        "parts": {
+          "situation": true,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Inherited a manual merchant onboarding process taking 14 days; rebuilt it in Salesforce with automated KYC checks, reducing onboarding to 5 days and lifting merchant NPS from 31 to 52."
+        },
+        "level": "full",
+        "parts": {
+          "situation": true,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "After a regulator flagged settlement delays, redesigned daily reconcilliation checks and cut exceptions by 35%."
+        },
+        "level": "full",
+        "parts": {
+          "situation": true,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Piloted an LLM-based assistant for dispute evidence summarisation in 2024, saving the disputes team around 1,400 analyst hours a year."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Introduced machine-learning fraud alerts with the risk team, which improved detection of suspicious merchant activity."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "Rolled out Copilot to 60 team members in 2025 for drafting customer communications, with positive feedback from colleagues."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "Introduced a new escalation model which have cut repeat contacts by 18%."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Responsible for operational dashboards and monthly reporting in Power BI."
+        },
+        "level": "none",
+        "parts": {
+          "situation": false,
+          "action": false,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "Spearheaded a culture of continuous improvement and leveraged Lean methods to drive operational excellence."
+        },
+        "level": "none",
+        "parts": {
+          "situation": false,
+          "action": false,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "When the payments backlog hit 4,000 items after a core banking migration, set up a war-room and cross-trained 45 staff, clearing the backlog in 3 weeks."
+        },
+        "level": "full",
+        "parts": {
+          "situation": true,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Delivered a 3.2m GBP cost-reduction programme using Lean Six Sigma, closing 2 sites."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Managed vendor contracts worth 6m GBP and negotiate a 12% saving."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Implemented ServiceNow for incident and change management, reducing major incidents by 22%."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Migrated the complaints team to Salesforce Service Cloud in 2019, improving first-contact resolution from 62% to 74%."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Recieved the Chairman's Award for Excellence in 2019."
+        },
+        "level": "none",
+        "parts": {
+          "situation": false,
+          "action": false,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "Member of the bank's operational risk committee."
+        },
+        "level": "none",
+        "parts": {
+          "situation": false,
+          "action": false,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "A top-5 UK bank was losing 6% of card applications to slow manual checks; led a 6-person team to redesign the workflow, which recovered 4.5m GBP of annual revenue."
+        },
+        "level": "full",
+        "parts": {
+          "situation": true,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Advised three retail banks on operating model redesign and process automation."
+        },
+        "level": "none",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "Facilitated workshops and prepared steering committee papers."
+        },
+        "level": "none",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "Peak-season returns delays were driving a 15% rise in complaints; introduced a returns triage cell and extended shifts, cutting complaints by 30% over the 2014 peak."
+        },
+        "level": "full",
+        "parts": {
+          "situation": true,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Managed a team of 35 across two distribution sites, improving productivity by 12%."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": true
+        }
+      },
+      {
+        "quote": {
+          "text": "Analysed delivery performance data and produced weekly reports."
+        },
+        "level": "none",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": false
+        }
+      },
+      {
+        "quote": {
+          "text": "Built route-planning spreadsheets that reduced fuel costs by 8%."
+        },
+        "level": "partial",
+        "parts": {
+          "situation": false,
+          "action": true,
+          "result": true
+        }
+      }
+    ]
+  },
+  "c9": {
+    "institution": "University of Example",
+    "tier": "russell_group",
+    "graduated": true,
+    "evidence": {
+      "cv_quotes": [
+        {
+          "text": "University of Example | BSc Business and Economics (2:1) | 2006 - 2009"
+        }
+      ],
+      "jd_quotes": [],
+      "source_ids": [
+        "S6"
+      ],
+      "reasoning": "The CV shows a completed BSc with a 2:1 classification, and the institution is in a Russell Group-style group in the cited illustrative source.",
+      "confidence": "medium"
+    }
+  },
+  "c10": {
+    "not_applicable": false,
+    "items": [
+      {
+        "requirement": "PMP certification",
+        "required": true,
+        "status": "met",
+        "jd_quote": {
+          "text": "PMP certification (required)"
+        },
+        "evidence": {
+          "cv_quotes": [
+            {
+              "text": "Project Management Professional (PMP), PMI, 2018"
+            }
+          ],
+          "jd_quotes": [
+            {
+              "text": "PMP certification (required)"
+            }
+          ],
+          "source_ids": [],
+          "reasoning": "The CV lists PMP directly.",
+          "confidence": "high"
+        }
+      },
+      {
+        "requirement": "Lean Six Sigma Green Belt or higher",
+        "required": false,
+        "status": "met",
+        "jd_quote": {
+          "text": "Lean Six Sigma Green Belt or higher (desirable)"
+        },
+        "evidence": {
+          "cv_quotes": [
+            {
+              "text": "Lean Six Sigma Green Belt, 2016"
+            }
+          ],
+          "jd_quotes": [
+            {
+              "text": "Lean Six Sigma Green Belt or higher (desirable)"
+            }
+          ],
+          "source_ids": [],
+          "reasoning": "The CV lists a Green Belt, which meets the minimum.",
+          "confidence": "high"
+        }
+      }
+    ]
+  },
+  "summary": {
+    "strengths": [
+      "Same title, same industry and a direct competitor employer, so the current role is a very close match (c1).",
+      "Holds the required PMP and the desirable Green Belt (c10).",
+      "Salesforce and ServiceNow experience well beyond the years asked (c3).",
+      "Several full situation-action-result bullets with numbers (c8)."
+    ],
+    "risks": [
+      "No Snowflake experience shown on the CV (c3).",
+      "Only one AI use is quantified, so AI evidence is moderate (c4).",
+      "Four spelling and grammar slips in a CV for a senior role (c6, c7).",
+      "Several bullets describe duties with no result (c8) and some phrasing reads as stock AI wording (c5)."
+    ],
+    "actions": [
+      "Fix the two spelling errors and two grammar errors before applying (c6, c7).",
+      "Add a result to the duty bullets, or cut them (c8).",
+      "Add Snowflake or similar warehouse experience if true, for example via the Power BI reporting (c3).",
+      "Quantify the fraud-alert and Copilot outcomes (c4).",
+      "Replace \"spearheaded\" and \"leveraged\" phrasing with specifics (c5)."
+    ]
+  }
+}

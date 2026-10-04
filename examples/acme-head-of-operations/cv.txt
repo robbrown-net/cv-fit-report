@@ -1,0 +1,53 @@
+ALEX MORGAN
+Operations Leader | Fintech and Payments
+London, UK | alex.morgan@example.com | +44 (0)20 7946 0000 | linkedin.com/in/example-alex-morgan
+
+PROFILE
+Dynamic operations leader with a proven track record of delivering transformation in payments and banking. Over 15 years of experience leading teams across fintech, banking, retail and logistics, I spearheaded data-driven change and leveraged technology to drive operational excellence.
+
+EXPERIENCE
+
+Example Payments Ltd | Head of Operations | March 2021 - Present
+Lead 210 staff across payments operations, disputes, merchant onboarding and customer support in London and Manchester. Tools: Salesforce, ServiceNow, Power BI (all March 2021 - present).
+- Faced with chargeback backlogs averaging 9 days in 2021, redesigned the disputes workflow in ServiceNow and introduced automated triage, cutting average handling time to 3 days by Q2 2022.
+- Inherited a manual merchant onboarding process taking 14 days; rebuilt it in Salesforce with automated KYC checks, reducing onboarding to 5 days and lifting merchant NPS from 31 to 52.
+- After a regulator flagged settlement delays, redesigned daily reconcilliation checks and cut exceptions by 35%.
+- Piloted an LLM-based assistant for dispute evidence summarisation in 2024, saving the disputes team around 1,400 analyst hours a year.
+- Introduced machine-learning fraud alerts with the risk team, which improved detection of suspicious merchant activity.
+- Rolled out Copilot to 60 team members in 2025 for drafting customer communications, with positive feedback from colleagues.
+- Introduced a new escalation model which have cut repeat contacts by 18%.
+- Responsible for operational dashboards and monthly reporting in Power BI.
+- Spearheaded a culture of continuous improvement and leveraged Lean methods to drive operational excellence.
+
+Northwind Bank | Senior Operations Manager | January 2017 - February 2021
+Ran payments and complaints operations for the retail bank. Tools: ServiceNow (2017 - 2021), Salesforce Service Cloud (2019 - 2021).
+- When the payments backlog hit 4,000 items after a core banking migration, set up a war-room and cross-trained 45 staff, clearing the backlog in 3 weeks.
+- Delivered a 3.2m GBP cost-reduction programme using Lean Six Sigma, closing 2 sites.
+- Managed vendor contracts worth 6m GBP and negotiate a 12% saving.
+- Implemented ServiceNow for incident and change management, reducing major incidents by 22%.
+- Migrated the complaints team to Salesforce Service Cloud in 2019, improving first-contact resolution from 62% to 74%.
+- Recieved the Chairman's Award for Excellence in 2019.
+- Member of the bank's operational risk committee.
+
+Globex Consulting | Senior Consultant | May 2015 - December 2016
+- A top-5 UK bank was losing 6% of card applications to slow manual checks; led a 6-person team to redesign the workflow, which recovered 4.5m GBP of annual revenue.
+- Advised three retail banks on operating model redesign and process automation.
+- Facilitated workshops and prepared steering committee papers.
+
+Contoso Retail | Operations Manager | March 2013 - April 2015
+- Peak-season returns delays were driving a 15% rise in complaints; introduced a returns triage cell and extended shifts, cutting complaints by 30% over the 2014 peak.
+- Managed a team of 35 across two distribution sites, improving productivity by 12%.
+
+Fabrikam Logistics | Operations Analyst, then Shift Supervisor | September 2010 - February 2013
+- Analysed delivery performance data and produced weekly reports.
+- Built route-planning spreadsheets that reduced fuel costs by 8%.
+
+EDUCATION
+University of Example | BSc Business and Economics (2:1) | 2006 - 2009
+
+CERTIFICATIONS
+Project Management Professional (PMP), PMI, 2018
+Lean Six Sigma Green Belt, 2016
+
+SKILLS
+Operating model design, process improvement, vendor management, regulatory change, KYC and disputes, stakeholder management, Salesforce, ServiceNow, Power BI.
