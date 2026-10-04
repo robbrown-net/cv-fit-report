@@ -1,10 +1,28 @@
-# cv-fit-report
+# cv.fit-report
 
 How well does this CV fit this job, and **why**? An AI-assisted report that scores a CV against a
 job description on ten weighted criteria, adjusted for how strict the employer is, plus bonus and screening points. Every judgement is backed by a
 verbatim quote or a cited web source, and every number can be recomputed by hand.
 
 Works with **Claude Code**, **Codex**, **Cursor**, or any agent that reads `AGENTS.md`.
+
+## Read your score as a hypothesis, not a verdict
+
+The score is a hypothesis about how this CV will land with this employer. It is not a decision
+about whether to apply.
+
+- **A low score is not a reason to hold the CV back.** Send it anyway, and learn from what
+  happens. A rejection, a silence or an unexpected call back tests the hypothesis and tells you
+  which criteria matter to this employer.
+- **A high score is not a guarantee.** It does not promise a call back, an interview or even
+  feedback. Send the CV, and treat the outcome as evidence in exactly the same way.
+- **A strong referral to the hiring manager overrides the score completely.** When someone
+  the hiring manager trusts puts your name forward, the conversation no longer depends on how a
+  screener reads your CV, so no assessed score should stop you.
+
+Use the report to improve the CV before you send it, and to understand the outcome afterwards.
+Every application is an experiment: record the score, send the CV, and compare the result with
+the report.
 
 ## What it scores
 
