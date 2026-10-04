@@ -109,6 +109,11 @@ Tell the candidate about the flags first: the banner near the top of the report 
 `scored.json`), the estimated pay band and London premium from the "Package and location" section (context only, not scored), the two biggest levers they could pull, and a reminder that the weights can be
 changed with the sliders in the HTML report or in `config/weights.local.json`.
 
+Always close the handover with how to read the score: it is a hypothesis, not a decision. A low
+score is not a reason to hold the CV back, and a high score is not a guarantee of a call back or
+feedback: in both cases the candidate should send the CV and learn from the outcome. A strong
+referral to the hiring manager overrides the assessed score completely.
+
 ## Rules
 
 1. Every claim has a quote or a source. No exceptions.

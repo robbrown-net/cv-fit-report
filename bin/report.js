@@ -375,6 +375,20 @@ function c14Body(ctx, a) {
   return h;
 }
 
+// ---------- hypothesis note
+const HYPOTHESIS = [
+  "This score is a hypothesis about how this CV will land with this employer, not a decision about whether to apply.",
+  "A low score is not a reason to hold the CV back: send it and learn from the outcome. A high score is not a guarantee of a call back, an interview or feedback: send it and treat the outcome as evidence in the same way.",
+  "A strong referral to the hiring manager overrides this score completely."
+];
+const hasHmReferral = (cand) => Array.isArray(cand && cand.referrals) && cand.referrals.some((r) => r && r.type === "hiring_manager_trusted_influencer");
+function hypothesisHtml(cand) {
+  const ref = hasHmReferral(cand)
+    ? `<p class="hyp-ref"><b>You have a referral to the hiring manager.</b> That overrides the assessed score: send the CV.</p>`
+    : "";
+  return `<aside class="hypothesis" aria-label="How to read this score"><p><b>Read this score as a hypothesis.</b> ${esc(HYPOTHESIS[0])}</p><p>${esc(HYPOTHESIS[1])}</p><p>${esc(HYPOTHESIS[2])}</p>${ref}</aside>`;
+}
+
 // ---------- flags banner
 function flagsHtml(ctx) {
   const c14 = ctx.scored.c14;
@@ -600,6 +614,7 @@ function buildHtml(d) {
   </div>
   <p class="small muted breakdown">core ${esc(num(core))} &rarr; adjusted ${esc(num(adjusted))} &rarr; c11 ${esc(sg(bc11))}, c13 ${esc(sg(bc13))}, c14 ${esc(sg(bc14))} &rarr; total ${esc(num(total))}</p>
   <div class="banner" id="custom-banner" role="status"></div>
+  ${hypothesisHtml(cand)}
 </header>
 
 ${flagsHtml(ctx)}
@@ -693,6 +708,11 @@ async function buildPdf(d, outPath) {
           { text: String(scored.band || bandOf(total)), fontSize: 11, bold: true, alignment: "right" },
           { text: `core ${num(core)}  adjusted ${num(adjusted)}  bonus ${bonus >= 0 ? "+" : ""}${trim(bonus)} (c11 ${trim(Number((scored.bonus || {}).c11) || 0)}, c13 ${trim(Number((scored.bonus || {}).c13) || 0)}, c14 ${trim(Number((scored.bonus || {}).c14) || 0)})`, fontSize: 8.5, color: GREY, alignment: "right" } ] } ] },
       { text: `Core ${num(core)} -> adjusted ${num(adjusted)} (${String(stp.quadrant || "").replace("_", " ")}, gamma ${trim(Number(stp.gamma))}); total = clamp(adjusted + bonus, 0, 100) = clamp(${num(adjusted)} ${bonus < 0 ? "-" : "+"} ${trim(Math.abs(bonus))}, 0, 100) = ${num(total)}`, fontSize: 8.5, color: GREY, margin: [0, 10, 0, 0] },
+      { stack: [
+          { text: "Read this score as a hypothesis.", bold: true, fontSize: 9 },
+          ...HYPOTHESIS.map((t) => ({ text: t, fontSize: 8.5, color: GREY, margin: [0, 2, 0, 0] })),
+          ...(hasHmReferral(cand) ? [{ text: "You have a referral to the hiring manager. That overrides the assessed score: send the CV.", fontSize: 9, bold: true, color: ACC, margin: [0, 4, 0, 0] }] : []) ],
+        margin: [0, 10, 0, 0] },
       ...pdfFlags(scored),
       hdr("Criteria"),
       { table: { headerRows: 1, widths: [22, 130, 34, 38, "*"], body: [

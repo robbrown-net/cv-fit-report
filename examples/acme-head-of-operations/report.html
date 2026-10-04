@@ -214,6 +214,10 @@ details.card > summary { grid-template-columns: 34px minmax(0, 1fr) auto; }
 /* flags banner and c14 */
 .split .v { font-size: 22px; }
 .breakdown { margin: 8px 0 0; }
+.hypothesis { margin-top: 18px; padding: 14px 18px; border-left: 4px solid var(--accent); border-radius: 8px; background: var(--accent-soft); color: var(--ink); font-size: 14px; line-height: 1.5; }
+.hypothesis p { margin: 0 0 6px; }
+.hypothesis p:last-child { margin-bottom: 0; }
+.hypothesis .hyp-ref { margin-top: 10px; font-size: 15px; }
 .flags { margin-top: 28px; padding: 16px 20px; border: 2px solid var(--bad); border-radius: 12px; background: var(--bad-soft); }
 .flags h2 { margin-top: 0; color: var(--bad); }
 .flag { margin-top: 14px; }
@@ -282,6 +286,7 @@ mark { background: var(--accent-soft); color: var(--ink); padding: 1px 4px; bord
   </div>
   <p class="small muted breakdown">core 67.5 &rarr; adjusted 61.2 &rarr; c11 +6.25, c13 +6, c14 +7 &rarr; total 80.4</p>
   <div class="banner" id="custom-banner" role="status"></div>
+  <aside class="hypothesis" aria-label="How to read this score"><p><b>Read this score as a hypothesis.</b> This score is a hypothesis about how this CV will land with this employer, not a decision about whether to apply.</p><p>A low score is not a reason to hold the CV back: send it and learn from the outcome. A high score is not a guarantee of a call back, an interview or feedback: send it and treat the outcome as evidence in the same way.</p><p>A strong referral to the hiring manager overrides this score completely.</p></aside>
 </header>
 
 <section id="flags" class="flags" aria-label="Flags to check before applying"><h2>Check before you apply</h2><div class="flag"><h3>Application form questions that often reject within a day</h3><p class="small">The CV cannot show these. Check each answer before you submit.</p><ul><li>Salary expectation: state a figure inside the advertised band</li><li>Notice period: state it exactly as your contract says</li><li>Right to work: answer the question for the country of the role</li><li>Current job title: enter the title on your CV, not an informal one</li><li>Yes or no experience questions: answer from the JD requirements, since the CV cannot</li></ul></div></section>
